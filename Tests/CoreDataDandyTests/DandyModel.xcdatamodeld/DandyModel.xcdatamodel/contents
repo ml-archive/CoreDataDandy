@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="9525" systemVersion="14F1605" minimumToolsVersion="Xcode 7.0">
+    <entity name="Conclusion" representedClassName=".Conclusion" syncable="YES">
+        <attribute name="content" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="id" optional="YES" attributeType="String" syncable="YES"/>
+        <uniquenessConstraints>
+            <uniquenessConstraint>
+                <constraint value="id"/>
+            </uniquenessConstraint>
+        </uniquenessConstraints>
+        <userInfo>
+            <entry key="@primaryKey" value="content"/>
+        </userInfo>
+    </entity>
+    <entity name="Dandy" representedClassName="PRODUCT_MODULE_NAME.Dandy" syncable="YES">
+        <attribute name="bio" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="dandyID" optional="YES" attributeType="String" syncable="YES">
+            <userInfo>
+                <entry key="@mapping" value="id"/>
+            </userInfo>
+        </attribute>
+        <attribute name="dateOfBirth" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="gossip" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Gossip" inverseName="purveyor" inverseEntity="Gossip" syncable="YES"/>
+        <relationship name="hats" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Hat" inverseName="dandies" inverseEntity="Hat" syncable="YES"/>
+        <relationship name="predecessor" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Dandy" inverseName="successor" inverseEntity="Dandy" syncable="YES">
+            <userInfo>
+                <entry key="@mapping" value="relatedDandies.predecessor"/>
+            </userInfo>
+        </relationship>
+        <relationship name="successor" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Dandy" inverseName="predecessor" inverseEntity="Dandy" syncable="YES"/>
+        <userInfo>
+            <entry key="@primaryKey" value="dandyID"/>
+        </userInfo>
+    </entity>
+    <entity name="Gossip" representedClassName=".Gossip" syncable="YES">
+        <attribute name="details" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="secret" optional="YES" attributeType="String" syncable="YES">
+            <userInfo>
+                <entry key="@mapping" value="@NO"/>
+            </userInfo>
+        </attribute>
+        <attribute name="topic" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="purveyor" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Dandy" inverseName="gossip" inverseEntity="Dandy" syncable="YES"/>
+        <uniquenessConstraints>
+            <uniquenessConstraint>
+                <constraint value="details"/>
+            </uniquenessConstraint>
+        </uniquenessConstraints>
+    </entity>
+    <entity name="Hat" syncable="YES">
+        <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="styleDescription" optional="YES" attributeType="String" syncable="YES">
+            <userInfo>
+                <entry key="@mapping" value="style"/>
+            </userInfo>
+        </attribute>
+        <relationship name="dandies" optional="YES" toMany="YES" deletionRule="Nullify" ordered="YES" destinationEntity="Dandy" inverseName="hats" inverseEntity="Dandy" syncable="YES"/>
+        <relationship name="primaryMaterial" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Material" inverseName="hats" inverseEntity="Material" syncable="YES">
+            <userInfo>
+                <entry key="@mapping" value="material"/>
+            </userInfo>
+        </relationship>
+        <userInfo>
+            <entry key="@primaryKey" value="name"/>
+        </userInfo>
+    </entity>
+    <entity name="Material" syncable="YES">
+        <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="origin" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="hats" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Hat" inverseName="primaryMaterial" inverseEntity="Hat" syncable="YES"/>
+        <userInfo>
+            <entry key="@primaryKey" value="name"/>
+        </userInfo>
+    </entity>
+    <entity name="Plebian" syncable="YES">
+        <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
+    </entity>
+    <entity name="Space" syncable="YES">
+        <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="spaceState" optional="YES" attributeType="String" syncable="YES">
+            <userInfo>
+                <entry key="@mapping" value="state"/>
+            </userInfo>
+        </attribute>
+        <userInfo>
+            <entry key="@primaryKey" value="@singleton"/>
+        </userInfo>
+    </entity>
+    <elements>
+        <element name="Conclusion" positionX="-54" positionY="54" width="128" height="75"/>
+        <element name="Dandy" positionX="-63" positionY="-18" width="128" height="165"/>
+        <element name="Gossip" positionX="-54" positionY="45" width="128" height="105"/>
+        <element name="Hat" positionX="-54" positionY="18" width="128" height="105"/>
+        <element name="Material" positionX="-36" positionY="36" width="128" height="90"/>
+        <element name="Plebian" positionX="-45" positionY="63" width="128" height="60"/>
+        <element name="Space" positionX="-54" positionY="45" width="128" height="75"/>
+    </elements>
+</model>
