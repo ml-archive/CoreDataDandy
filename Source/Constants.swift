@@ -30,7 +30,7 @@ import Foundation
 // MARK: - Error constants -
 let DandyErrorDomain = "CoreDataDandyDomain"
 
-// MARK: -  xcdatamodel decorations - 
+// MARK: -  xcdatamodel attributes - 
 // Inserted into the userInfo of an entity to mark its primaryKey
 let PRIMARY_KEY = "@primaryKey"
 // A special primaryKey for identifying a unique entity in the database. Multiple instances of this entity will not be produced.

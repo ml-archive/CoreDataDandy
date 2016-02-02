@@ -130,44 +130,27 @@ Deserialize an object and its nested relationships.
 DandyDeserializer.deserializeObject(gossip, includeRelationships: ["purveyor.hats.material, purveyor.predecessor"])
 ```
 
-## xcdatamodel decorations
+## xcdatamodel attributes
 
-CoreDataDandy supports four xcdatamodel decorations. All decorations are declared and documented in DandyConstants.
+CoreDataDandy supports four xcdatamodel attributes. All attributes are declared and documented in DandyConstants.
 
 **@primaryKey**
 
-Add this decoration to the entity's userInfo to specify which attribute on the entity functions as its primaryKey.
+Add this attribute to the entity's userInfo to specify which property on the entity functions as its primaryKey.
 
 **@mapping**
 
-Add this decoration to an attribute or relationship to specify an alternate mapping for this property. For instance, if a property is named "abbreviatedState," but the json value for this property is found at the key "state," add @mapping : state to the abbreviatedState's userInfo.
+Add this attribute to a property to specify an alternate mapping for this property. For instance, if a property is named "abbreviatedState," but the json value for this property is found at the key "state," add @mapping : state to the abbreviatedState's userInfo.
 
 **@NO**
 
-Use this decoration in conjunction with the @mapping keyword to disable mapping to the property. For instance, if your entity has an attribute named "secret" that you'd prefer to map yourself, add @mapping : @NO to secret's userInfo.
+Use this attribute in conjunction with the @mapping keyword to disable mapping to the property. For instance, if your entity has an attribute named "secret" that you'd prefer to map yourself, add @mapping : @NO to secret's userInfo.
 
 **@singleton**
 
-Add this decoration to an entity's userInfo if there should never be more than one instance of this entity in your database. This attribute may be useful for objects like Tokens and CurrentUsers, though it's primarily included to suggest the kind of simple yet powerful decorations that may be added in the future.
+Add this attribute to an entity's userInfo if there should never be more than one instance of this entity in your database. This attribute may be useful for objects like Tokens and CurrentUsers, though it's primarily included to suggest the kind of simple yet powerful attributes that may be added in the future.
 
 ## Warnings
 
-To receive warnings, add the entry -D DEBUG in your project's build settings under Swift Compiler - Custom Flags.
-
-## Current issues
-
-You may review a list of issues currently reported against Dandy [here](https://jira.fuzzhq.com/issues/?filter=-1&jql=resolution%20%3D%20Unresolved%20AND%20project%20%3D%20%22iOS%20Module%20Library%22%20AND%20component%20%3D%20%22Core%20Data%20Dandy%22%20ORDER%20BY%20updatedDate%20DESC).
-
-## Reporting issues
-
-If you encounter an issue or would like to make a feature request, please alert noah@fuzzproductions.com by creating a ticket and assigning it to him. 
-
-If you're reporting a bug, please provide enough information to reproduce the bug. A regression test will be written against your report before the ticket is resolved, and as such, it's essential that we understand the basic conditions of the test case.
-
-**Required fields**
-
-* Project: iOS Module Library (IML)
-* Issue Type: specify the nature of the issue
-* Summary: a brief description of the issue
-* Components: Core Data Dandy
+To receive console warnings in Swift projects, add the entry -D DEBUG in your project's build settings under Swift Compiler - Custom Flags.
 
