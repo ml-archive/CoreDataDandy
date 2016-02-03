@@ -85,7 +85,8 @@ extension NSEntityDescription {
 	/// Returns the primary key of of the `NSEntityDescription`, a value used to ensure a unique record
 	///	for this entity.
 	///
-	/// - returns: The property on the entity marked as its primaryKey if one is found. Otherwise, nil.
+	/// - returns: The property on the entity marked as a unique constraint or as its primaryKey if either is found. 
+	///	Otherwise, nil.
 	var primaryKey: String? {
 		get {
 			if #available(iOS 9.0, *) {

@@ -99,7 +99,7 @@ public class CoreDataDandy {
 	/// MARK: - Upserts -
 	/// This function performs upserts differently depending on whether the entity is marked as unique or not.
 	///
-	/// If the entity is marked as unique (either through an @primaryKey attribute or a constraint), the 
+	/// If the entity is marked as unique (either through an @primaryKey decoration or an xcdatamode constraint), the
 	/// primaryKeyValue is extracted and an upsert is performed through
 	/// `uniqueManagedObjectForEntity(_:, primaryKeyValue:) -> NSManagedObject?`. 
 	///

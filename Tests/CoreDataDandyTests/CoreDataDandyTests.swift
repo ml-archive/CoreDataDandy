@@ -1088,21 +1088,19 @@ class CoreDataDandyTests: XCTestCase {
 	
 	/**
 		The primary key should return the uniquenessConstraint of the entity if one is present.
-		The Gossip entity has a uniquenessConstraint called 'details' in the model, with no @primaryKey
+		The Gossip entity has a uniquenessConstraint called 'details' in the model, but no @primaryKey
 	*/
-	func testUniqueConstraint() {
+	func testUniqueConstraintRetrieval() {
 		let gossip = Dandy.insertManagedObjectForEntity("Gossip")!
-		
 		XCTAssert(gossip.entity.primaryKey == "details", "Pass")
 	}
 	
 	/**
-		The primary key should return the uniquenessConstraint instead of the primaryKey if both a primaryKey and a uniquenessConstraint is present.
-		The Conclusion entity has a uniquenessConstraint called 'id' in the model, with a @primaryKey called 'content'
+		The primary key should return the uniquenessConstraint instead of the primaryKey decoration if both are present.
+		The Conclusion entity has a uniquenessConstraint called 'id' in the model, and a primaryKey called 'content'
 	*/
 	func testUniqueConstraintPriority() {
 		let testConclusion = Dandy.insertManagedObjectForEntity("Conclusion")!
-		
 		XCTAssert(testConclusion.entity.primaryKey == "id", "Pass")
 	}
 }
