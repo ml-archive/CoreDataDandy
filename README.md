@@ -1,5 +1,8 @@
 ![header](header.png)
 
+[![Carthage Compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/fuzz-productions/CoreDataDandy)
+[![GitHub license](https://img.shields.io/badge/license-MIT-lightgrey.svg)](https://github.com/fuzz-productions/CoreDataDandy/blob/master/LICENSE) 
+
 ## Introduction
 Core Data Dandy is a feature-light wrapper around Core Data that simplifies common database operations.
 
@@ -10,6 +13,14 @@ Core Data Dandy is a feature-light wrapper around Core Data that simplifies comm
 * Maps json into NSManagedObjects via a lightweight API.
 * Deserializes NSManagedObjects into json
 
+## Installation
+
+### Carthage
+
+
+```ogdl
+github "fuzz-productions/CoreDataDandy" ~> 0.2
+```
 
 ## Usage
 
@@ -130,25 +141,25 @@ Deserialize an object and its nested relationships.
 DandyDeserializer.deserializeObject(gossip, includeRelationships: ["purveyor.hats.material, purveyor.predecessor"])
 ```
 
-## xcdatamodel attributes
+## xcdatamodel decorations
 
-CoreDataDandy supports four xcdatamodel attributes. All attributes are declared and documented in DandyConstants.
+CoreDataDandy supports four xcdatamodel attributes. All decorations are declared and documented in DandyConstants.
 
 **@primaryKey**
 
-Add this attribute to the entity's userInfo to specify which property on the entity functions as its primaryKey.
+Add this decoration to the entity's userInfo to specify which property on the entity functions as its primaryKey.
 
 **@mapping**
 
-Add this attribute to a property to specify an alternate mapping for this property. For instance, if a property is named "abbreviatedState," but the json value for this property is found at the key "state," add @mapping : state to the abbreviatedState's userInfo.
+Add this decoration to a property to specify an alternate mapping for this property. For instance, if a property is named "abbreviatedState," but the json value for this property is found at the key "state," add @mapping : state to the abbreviatedState's userInfo.
 
 **@NO**
 
-Use this attribute in conjunction with the @mapping keyword to disable mapping to the property. For instance, if your entity has an attribute named "secret" that you'd prefer to map yourself, add @mapping : @NO to secret's userInfo.
+Use this decoration in conjunction with the @mapping keyword to disable mapping to the property. For instance, if your entity has an attribute named "secret" that you'd prefer to map yourself, add @mapping : @NO to secret's userInfo.
 
 **@singleton**
 
-Add this attribute to an entity's userInfo if there should never be more than one instance of this entity in your database. This attribute may be useful for objects like Tokens and CurrentUsers, though it's primarily included to suggest the kind of simple yet powerful attributes that may be added in the future.
+Add this decoration to an entity's userInfo if there should never be more than one instance of this entity in your database. This decoration may be useful for objects like Tokens and CurrentUsers, though it's primarily included to suggest the kind of decorations that may be added in the future.
 
 ## Warnings
 
