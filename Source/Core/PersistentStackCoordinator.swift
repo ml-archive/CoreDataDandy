@@ -30,7 +30,7 @@ import CoreData
 
 /// The class responsible for maintaining the Core Data stack, including the `NSManagedObjectContexts`,
 /// the `NSPersistentStore`, and the `NSPersistentStoreCoordinators`.
-class PersistentStackCoordinator {
+public class PersistentStackCoordinator {
 	var managedObjectModelName: String
 	var persistentStoreConnectionCompletion: (() -> Void)?
 	

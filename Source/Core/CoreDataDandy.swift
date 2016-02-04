@@ -36,7 +36,7 @@ public class CoreDataDandy {
 	private static let defaultDandy = CoreDataDandy()
 	/// The default implementation of Dandy. Subclasses looking to extend or alter Dandy's functionality
 	/// should override this getter and provide a new instance.
-	class var sharedDandy: CoreDataDandy {
+	public class var sharedDandy: CoreDataDandy {
 		return defaultDandy
 	}
 	/// A manager of the NSManagedObjectContext, NSPersistentStore, and NSPersistentStoreCoordinator.
@@ -361,4 +361,4 @@ public class CoreDataDandy {
 }
 // MARK: - Convenience accessors -
 /// A lazy global for more succinct access to CoreDataDandy's sharedDandy.
-let Dandy: CoreDataDandy = CoreDataDandy.sharedDandy
+public let Dandy: CoreDataDandy = CoreDataDandy.sharedDandy

@@ -37,10 +37,10 @@ import CoreData
 public struct CoreDataValueConverter {
 	/// A shared dateFormatter for regularly converting strings of a known pattern
 	/// to dates and vice-versa.
-	static let dateFormatter = NSDateFormatter()
+	public static let dateFormatter = NSDateFormatter()
 	
 	/// Maps `NSAttributeTypes` to their corresponding type converters.
-	static let typeConverters: [NSAttributeType: ValueConverter] = [
+	private static let typeConverters: [NSAttributeType: ValueConverter] = [
 		.Integer16AttributeType: IntConverter(),
 		.Integer32AttributeType: IntConverter(),
 		.Integer64AttributeType: IntConverter(),
