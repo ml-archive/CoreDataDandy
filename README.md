@@ -19,13 +19,13 @@ Core Data Dandy is a feature-light wrapper around Core Data that simplifies comm
 
 
 ```ogdl
-github "fuzz-productions/CoreDataDandy" ~> 0.2.4
+github "fuzz-productions/CoreDataDandy" ~> 0.2.5
 ```
 
 ### CocoaPods
 
 ```ogdl
-pod 'CoreDataDandy', '0.2.4'
+pod 'CoreDataDandy', '0.2.5'
 ```
 
 ## Usage
