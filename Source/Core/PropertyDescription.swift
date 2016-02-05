@@ -67,7 +67,7 @@ final class PropertyDescription : NSObject {
 			self.init(relationshipDescription: description)
 		} else {
 			self.init()
-			emitWarningWithMessage("Unknown property type for description: \(description)")
+			log(message("Unknown property type for description: \(description)"))
 		}
 	}
 	/// An initializer that builds a `PropertyDescription` by extracting relevant values from an `NSAttributeDescription`.

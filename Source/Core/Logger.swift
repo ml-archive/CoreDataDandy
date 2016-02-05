@@ -28,22 +28,16 @@
 
 import Foundation
 
-
-#if DEBUG
-	func dLog(@autoclosure message: () -> String, filename: String = __FILE__, function: String = __FUNCTION__, line: Int = __LINE__) {
-		NSLog("[\(NSString(string: filename).lastPathComponent):\(line)] \(function) - %@", message())
-	}
-#else
-	func dLog(@autoclosure message: () -> String, filename: String = __FILE__, function: String = __FUNCTION__, line: Int = __LINE__) {}
-#endif
-
 // MARK: - Warnings -
-func emitWarningWithMessage(message: String, error: NSError? = nil) -> String {
+func log(@autoclosure message: () -> String, filename: String = __FILE__, function: String = __FUNCTION__, line: Int = __LINE__) {
+	NSLog("[\(NSString(string: filename).lastPathComponent):\(line)] \(function) - %@", message())
+}
+
+func message(message: String, withError error: NSError? = nil) -> String {
 	var errorDescription = ""
 	if let error = error {
 		errorDescription = " Error:\n" + error.description
 	}
 	let warning = "(CoreDataDandy) warning: " + message + errorDescription
-	dLog(warning)
 	return warning
 }

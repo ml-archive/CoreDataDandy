@@ -58,7 +58,7 @@ struct EntityMapper {
 				return map
 			}
 		} else {
-			emitWarningWithMessage("Entity Name is nil for Entity " + entity.description + ". No mapping will be returned")
+			log(message("Entity Name is nil for Entity " + entity.description + ". No mapping will be returned"))
 		}
 		return nil
 	}
@@ -139,7 +139,7 @@ extension EntityMapper {
 			do {
 				try NSFileManager.defaultManager().removeItemAtPath(entityMapFilePath)
 			} catch {
-				emitWarningWithMessage("Failure to remove entity map from cache")
+				log(message("Failure to remove entity map from cache"))
 			}
 		}
 	}

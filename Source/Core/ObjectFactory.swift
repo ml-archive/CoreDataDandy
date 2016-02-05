@@ -54,11 +54,11 @@ public struct ObjectFactory {
 				object = buildObject(object, fromJSON: json)
 				attemptFinalizationOfObject(object, fromJSON: json)
 			} else {
-				emitWarningWithMessage("A unique object could not be generated for entity \(entity.name) from json \n\(json).")
+				log(message("A unique object could not be generated for entity \(entity.name) from json \n\(json)."))
 			}
 			return object
 		}
-		emitWarningWithMessage("A unique object could not be generated for entity \(entity.name) from json \n\(json).")
+		log(message("A unique object could not be generated for entity \(entity.name) from json \n\(json)."))
 		return nil
 	}
 	/// Transcribes attributes and relationships from json to a given object. Use this function to perform bulk upates
@@ -105,7 +105,7 @@ public struct ObjectFactory {
 				if let relation = objectFromEntity(relatedEntity, json: json) {
 					object.setValue(relation, forKey: relationship.name)
 				} else {
-					emitWarningWithMessage("A relationship named \(relationship.name) could not be established for object \(object) from json \n\(json).")
+					log(message("A relationship named \(relationship.name) could not be established for object \(object) from json \n\(json)."))
 				}
 				return object
 			}
@@ -116,14 +116,14 @@ public struct ObjectFactory {
 					if let relation = objectFromEntity(relatedEntity, json: child) {
 						relations.append(relation)
 					} else {
-						emitWarningWithMessage("A relationship named \(relationship.name) could not be established for object \(object) from json \n\(child).")
+						log(message("A relationship named \(relationship.name) could not be established for object \(object) from json \n\(child)."))
 					}
 				}
 				object.setValue(relationship.ordered ? NSOrderedSet(array: relations): NSSet(array: relations), forKey: relationship.name)
 				return object
 			}
 		}
-		emitWarningWithMessage("A relationship named \(relationship.name) could not be established for object \(object) from json \n\(json).")
+		log(message("A relationship named \(relationship.name) could not be established for object \(object) from json \n\(json)."))
 		return object
 	}
 	/// Allows for adopters of `MappingFinalizer` to perform custom mapping after the ObjectFactory has completed its 

@@ -1053,14 +1053,14 @@ class CoreDataDandyTests: XCTestCase {
 	// MARK: - Warning emission tests - 
 	func testWarningEmission() {
 		let warning = "Failed to serialize object Dandy including relationships hats"
-		let message = emitWarningWithMessage(warning)
-		XCTAssert(message == "(CoreDataDandy) warning: " + warning, "Pass")
+		let log = message(warning)
+		XCTAssert(log == "(CoreDataDandy) warning: " + warning, "Pass")
 	}
 	func testWarningErrorEmission() {
 		let error = NSError(domain: "DANDY_FETCH_ERROR", code: 1, userInfo: nil)
 		let warning = "Failed to serialize object Dandy including relationships hats"
-		let message = emitWarningWithMessage(warning, error: error)
-		XCTAssert(message == "(CoreDataDandy) warning: " + warning + " Error:\n" + error.description, "Pass")
+		let log = message(warning, withError: error)
+		XCTAssert(log == "(CoreDataDandy) warning: " + warning + " Error:\n" + error.description, "Pass")
 	}
 	
 	func json(lhs: [String: AnyObject], isEqualJSON rhs: [String: AnyObject]) -> Bool {

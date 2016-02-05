@@ -64,7 +64,7 @@ public class CoreDataDandy {
 		do {
 			try NSFileManager.defaultManager().removeItemAtURL(PersistentStackCoordinator.persistentStoreURL)
 		} catch {
-			emitWarningWithMessage("Failed to delete persistent store")
+			log(message("Failed to delete persistent store"))
 		}
 		
 		coordinator.resetPersistentStore()
@@ -91,7 +91,7 @@ public class CoreDataDandy {
 			return NSManagedObject(entity: entityDescription, insertIntoManagedObjectContext: coordinator.mainContext)
 		}
 		else {
-			emitWarningWithMessage("NSEntityDescriptionNotFound for entity named " + entityName + ". No object will be returned")
+			log(message("NSEntityDescriptionNotFound for entity named " + entityName + ". No object will be returned"))
 			return nil
 		}
 	}
@@ -111,7 +111,7 @@ public class CoreDataDandy {
 	/// - returns: A managed object if one could be created.
 	public func managedObjectForEntity(entityName: String, fromJSON json: [String: AnyObject]) -> NSManagedObject? {
 		guard let entityDescription = NSEntityDescription.forEntity(entityName) else {
-			emitWarningWithMessage("Could not retrieve NSEntityDescription or for entity named \(entityName)")
+			log(message("Could not retrieve NSEntityDescription or for entity named \(entityName)"))
 			return nil
 		}
 		
@@ -120,7 +120,7 @@ public class CoreDataDandy {
 			if let primaryKeyValue = entityDescription.primaryKeyValueFromJSON(json) {
 				return uniqueManagedObjectForEntity(entityDescription, primaryKeyValue: primaryKeyValue, fromJSON: json)
 			} else {
-				emitWarningWithMessage("Could not retrieve primary key from json \(json).")
+				log(message("Could not retrieve primary key from json \(json)."))
 				return nil
 			}
 		}
@@ -183,7 +183,7 @@ public class CoreDataDandy {
 			ObjectFactory.buildObject(object, fromJSON: json)
 			return object
 		} else {
-			emitWarningWithMessage("Could not upsert managed object for entity description \(entityDescription), primary key \(primaryKeyValue), json \(json).")
+			log(message("Could not upsert managed object for entity description \(entityDescription), primary key \(primaryKeyValue), json \(json)."))
 			return nil
 		}
 	}
@@ -224,25 +224,25 @@ public class CoreDataDandy {
 					do  {
 						results = try fetchObjectsForEntity(entityName, predicate: predicate)
 					} catch {
-						emitWarningWithMessage("Your unique fetch for entity named \(entityName) with primary key \(primaryKeyValue) raised an exception. This is a serious error that should be resolved immediately.")
+						log(message("Your unique fetch for entity named \(entityName) with primary key \(primaryKeyValue) raised an exception. This is a serious error that should be resolved immediately."))
 					}
 					if results?.count == 0 && emitResultCountWarnings {
-						emitWarningWithMessage("Your unique fetch for entity named \(entityName) with primary key \(primaryKeyValue) returned no results.")
+						log(message("Your unique fetch for entity named \(entityName) with primary key \(primaryKeyValue) returned no results."))
 					}
 					else if results?.count > 1 && emitResultCountWarnings {
-						emitWarningWithMessage("Your unique fetch for entity named \(entityName) with primary key \(primaryKeyValue) returned multiple results. This is a serious error that should be resolved immediately.")
+						log(message("Your unique fetch for entity named \(entityName) with primary key \(primaryKeyValue) returned multiple results. This is a serious error that should be resolved immediately."))
 					}
 					return results?.first
 				}
 				else {
-					emitWarningWithMessage("Failed to produce predicate for \(entityName) with primary key \(primaryKeyValue).")
+					log(message("Failed to produce predicate for \(entityName) with primary key \(primaryKeyValue)."))
 				}
 			}
-			emitWarningWithMessage("A unique NSManaged for entity named \(entityName) could not be retrieved for primaryKey \(primaryKeyValue). No object will be returned")
+			log(message("A unique NSManaged for entity named \(entityName) could not be retrieved for primaryKey \(primaryKeyValue). No object will be returned"))
 			return nil
 		}
 		else {
-			emitWarningWithMessage("NSEntityDescriptionNotFound for entity named \(entityName). No object will be returned")
+			log(message("NSEntityDescriptionNotFound for entity named \(entityName). No object will be returned"))
 			return nil
 		}
 	}
@@ -291,7 +291,7 @@ public class CoreDataDandy {
 			do {
 				try self.coordinator.mainContext.save()
 			} catch {
-				emitWarningWithMessage( "Failed to save main context.")
+				log(message( "Failed to save main context."))
 				completion?(error: error as NSError)
 				return
 			}
@@ -302,7 +302,7 @@ public class CoreDataDandy {
 					completion?(error: nil)
 				}
 				catch {
-					emitWarningWithMessage( "Failed to save private context.")
+					log(message( "Failed to save private context."))
 					completion?(error: error as NSError)
 				}
 				})
@@ -337,17 +337,17 @@ public class CoreDataDandy {
 					} else if results.count == 0 {
 						return NSManagedObject(entity: entityDescription, insertIntoManagedObjectContext: coordinator.mainContext)
 					} else {
-						emitWarningWithMessage("Failed to fetch unique instance of entity named " + entityName + ".")
+						log(message("Failed to fetch unique instance of entity named " + entityName + "."))
 						return nil
 
 					}
 				}
 			}
 				catch {
-					emitWarningWithMessage("Your singleton fetch for entity named \(entityName) raised an exception. This is a serious error that should be resolved immediately.")
+					log(message("Your singleton fetch for entity named \(entityName) raised an exception. This is a serious error that should be resolved immediately."))
 			}
 		}
-		emitWarningWithMessage("Failed to fetch unique instance of entity named " + entityName + ".")
+		log(message("Failed to fetch unique instance of entity named " + entityName + "."))
 		return nil
 	}
 	/// Returns a predicate that may be used to fetch unique objects
