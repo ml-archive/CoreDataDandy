@@ -51,6 +51,9 @@ extension NSEntityDescription {
 	/// The constraint returned is prioritized over any marked by the @primaryKey decorator.
 	@available (iOS 9.0, *) var uniqueConstraint: String? {
 		get {
+			if let superEntity = superentity {
+				return superEntity.uniqueConstraint
+			}
 			return uniquenessConstraints.first?.first?.name
 		}
 	}
