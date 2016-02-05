@@ -30,14 +30,20 @@ import Foundation
 
 // MARK: - Warnings -
 func log(@autoclosure message: () -> String, filename: String = __FILE__, function: String = __FUNCTION__, line: Int = __LINE__) {
+#if DEBUG
 	NSLog("[\(NSString(string: filename).lastPathComponent):\(line)] \(function) - %@", message())
+#endif
 }
 
 func message(message: String, withError error: NSError? = nil) -> String {
+#if DEBUG
 	var errorDescription = ""
 	if let error = error {
 		errorDescription = " Error:\n" + error.description
 	}
 	let warning = "(CoreDataDandy) warning: " + message + errorDescription
 	return warning
+#else
+	return ""
+#endif
 }
