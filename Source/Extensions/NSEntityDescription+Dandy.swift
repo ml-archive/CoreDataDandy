@@ -51,10 +51,13 @@ extension NSEntityDescription {
 	/// The constraint returned is prioritized over any marked by the @primaryKey decorator.
 	@available (iOS 9.0, *) var uniqueConstraint: String? {
 		get {
-			if let superEntity = superentity {
+			if let constraint = uniquenessConstraints.first?.first?.name {
+				return constraint
+			}
+			else if let superEntity = superentity {
 				return superEntity.uniqueConstraint
 			}
-			return uniquenessConstraints.first?.first?.name
+			return nil
 		}
 	}
 	/// Recursively collects arbitrary values from potential superentities. This function contains the boilerplate
@@ -65,14 +68,27 @@ extension NSEntityDescription {
 	/// - returns: The values collected from the entity's hierarchy.
 	private func collectedEntityValuesFromDictionaryClosure(dictionaryClosure: (NSEntityDescription) -> [String: AnyObject]?) -> [String: AnyObject]? {
 		var values = [String: AnyObject]()
-		var entity: NSEntityDescription? = self
-		while let currentEntity = entity {
-			if let newValues = dictionaryClosure(currentEntity) {
+		// Collect values down the entity hierarchy, stopping on the current entity.
+		// This approach ensures children override parent values.
+		for entity in hierarchy {
+			if let newValues = dictionaryClosure(entity) {
 				values.addEntriesFrom(newValues)
 			}
-			entity = currentEntity.superentity
 		}
 		return values
+	}
+	/// - returns: The entity's hierarchy, sorted by "superiority". The most super entity will be the first element
+	/// in the array, the current entity will be the last.
+	private var hierarchy: [NSEntityDescription] {
+		get {
+			var entities = [NSEntityDescription]()
+			var entity: NSEntityDescription? = self
+			while let currentEntity = entity {
+				entities.insert(currentEntity, atIndex: 0)
+				entity = entity?.superentity
+			}
+			return entities
+		}
 	}
 }
 
@@ -108,8 +124,7 @@ extension NSEntityDescription {
 	///
 	/// - parameter json: JSON form which a primaryKey will be extracted
 	func primaryKeyValueFromJSON(json: [String: AnyObject]) -> AnyObject? {
-		if	let userInfo = self.allUserInfo,
-			let primaryKey = userInfo[PRIMARY_KEY] as? String,
+		if	let primaryKey = primaryKey,
 			let entityMap = EntityMapper.mapForEntity(self) {
 				let filteredMap = entityMap.filter({$1.name == primaryKey}).map({$0.0})
 				// If the primary key has an alternate mapping, return the value from the alternate mapping.

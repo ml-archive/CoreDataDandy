@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="9525" systemVersion="14F1605" minimumToolsVersion="Xcode 7.0">
+<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="9525" systemVersion="15C50" minimumToolsVersion="Xcode 7.0">
     <entity name="Conclusion" representedClassName=".Conclusion" syncable="YES">
         <attribute name="content" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="id" optional="YES" attributeType="String" syncable="YES"/>
@@ -8,9 +8,6 @@
                 <constraint value="id"/>
             </uniquenessConstraint>
         </uniquenessConstraints>
-        <userInfo>
-            <entry key="@primaryKey" value="content"/>
-        </userInfo>
     </entity>
     <entity name="Dandy" representedClassName="PRODUCT_MODULE_NAME.Dandy" syncable="YES">
         <attribute name="bio" optional="YES" attributeType="String" syncable="YES"/>
@@ -33,6 +30,9 @@
             <entry key="@primaryKey" value="dandyID"/>
         </userInfo>
     </entity>
+    <entity name="Flattery" parentEntity="Gossip" syncable="YES">
+        <attribute name="ambition" optional="YES" attributeType="String" syncable="YES"/>
+    </entity>
     <entity name="Gossip" representedClassName=".Gossip" syncable="YES">
         <attribute name="details" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="secret" optional="YES" attributeType="String" syncable="YES">
@@ -47,6 +47,10 @@
                 <constraint value="details"/>
             </uniquenessConstraint>
         </uniquenessConstraints>
+        <userInfo>
+            <entry key="@primaryKey" value="secret"/>
+            <entry key="testValue" value="testKey"/>
+        </userInfo>
     </entity>
     <entity name="Hat" syncable="YES">
         <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
@@ -76,6 +80,17 @@
     <entity name="Plebian" syncable="YES">
         <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
     </entity>
+    <entity name="Slander" parentEntity="Gossip" syncable="YES">
+        <attribute name="statement" optional="YES" attributeType="String" syncable="YES"/>
+        <uniquenessConstraints>
+            <uniquenessConstraint>
+                <constraint value="statement"/>
+            </uniquenessConstraint>
+        </uniquenessConstraints>
+        <userInfo>
+            <entry key="@primaryKey" value="statement"/>
+        </userInfo>
+    </entity>
     <entity name="Space" syncable="YES">
         <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="spaceState" optional="YES" attributeType="String" syncable="YES">
@@ -90,10 +105,12 @@
     <elements>
         <element name="Conclusion" positionX="-54" positionY="54" width="128" height="75"/>
         <element name="Dandy" positionX="-63" positionY="-18" width="128" height="165"/>
-        <element name="Gossip" positionX="-54" positionY="45" width="128" height="105"/>
+        <element name="Gossip" positionX="-54" positionY="45" width="128" height="30"/>
         <element name="Hat" positionX="-54" positionY="18" width="128" height="105"/>
         <element name="Material" positionX="-36" positionY="36" width="128" height="90"/>
         <element name="Plebian" positionX="-45" positionY="63" width="128" height="60"/>
+        <element name="Slander" positionX="-18" positionY="90" width="128" height="60"/>
+        <element name="Flattery" positionX="-27" positionY="81" width="128" height="60"/>
         <element name="Space" positionX="-54" positionY="45" width="128" height="75"/>
     </elements>
 </model>

@@ -9,9 +9,9 @@
 /* Begin PBXBuildFile section */
 		981174F41BF2318A00E664F9 /* Conclusion+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 981174F21BF2318A00E664F9 /* Conclusion+CoreDataProperties.swift */; };
 		981174F51BF2318A00E664F9 /* Conclusion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 981174F31BF2318A00E664F9 /* Conclusion.swift */; };
+		98213DF41C654F19004B732B /* DandyModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 98213DF21C654F19004B732B /* DandyModel.xcdatamodeld */; };
 		983AE9271C64ED99001312AE /* MappingFinalizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 983AE9261C64ED99001312AE /* MappingFinalizer.swift */; };
 		988F4A6A1B3632EE00E71046 /* CoreDataDandyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 988F4A691B3632EE00E71046 /* CoreDataDandyTests.swift */; };
-		988F4AAA1B3644FD00E71046 /* DandyModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 988F4AA81B3644FD00E71046 /* DandyModel.xcdatamodeld */; };
 		988FF8A31C5592BE00E81FAF /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 988FF8931C5592BE00E81FAF /* Constants.swift */; };
 		988FF8A41C5592BE00E81FAF /* CoreDataDandy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 988FF8951C5592BE00E81FAF /* CoreDataDandy.swift */; };
 		988FF8A51C5592BE00E81FAF /* EntityMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 988FF8961C5592BE00E81FAF /* EntityMapper.swift */; };
@@ -30,11 +30,11 @@
 /* Begin PBXFileReference section */
 		981174F21BF2318A00E664F9 /* Conclusion+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Conclusion+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		981174F31BF2318A00E664F9 /* Conclusion.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Conclusion.swift; sourceTree = "<group>"; };
+		98213DF31C654F19004B732B /* DandyModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = DandyModel.xcdatamodel; sourceTree = "<group>"; };
 		983AE9261C64ED99001312AE /* MappingFinalizer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MappingFinalizer.swift; sourceTree = "<group>"; };
 		988F4A641B3632EE00E71046 /* CoreDataDandyTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CoreDataDandyTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		988F4A681B3632EE00E71046 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		988F4A691B3632EE00E71046 /* CoreDataDandyTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataDandyTests.swift; sourceTree = "<group>"; };
-		988F4AA91B3644FD00E71046 /* DandyModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = DandyModel.xcdatamodel; sourceTree = "<group>"; };
 		988FF8931C5592BE00E81FAF /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		988FF8951C5592BE00E81FAF /* CoreDataDandy.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreDataDandy.swift; sourceTree = "<group>"; };
 		988FF8961C5592BE00E81FAF /* EntityMapper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EntityMapper.swift; sourceTree = "<group>"; };
@@ -81,7 +81,7 @@
 		988F4A661B3632EE00E71046 /* CoreDataDandyTests */ = {
 			isa = PBXGroup;
 			children = (
-				988F4AA81B3644FD00E71046 /* DandyModel.xcdatamodeld */,
+				98213DF21C654F19004B732B /* DandyModel.xcdatamodeld */,
 				981174F21BF2318A00E664F9 /* Conclusion+CoreDataProperties.swift */,
 				981174F31BF2318A00E664F9 /* Conclusion.swift */,
 				988F4A691B3632EE00E71046 /* CoreDataDandyTests.swift */,
@@ -214,7 +214,6 @@
 				988FF8AA1C5592BE00E81FAF /* Serializer.swift in Sources */,
 				988FF8A31C5592BE00E81FAF /* Constants.swift in Sources */,
 				988FF8A41C5592BE00E81FAF /* CoreDataDandy.swift in Sources */,
-				988F4AAA1B3644FD00E71046 /* DandyModel.xcdatamodeld in Sources */,
 				988FF8A71C5592BE00E81FAF /* ObjectFactory.swift in Sources */,
 				988F4A6A1B3632EE00E71046 /* CoreDataDandyTests.swift in Sources */,
 				988FF8A81C5592BE00E81FAF /* PersistentStackCoordinator.swift in Sources */,
@@ -227,6 +226,7 @@
 				988FF8AF1C5592BE00E81FAF /* ValueConverter.swift in Sources */,
 				983AE9271C64ED99001312AE /* MappingFinalizer.swift in Sources */,
 				988FF8AD1C5592BE00E81FAF /* ConvertibleType.swift in Sources */,
+				98213DF41C654F19004B732B /* DandyModel.xcdatamodeld in Sources */,
 				988FF8AE1C5592BE00E81FAF /* CoreDataValueConverter.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -374,12 +374,12 @@
 /* End XCConfigurationList section */
 
 /* Begin XCVersionGroup section */
-		988F4AA81B3644FD00E71046 /* DandyModel.xcdatamodeld */ = {
+		98213DF21C654F19004B732B /* DandyModel.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
-				988F4AA91B3644FD00E71046 /* DandyModel.xcdatamodel */,
+				98213DF31C654F19004B732B /* DandyModel.xcdatamodel */,
 			);
-			currentVersion = 988F4AA91B3644FD00E71046 /* DandyModel.xcdatamodel */;
+			currentVersion = 98213DF31C654F19004B732B /* DandyModel.xcdatamodel */;
 			path = DandyModel.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;

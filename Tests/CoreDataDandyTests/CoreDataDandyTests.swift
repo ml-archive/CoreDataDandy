@@ -197,7 +197,7 @@ class CoreDataDandyTests: XCTestCase {
 	*/
 	func testPersistentStackManagerObjectModelConstruction() {
 		let persistentStackCoordinator = PersistentStackCoordinator(managedObjectModelName: "DandyModel")
-		XCTAssert(persistentStackCoordinator.managedObjectModel.entities.count == 7, "Pass")
+		XCTAssert(persistentStackCoordinator.managedObjectModel.entities.count == 9, "Pass")
 	}
 	/**
 		The parentContext of the mainContext should be the privateContext. Changes to the structure of
@@ -505,7 +505,55 @@ class CoreDataDandyTests: XCTestCase {
 		let result = dandy.primaryKey!
 		XCTAssert(expected == result, "Pass")
 	}
+	/**
+		The primary key should return the uniquenessConstraint of the entity if one is present.
+	*/
+	func testUniqueConstraintRetrieval() {
+		let conclusion = Dandy.insertManagedObjectForEntity("Conclusion")!
+		XCTAssert(conclusion.entity.primaryKey == "id", "Pass")
+	}
 	
+	/**
+		The primary key should return the uniquenessConstraint over of the primaryKey decoration if both are present.
+	*/
+	func testUniqueConstraintPriority() {
+		let gossip = Dandy.insertManagedObjectForEntity("Gossip")!
+		XCTAssert(gossip.entity.primaryKey == "details", "Pass")
+	}
+	/**
+		Primary keys should be inheritable. In this case, Flattery's uniqueConstraint should be inherited from
+		its parent, Gossip.
+	*/
+	func testPrimaryKeyInheritance() {
+		let flattery = Dandy.insertManagedObjectForEntity("Flattery")!
+		XCTAssert(flattery.entity.primaryKey == "details", "Pass")
+	}
+	/**
+		Children should override the primaryKey of their parents. In this case, Slander's uniqueConstraint should
+		override its parent's, Gossip.
+	*/
+	func testPrimaryKeyOverride() {
+		let slander = Dandy.insertManagedObjectForEntity("Slander")!
+		XCTAssert(slander.entity.primaryKey == "statement", "Pass")
+	}
+	/**
+		Children's userInfo should contain the userInfo of their parents. In this case, Slander's userInfo should 
+		contain a value from its parent, Gossip.
+	*/
+	func testUserInfoHierarchyCollection() {
+		let slanderDescription = NSEntityDescription.forEntity("Slander")!
+		let userInfo = slanderDescription.allUserInfo!
+		XCTAssert((userInfo["testValue"] as! String) == "testKey", "Pass")
+	}
+	/**
+		Children should override userInfo of their parents. In this case, Slander's mapping decoration should
+		override its parent's, Gossip.
+	*/
+	func testUserInfoOverride() {
+		let slanderDescription = NSEntityDescription.forEntity("Slander")!
+		let userInfo = slanderDescription.allUserInfo!
+		XCTAssert((userInfo[PRIMARY_KEY] as! String) == "statement", "Pass")
+	}
 	/**
 		Entity descriptions with no specified mapping should read into mapping dictionaries with all "same name" mapping
 	*/
@@ -577,7 +625,7 @@ class CoreDataDandyTests: XCTestCase {
 		XCTAssert(unarchivedPropertyDescription == propertyDescription, "Pass")
 	}
 	
-	// - MARK: Map caching -
+	// MARK: - Map caching -
 	/**
 		The first access to an entity's map should result in that map's caching
 	*/
@@ -622,7 +670,7 @@ class CoreDataDandyTests: XCTestCase {
 		}
 	}
 	
-	// - MARK: Object building -
+	// MARK: - Object building -
 	/**
 		Values should be mapped from json to an object's attributes.
 	*/
@@ -1014,7 +1062,7 @@ class CoreDataDandyTests: XCTestCase {
 		XCTAssert(result == expected, "Pass")
 	}
 	
-	// - MARK: Extension tests -
+	// MARK: - Extension tests -
 	/**
 		Entries from one dictionary should add correctly to another dictionary of the same type
 	*/
@@ -1050,7 +1098,7 @@ class CoreDataDandyTests: XCTestCase {
 		XCTAssert(value == hats, "Pass")
 	}
 	
-	// MARK: - Warning emission tests - 
+	// MARK: - Warning emission tests -
 	func testWarningEmission() {
 		let warning = "Failed to serialize object Dandy including relationships hats"
 		let log = message(warning)
@@ -1084,23 +1132,5 @@ class CoreDataDandyTests: XCTestCase {
 			}
 		}
 		return true
-	}
-	
-	/**
-		The primary key should return the uniquenessConstraint of the entity if one is present.
-		The Gossip entity has a uniquenessConstraint called 'details' in the model, but no @primaryKey
-	*/
-	func testUniqueConstraintRetrieval() {
-		let gossip = Dandy.insertManagedObjectForEntity("Gossip")!
-		XCTAssert(gossip.entity.primaryKey == "details", "Pass")
-	}
-	
-	/**
-		The primary key should return the uniquenessConstraint instead of the primaryKey decoration if both are present.
-		The Conclusion entity has a uniquenessConstraint called 'id' in the model, and a primaryKey called 'content'
-	*/
-	func testUniqueConstraintPriority() {
-		let testConclusion = Dandy.insertManagedObjectForEntity("Conclusion")!
-		XCTAssert(testConclusion.entity.primaryKey == "id", "Pass")
 	}
 }
