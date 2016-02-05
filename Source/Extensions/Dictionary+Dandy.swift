@@ -28,10 +28,10 @@
 import Foundation
 
 
-extension Dictionary {
+public extension Dictionary {
 	/// Convenience function for adding values from one dictionary to another, like
 	/// `NSMutableDictionary`'s `-addEntriesFromDictionary`
-	mutating func addEntriesFromDictionary(dictionary: Dictionary) {
+	public mutating func addEntriesFrom(dictionary: Dictionary) {
 		for (key, value) in dictionary {
 			self[key] = value
 		}

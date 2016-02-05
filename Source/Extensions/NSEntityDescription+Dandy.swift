@@ -65,7 +65,7 @@ extension NSEntityDescription {
 		var entity: NSEntityDescription? = self
 		while let currentEntity = entity {
 			if let newValues = dictionaryClosure(currentEntity) {
-				values.addEntriesFromDictionary(newValues)
+				values.addEntriesFrom(newValues)
 			}
 			entity = currentEntity.superentity
 		}

@@ -1021,7 +1021,7 @@ class CoreDataDandyTests: XCTestCase {
 	func testDictionaryEntryAddition() {
 		var balzac = ["name": "Honoré de Balzac"]
 		let profession = ["profession": "author"]
-		balzac.addEntriesFromDictionary(profession)
+		balzac.addEntriesFrom(profession)
 		XCTAssert(balzac["name"] == "Honoré de Balzac" && balzac["profession"] == "author", "Pass")
 	}
 	/**
