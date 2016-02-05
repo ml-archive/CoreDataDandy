@@ -41,7 +41,7 @@ enum PropertyType: Int {
 /// `PropertyDescription` provides a convenient means of accessing information necessary to map json into an
 /// NSManagedObject. It encapsulates values found in `NSAttributeDescriptions` and `NSRelationshipDescriptions`, such as
 /// an attribute's type or if a relationship is ordered or not.
-public final class PropertyDescription : NSObject {
+final class PropertyDescription : NSObject {
 	/// The name of of the property.
 	var name = String()
 	/// The property type: .Unknown, .Attribute, or .Relationship.
@@ -90,7 +90,7 @@ public final class PropertyDescription : NSObject {
 
 // MARK: - <NSCoding> -
 extension PropertyDescription : NSCoding {
-	public convenience init?(coder aDecoder: NSCoder) {
+	convenience init?(coder aDecoder: NSCoder) {
 		self.init()
 		if let n = aDecoder.decodeObjectForKey("name") as? String {
 			name = n
@@ -100,7 +100,7 @@ extension PropertyDescription : NSCoding {
 		ordered = aDecoder.decodeBoolForKey("ordered")
 		toMany = aDecoder.decodeBoolForKey("toMany")
 	}
-	@objc public func encodeWithCoder(aCoder: NSCoder) {
+	@objc func encodeWithCoder(aCoder: NSCoder) {
 		aCoder.encodeObject(name, forKey:"name")
 		aCoder.encodeInteger(type.rawValue, forKey:"type")
 		if let attributeType = attributeType {
@@ -112,7 +112,7 @@ extension PropertyDescription : NSCoding {
 		aCoder.encodeBool(ordered, forKey: "ordered")
 		aCoder.encodeBool(toMany, forKey: "toMany")
 	}
-	public override var hashValue: Int {
+	override var hashValue: Int {
 		get  {
 			return "\(name)_\(type)_\(attributeType)_\(destinationEntity)_\(ordered)_\(toMany)".hashValue
 		}
@@ -123,7 +123,7 @@ extension PropertyDescription : NSCoding {
 extension PropertyDescription {
 	/// Compares the hashValue of two `PropertyDescription` objects. `PropertyDescription` objects are never considered
 	/// equal to other types.
-	public override func isEqual(object: AnyObject?) -> Bool {
+	 override func isEqual(object: AnyObject?) -> Bool {
 		if let object = object as? PropertyDescription {
 			return hashValue == object.hashValue
 		} else {

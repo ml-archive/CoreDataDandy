@@ -144,7 +144,3 @@ extension EntityMapper {
 		}
 	}
 }
-
-public protocol MappingFinalizer {
-	func finalizeMappingForJSON(json: [String: AnyObject])
-}

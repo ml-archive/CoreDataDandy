@@ -44,8 +44,8 @@ public struct Serializer {
 	///
 	/// - If no relationships are specified when serializing the dandy object, only its attributes will be serialized 
 	/// into json.
-	/// - If ["hats", "gossip"] is specified when serializing the dandy object, Dandy's attributes, hats,
-	/// and gossip will be serialized into json.
+	/// - If ["hats", "gossip"] is specified when serializing the dandy object, Dandy's attributes will be serialize
+	/// along with its hats and gossipe relationships.
 	/// - If ["gossip.purveyor"] is specified when serializing the dandy object, Dandy's attributes, gossip, and 
 	/// gossip's purveyor will be serialized into json.
 	///

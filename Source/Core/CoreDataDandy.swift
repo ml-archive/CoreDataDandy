@@ -41,7 +41,7 @@ public class CoreDataDandy {
 	}
 	/// A manager of the NSManagedObjectContext, NSPersistentStore, and NSPersistentStoreCoordinator.
 	/// Accessing this property directly is generaly discouraged - it is intended for use within the module alone.
-	var coordinator: PersistentStackCoordinator!
+	public var coordinator: PersistentStackCoordinator!
 	
 	// MARK: - Initialization-
 	/// Bootstraps the application's core data stack.

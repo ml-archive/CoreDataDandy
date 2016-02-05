@@ -98,7 +98,7 @@ public struct ObjectFactory {
 	/// - parameter json: The json with which to build the related objects.
 	///
 	/// - returns: The object passed in with a newly mapped relationship if relationship objects were built.
-	public static func buildRelationship(relationship: PropertyDescription, fromJSON json: AnyObject, forObject object: NSManagedObject) -> NSManagedObject {
+	static func buildRelationship(relationship: PropertyDescription, fromJSON json: AnyObject, forObject object: NSManagedObject) -> NSManagedObject {
 		if let relatedEntity = relationship.destinationEntity {
 			// A dictionary was passed for a toOne relationship
 			if let json = json as? [String: AnyObject] where !relationship.toMany  {

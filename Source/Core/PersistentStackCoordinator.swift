@@ -31,10 +31,10 @@ import CoreData
 /// The class responsible for maintaining the Core Data stack, including the `NSManagedObjectContexts`,
 /// the `NSPersistentStore`, and the `NSPersistentStoreCoordinators`.
 public class PersistentStackCoordinator {
-	var managedObjectModelName: String
-	var persistentStoreConnectionCompletion: (() -> Void)?
+	private var managedObjectModelName: String
+	private var persistentStoreConnectionCompletion: (() -> Void)?
 	
-	init(managedObjectModelName: String, persistentStoreConnectionCompletion: (() -> Void)? = nil) {
+	public init(managedObjectModelName: String, persistentStoreConnectionCompletion: (() -> Void)? = nil) {
 		self.managedObjectModelName = managedObjectModelName
 		self.persistentStoreConnectionCompletion = persistentStoreConnectionCompletion
 	}
@@ -46,14 +46,14 @@ public class PersistentStackCoordinator {
 		return NSManagedObjectModel(contentsOfURL: modelURL)!
 	}()
 	/// The persistent store coordinator, which manages disk operations.
-	lazy var persistentStoreCoordinator: NSPersistentStoreCoordinator = {
+	public lazy var persistentStoreCoordinator: NSPersistentStoreCoordinator = {
 		var coordinator = NSPersistentStoreCoordinator(managedObjectModel: self.managedObjectModel)
 		coordinator.resetPersistentStore()
 		return coordinator
 	}()
 	/// The primary managed object context. Note the inclusion of the parent context, which takes disk operations off
 	/// the main thread.
-	lazy var mainContext: NSManagedObjectContext = { [unowned self] in
+	public lazy var mainContext: NSManagedObjectContext = { [unowned self] in
 		var mainContext = NSManagedObjectContext(concurrencyType: .MainQueueConcurrencyType)
 		mainContext.mergePolicy = NSMergePolicy(mergeType: NSMergePolicyType.MergeByPropertyObjectTrumpMergePolicyType)
 		self.connectPrivateContextToPersistentStoreCoordinator()
@@ -104,7 +104,7 @@ public class PersistentStackCoordinator {
 	/// Attempt to remove existing persistent stores attach a new one.
 	/// Note: this method should not be invoked in lazy instantiatiations of a persistentStoreCoordinator. Instead,
 	/// directly call the corresponding function on the coordinator itself.
-	func resetPersistentStore() {
+	public func resetPersistentStore() {
 		persistentStoreCoordinator.resetPersistentStore()
 	}
 }
