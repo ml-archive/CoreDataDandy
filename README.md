@@ -1,6 +1,7 @@
 ![header](header.png)
 
 [![Carthage Compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/fuzz-productions/CoreDataDandy)
+[![CocoaPods Compatible](https://img.shields.io/badge/pod-0.3.0-blue.svg)](https://cocoapods.org/pods/CoreDataDandy)
 [![GitHub license](https://img.shields.io/badge/license-MIT-lightgrey.svg)](https://github.com/fuzz-productions/CoreDataDandy/blob/master/LICENSE) 
 
 ## Introduction
