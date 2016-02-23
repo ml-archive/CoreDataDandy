@@ -19,13 +19,13 @@ Core Data Dandy is a feature-light wrapper around Core Data that simplifies comm
 
 
 ```ogdl
-github "fuzz-productions/CoreDataDandy" ~> 0.2.5
+github "fuzz-productions/CoreDataDandy" ~> 0.3.0
 ```
 
 ### CocoaPods
 
 ```ogdl
-pod 'CoreDataDandy', '0.2.5'
+pod 'CoreDataDandy', '0.3.0'
 ```
 
 ## Usage
@@ -68,19 +68,19 @@ Dandy.tearDown()
 Fetch all objects of a given type.
 
 ```swift
-Dandy.fetchObjectsForEntity("Dandy")
+Dandy.fetch("Gossip")
 ```
 
 Fetch an object corresponding to an entity and primaryKey value.
 
 ```swift
-Dandy.fetchUniqueObjectForEntity("Dandy", primaryKeyValue: "BALZAC")
+Dandy.fetchUnique("Hat", primaryKeyValue: "bowler")
 ```
 
 Fetch an array of objects filtered by a predicate.
 
 ```swift
-Dandy.fetchObjectsForEntity("Dandy", predicate: NSPredicate(format: "bio == %@", "A poet, let's say"))
+Dandy.fetch("Gossip", predicate: NSPredicate(format: "topic == %@", "John Keats"))
 ```
 
 ### Insertions and updates
@@ -88,25 +88,25 @@ Dandy.fetchObjectsForEntity("Dandy", predicate: NSPredicate(format: "bio == %@",
 Insert object of a given type.
 
 ```swift
-Dandy.insertManagedObjectForEntity("Gossip")
+Dandy.insert("Gossip")
 ```
 
 Insert or fetch a unique a object from a primary key.
 
 ```swift
-CoreDataDandy.sharedDandy.uniqueManagedObjectForEntity("Dandy", primaryKeyValue: "WILDE")
+Dandy.insertUnique("Dandy", primaryKeyValue: "WILDE")
 ```
 
 Upsert a unique object, or insert and update a non-unique object.
 
 ```swift
-CoreDataDandy.sharedDandy.managedObjectForEntity("Dandy", json: json)
+CoreDataDandy.sharedDandy.upsert("Gossip", fromJSON: json)
 ```
 
 Upsert an array of unique objects, or insert and update non-unique objects.
 
 ```swift
-CoreDataDandy.sharedDandy.managedObjectsForEntity("Dandy", json: json)
+CoreDataDandy.sharedDandy.batchUpsert("Gossip", fromJson: json)
 ```
 
 ### Mapping finalization
@@ -116,7 +116,7 @@ Objects requiring custom mapping finalization should adopt the `MappingFinalizer
 ```swift
 extension Conclusion: MappingFinalizer {
 	func finalizeMappingForJSON(json: [String : AnyObject]) {
-		content += "_FINALIZED"
+		content += "APPROVED"
 	}
 }
 ```
