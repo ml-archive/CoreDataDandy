@@ -121,30 +121,30 @@ extension Conclusion: MappingFinalizer {
 }
 ```
 
-### Deserialization
+### Serialization
 
-Deserialize a single object.
+Serialize a single object.
 
 ```swift
-DandyDeserializer.deserializeObject(gossip)
+Serializer.deserializeObject(gossip)
 ```
 
-Deserialize an array of objects.
+Serialize an array of objects.
 
 ```swift
-DandyDeserializer.deserializeObjects([byron, wilde, andre3000])
+Serializer.serializeObjects([byron, wilde, andre3000])
 ```
 
-Deserialize an object and its relationships.
+Serialize an object and its relationships.
 
 ```swift
-DandyDeserializer.deserializeObject(gossip, includeRelationships: ["purveyor"])
+Serializer.serializeObject(gossip, includeRelationships: ["purveyor"])
 ```
 
-Deserialize an object and its nested relationships.
+Serialize an object and its nested relationships.
 
 ```swift
-DandyDeserializer.deserializeObject(gossip, includeRelationships: ["purveyor.hats.material, purveyor.predecessor"])
+Serializer.serializeObject(gossip, includeRelationships: ["purveyor.hats.material, purveyor.predecessor"])
 ```
 
 ## xcdatamodel decorations
