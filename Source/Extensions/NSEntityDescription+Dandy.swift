@@ -70,7 +70,7 @@ extension NSEntityDescription {
 		var values = [String: AnyObject]()
 		// Collect values down the entity hierarchy, stopping on the current entity.
 		// This approach ensures children override parent values.
-		for entity in hierarchy {
+		for entity in entityHierarchy {
 			if let newValues = dictionaryClosure(entity) {
 				values.addEntriesFrom(newValues)
 			}
@@ -79,7 +79,7 @@ extension NSEntityDescription {
 	}
 	/// - returns: The entity's hierarchy, sorted by "superiority". The most super entity will be the first element
 	/// in the array, the current entity will be the last.
-	private var hierarchy: [NSEntityDescription] {
+	private var entityHierarchy: [NSEntityDescription] {
 		get {
 			var entities = [NSEntityDescription]()
 			var entity: NSEntityDescription? = self

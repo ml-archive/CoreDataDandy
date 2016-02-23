@@ -45,11 +45,11 @@ class CoreDataDandyTests: XCTestCase {
 		When the clean up completes, no data should remain.
 	*/
 	func testCleanUp() {
-		Dandy.insertManagedObjectForEntity("Dandy")
+		Dandy.insert("Dandy")
 		Dandy.save()
-		let initialResultsCount = try! Dandy.fetchObjectsForEntity("Dandy")?.count
+		let initialResultsCount = try! Dandy.fetch("Dandy")?.count
 		Dandy.tearDown()
-		let finalResultsCount = try! Dandy.fetchObjectsForEntity("Dandy")?.count
+		let finalResultsCount = try! Dandy.fetch("Dandy")?.count
 		XCTAssert(initialResultsCount == 1 && finalResultsCount == 0, "Pass")
 	}
 	
@@ -62,7 +62,7 @@ class CoreDataDandyTests: XCTestCase {
 		do {
 			let unsavedData = try NSFileManager.defaultManager().attributesOfItemAtPath(PersistentStackCoordinator.persistentStoreURL.path!)["NSFileSize"] as! Int
 			for i in 0...100000 {
-				let dandy = Dandy.insertManagedObjectForEntity("Dandy")
+				let dandy = Dandy.insert("Dandy")
 				dandy?.setValue("\(i)", forKey: "dandyID")
 			}
 			Dandy.save({ (error) in
@@ -87,32 +87,32 @@ class CoreDataDandyTests: XCTestCase {
 		Objects should be insertable.
 	*/
 	func testObjectInsertion() {
-		let dandy = Dandy.insertManagedObjectForEntity("Dandy")
+		let dandy = Dandy.insert("Dandy")
 		XCTAssert(dandy != nil, "Pass")
-		XCTAssert(try! Dandy.fetchObjectsForEntity("Dandy")?.count == 1, "Pass")
+		XCTAssert(try! Dandy.fetch("Dandy")?.count == 1, "Pass")
 	}
 	/**
 		Objects should be insertable in multiples.
 	*/
 	func testMultipleObjectInsertion() {
 		for _ in 0...2 {
-			Dandy.insertManagedObjectForEntity("Dandy")
+			Dandy.insert("Dandy")
 		}
-		XCTAssert(try! Dandy.fetchObjectsForEntity("Dandy")?.count == 3, "Pass")
+		XCTAssert(try! Dandy.fetch("Dandy")?.count == 3, "Pass")
 	}
 	/**
 		Objects marked with the `@unique` primaryKey should not be inserted more than once.
 	*/
 	func testUniqueObjectInsertion() {
-		Dandy.insertManagedObjectForEntity("Space")
-		Dandy.insertManagedObjectForEntity("Space")
-		XCTAssert(try! Dandy.fetchObjectsForEntity("Space")?.count == 1, "Pass")
+		Dandy.insert("Space")
+		Dandy.insert("Space")
+		XCTAssert(try! Dandy.fetch("Space")?.count == 1, "Pass")
 	}
 	/**
 		Passing an invalid entity name should result in warning emission and a nil return
 	*/
 	func testInvalidObjectInsertion() {
-		let object = Dandy.insertManagedObjectForEntity("ZZZ")
+		let object = Dandy.insert("ZZZ")
 		XCTAssert(object == nil, "Pass")
 	}
 	/**
@@ -120,22 +120,22 @@ class CoreDataDandyTests: XCTestCase {
 		it alone.
 	*/
 	func testUniqueObjectMaintenance() {
-		let dandy = Dandy.uniqueManagedObjectForEntity("Dandy", primaryKeyValue: "WILDE")
+		let dandy = Dandy.insertUnique("Dandy", primaryKeyValue: "WILDE")
 		dandy?.setValue("An author, let's say", forKey: "bio")
-		let repeatedDandy = Dandy.uniqueManagedObjectForEntity("Dandy", primaryKeyValue: "WILDE")
-		let dandies = try! Dandy.fetchObjectsForEntity("Dandy")?.count
+		let repeatedDandy = Dandy.insertUnique("Dandy", primaryKeyValue: "WILDE")
+		let dandies = try! Dandy.fetch("Dandy")?.count
 		XCTAssert(dandies == 1 && (repeatedDandy!.valueForKey("bio") as! String == "An author, let's say"), "Pass")
 	}
 	/**
 		Objects should be fetchable via typical NSPredicate configured NSFetchRequests.
 	*/
 	func testPredicateFetch() {
-		let wilde = Dandy.uniqueManagedObjectForEntity("Dandy", primaryKeyValue: "WILDE")!
+		let wilde = Dandy.insertUnique("Dandy", primaryKeyValue: "WILDE")!
 		wilde.setValue("An author, let's say", forKey: "bio")
-		let byron = Dandy.uniqueManagedObjectForEntity("Dandy", primaryKeyValue: "BYRON")!
+		let byron = Dandy.insertUnique("Dandy", primaryKeyValue: "BYRON")!
 		byron.setValue("A poet, let's say", forKey: "bio")
-		let dandies = try! Dandy.fetchObjectsForEntity("Dandy")?.count
-		let byrons = try! Dandy.fetchObjectsForEntity("Dandy", predicate: NSPredicate(format: "bio == %@", "A poet, let's say"))?.count
+		let dandies = try! Dandy.fetch("Dandy")?.count
+		let byrons = try! Dandy.fetch("Dandy", predicate: NSPredicate(format: "bio == %@", "A poet, let's say"))?.count
 		XCTAssert(dandies == 2 && byrons == 1, "Pass")
 	}
 	/**
@@ -143,10 +143,10 @@ class CoreDataDandyTests: XCTestCase {
 		resolve correctly..
 	*/
 	func testPrimaryKeyTypeConversion() {
-		let dandy = Dandy.uniqueManagedObjectForEntity("Dandy", primaryKeyValue: 1)
+		let dandy = Dandy.insertUnique("Dandy", primaryKeyValue: 1)
 		dandy?.setValue("A poet, let's say", forKey: "bio")
-		let repeatedDandy = Dandy.uniqueManagedObjectForEntity("Dandy", primaryKeyValue: "1")
-		let dandies = try! Dandy.fetchObjectsForEntity("Dandy")?.count
+		let repeatedDandy = Dandy.insertUnique("Dandy", primaryKeyValue: "1")
+		let dandies = try! Dandy.fetch("Dandy")?.count
 		XCTAssert(dandies == 1 && (repeatedDandy!.valueForKey("bio") as! String == "A poet, let's say"), "Pass")
 	}
 	/**
@@ -154,37 +154,37 @@ class CoreDataDandyTests: XCTestCase {
 		behavior.
 	*/
 	func testSingletonsIgnorePrimaryKey() {
-		let space = Dandy.uniqueManagedObjectForEntity("Space", primaryKeyValue: "name")
+		let space = Dandy.insertUnique("Space", primaryKeyValue: "name")
 		space?.setValue("The Gogol Empire, let's say", forKey: "name")
-		let repeatedSpace = Dandy.uniqueManagedObjectForEntity("Space", primaryKeyValue: "void")
-		let spaces = try! Dandy.fetchObjectsForEntity("Space")?.count
+		let repeatedSpace = Dandy.insertUnique("Space", primaryKeyValue: "void")
+		let spaces = try! Dandy.fetch("Space")?.count
 		XCTAssert(spaces == 1 && (repeatedSpace!.valueForKey("name") as! String == "The Gogol Empire, let's say"), "Pass")
 	}
 	/**
 		The convenience function for fetching objects by primary key should return a unique object that has been inserted.
 	*/
 	func testUniqueObjectFetch() {
-		let dandy = Dandy.uniqueManagedObjectForEntity("Dandy", primaryKeyValue: "WILDE")
+		let dandy = Dandy.insertUnique("Dandy", primaryKeyValue: "WILDE")
 		dandy?.setValue("An author, let's say", forKey: "bio")
-		let fetchedDandy = Dandy.fetchUniqueObjectForEntity("Dandy", primaryKeyValue: "WILDE")!
+		let fetchedDandy = Dandy.fetchUnique("Dandy", primaryKeyValue: "WILDE")!
 		XCTAssert((fetchedDandy.valueForKey("bio") as! String == "An author, let's say"), "Pass")
 	}
 	/**
 		If a primary key is not specified for an object, the fetch should fail and emit a warning.
 	*/
 	func testUnspecifiedPrimaryKeyValueUniqueObjectFetch() {
-		let plebian = Dandy.uniqueManagedObjectForEntity("Plebian", primaryKeyValue: "plebianID")
+		let plebian = Dandy.insertUnique("Plebian", primaryKeyValue: "plebianID")
 		XCTAssert(plebian == nil, "Pass")
 	}
 	/**
 		A deleted object should not be represented in the database
 	*/
 	func testObjectDeletion() {
-		let space = Dandy.uniqueManagedObjectForEntity("Space", primaryKeyValue: "name")
-		let previousSpaceCount = try! Dandy.fetchObjectsForEntity("Space")?.count
+		let space = Dandy.insertUnique("Space", primaryKeyValue: "name")
+		let previousSpaceCount = try! Dandy.fetch("Space")?.count
 		let expectation = self.expectationWithDescription("Object deletion")
-		Dandy.deleteManagedObject(space!) {
-			let newSpaceCount = try! Dandy.fetchObjectsForEntity("Space")?.count
+		Dandy.delete(space!) {
+			let newSpaceCount = try! Dandy.fetch("Space")?.count
 			XCTAssert(previousSpaceCount == 1 && newSpaceCount == 0, "Pass")
 			expectation.fulfill()
 		}
@@ -243,34 +243,34 @@ class CoreDataDandyTests: XCTestCase {
 		Conversions to undefined types should not occur
 	*/
 	func testUndefinedTypeConversion() {
-		let result: AnyObject? = CoreDataValueConverter.convertValue("For us, life is five minutes of introspection", toType: .UndefinedAttributeType)
+		let result: AnyObject? = CoreDataValueConverter.convert("For us, life is five minutes of introspection", toType: .UndefinedAttributeType)
 		XCTAssert(result == nil, "Pass")
 	}
 	/**
 		Test non-conforming protocol type conversion
 	*/
 	func testNonConformingProtocolTypeConversion() {
-		let result: AnyObject? = CoreDataValueConverter.convertValue(["life", "is", "five", "minutes", "of", "introspection"], toType: .StringAttributeType)
+		let result: AnyObject? = CoreDataValueConverter.convert(["life", "is", "five", "minutes", "of", "introspection"], toType: .StringAttributeType)
 		XCTAssert(result == nil, "Pass")
 	}
 	/**
 		A type convertes to the same type should undergo no changes
 	*/
 	func testSameTypeConversion() {
-		let string: AnyObject? = CoreDataValueConverter.convertValue("For us, life is five minutes of introspection", toType: .StringAttributeType)
+		let string: AnyObject? = CoreDataValueConverter.convert("For us, life is five minutes of introspection", toType: .StringAttributeType)
 		XCTAssert(string is String, "Pass")
 		
-		let number: AnyObject? = CoreDataValueConverter.convertValue(1, toType: .Integer64AttributeType)
+		let number: AnyObject? = CoreDataValueConverter.convert(1, toType: .Integer64AttributeType)
 		XCTAssert(number is NSNumber, "Pass")
 		
-		let decimal: AnyObject? = CoreDataValueConverter.convertValue(NSDecimalNumber(integer: 1), toType: .DecimalAttributeType)
+		let decimal: AnyObject? = CoreDataValueConverter.convert(NSDecimalNumber(integer: 1), toType: .DecimalAttributeType)
 		XCTAssert(decimal is NSDecimalNumber, "Pass")
 		
-		let date: AnyObject? = CoreDataValueConverter.convertValue(NSDate(), toType: .DateAttributeType)
+		let date: AnyObject? = CoreDataValueConverter.convert(NSDate(), toType: .DateAttributeType)
 		XCTAssert(date is NSDate, "Pass")
 		
 		let encodedString = "suave".dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: true)
-		let data: AnyObject? = CoreDataValueConverter.convertValue(encodedString!, toType: .BinaryDataAttributeType)
+		let data: AnyObject? = CoreDataValueConverter.convert(encodedString!, toType: .BinaryDataAttributeType)
 		XCTAssert(data is NSData, "Pass")
 	}
 	/**
@@ -279,7 +279,7 @@ class CoreDataDandyTests: XCTestCase {
 	func testDataToStringConversion() {
 		let expectation: NSString = "testing string"
 		let input: NSData? = expectation.dataUsingEncoding(NSUTF8StringEncoding)
-		let result = CoreDataValueConverter.convertValue(input!, toType: .StringAttributeType) as? NSString
+		let result = CoreDataValueConverter.convert(input!, toType: .StringAttributeType) as? NSString
 		XCTAssert(result == expectation, "")
 	}
 	/**
@@ -287,7 +287,7 @@ class CoreDataDandyTests: XCTestCase {
 	*/
 	func testNumberToStringConversion() {
 		let input = 123455
-		let result = CoreDataValueConverter.convertValue(input, toType: .StringAttributeType) as? String
+		let result = CoreDataValueConverter.convert(input, toType: .StringAttributeType) as? String
 		XCTAssert(result == "123455", "")
 	}
 	/**
@@ -295,7 +295,7 @@ class CoreDataDandyTests: XCTestCase {
 	*/
 	func testNumberToDecimalConversion() {
 		let expectation = Double(7.070000171661375488)
-		let result = CoreDataValueConverter.convertValue(NSNumber(double: expectation), toType: .DecimalAttributeType) as? NSDecimalNumber
+		let result = CoreDataValueConverter.convert(NSNumber(double: expectation), toType: .DecimalAttributeType) as? NSDecimalNumber
 		XCTAssert(result == NSDecimalNumber(double: expectation), "Pass")
 	}
 	/**
@@ -303,7 +303,7 @@ class CoreDataDandyTests: XCTestCase {
 	*/
 	func testNumberToDoubleConversion() {
 		let expectation = Double(7.07)
-		let result = CoreDataValueConverter.convertValue(NSNumber(double: expectation), toType: .DoubleAttributeType) as? Double
+		let result = CoreDataValueConverter.convert(NSNumber(double: expectation), toType: .DoubleAttributeType) as? Double
 		XCTAssert(result == expectation, "Pass")
 	}
 	/**
@@ -311,7 +311,7 @@ class CoreDataDandyTests: XCTestCase {
 	*/
 	func testNumberToFloatConversion() {
 		let expectation = Float(7.07)
-		let result = CoreDataValueConverter.convertValue(NSNumber(float: expectation), toType: .FloatAttributeType) as? Float
+		let result = CoreDataValueConverter.convert(NSNumber(float: expectation), toType: .FloatAttributeType) as? Float
 		XCTAssert(result == expectation, "Pass")
 	}
 	/**
@@ -320,7 +320,7 @@ class CoreDataDandyTests: XCTestCase {
 	func testNumberToDataConversion() {
 		let input = NSNumber(float: 7.07)
 		let expectation = NSNumber(float: 7.07).stringValue.dataUsingEncoding(NSUTF8StringEncoding)
-		let result = CoreDataValueConverter.convertValue(input, toType: .BinaryDataAttributeType) as? NSData
+		let result = CoreDataValueConverter.convert(input, toType: .BinaryDataAttributeType) as? NSData
 		XCTAssert(result == expectation, "Pass")
 	}
 	/**
@@ -329,7 +329,7 @@ class CoreDataDandyTests: XCTestCase {
 	func testNumberToDateConversion() {
 		let now = NSDate()
 		let expectation = Double(now.timeIntervalSince1970)
-		let result = CoreDataValueConverter.convertValue(expectation, toType: .DateAttributeType) as? NSDate
+		let result = CoreDataValueConverter.convert(expectation, toType: .DateAttributeType) as? NSDate
 		let resultAsDouble = Double(result!.timeIntervalSince1970)
 		XCTAssert(resultAsDouble == expectation, "")
 	}
@@ -338,19 +338,19 @@ class CoreDataDandyTests: XCTestCase {
 	*/
 	func testNumberToBooleanConversion() {
 		var input = -1
-		var result = CoreDataValueConverter.convertValue(input, toType: .BooleanAttributeType) as? NSNumber
+		var result = CoreDataValueConverter.convert(input, toType: .BooleanAttributeType) as? NSNumber
 		XCTAssert(result?.boolValue == nil, "")
 		
 		input = 1
-		result = CoreDataValueConverter.convertValue(input, toType: .BooleanAttributeType) as? NSNumber
+		result = CoreDataValueConverter.convert(input, toType: .BooleanAttributeType) as? NSNumber
 		XCTAssert(result?.boolValue == true, "")
 		
 		input = 0
-		result = CoreDataValueConverter.convertValue(input, toType: .BooleanAttributeType) as? NSNumber
+		result = CoreDataValueConverter.convert(input, toType: .BooleanAttributeType) as? NSNumber
 		XCTAssert(result?.boolValue == false, "")
 		
 		input = 99
-		result = CoreDataValueConverter.convertValue(input, toType: .BooleanAttributeType) as? NSNumber
+		result = CoreDataValueConverter.convert(input, toType: .BooleanAttributeType) as? NSNumber
 		XCTAssert(result == true, "Pass")
 	}
 	/**
@@ -359,7 +359,7 @@ class CoreDataDandyTests: XCTestCase {
 		func testDateToStringConversion() {
 		let now = NSDate()
 		let expectation = CoreDataValueConverter.dateFormatter.stringFromDate(now)
-		let result = CoreDataValueConverter.convertValue(now, toType: .StringAttributeType) as? String
+		let result = CoreDataValueConverter.convert(now, toType: .StringAttributeType) as? String
 		XCTAssert(result == expectation, "")
 	}
 	/**
@@ -368,7 +368,7 @@ class CoreDataDandyTests: XCTestCase {
 	func testDateToDecimalConversion() {
 		let now = NSDate()
 		let expectation = NSDecimalNumber(double: now.timeIntervalSinceDate(NSDate(timeIntervalSince1970: 0)))
-		let result = CoreDataValueConverter.convertValue(now, toType: .DecimalAttributeType) as! NSDecimalNumber
+		let result = CoreDataValueConverter.convert(now, toType: .DecimalAttributeType) as! NSDecimalNumber
 		XCTAssert(result.floatValue - expectation.floatValue < 5, "")
 	}
 	/**
@@ -377,7 +377,7 @@ class CoreDataDandyTests: XCTestCase {
 	func testDateToDoubleConversion() {
 		let now = NSDate()
 		let expectation = NSNumber(double: now.timeIntervalSinceDate(NSDate(timeIntervalSince1970: 0)))
-		let result = CoreDataValueConverter.convertValue(now, toType: .DoubleAttributeType) as! NSNumber
+		let result = CoreDataValueConverter.convert(now, toType: .DoubleAttributeType) as! NSNumber
 		XCTAssert(result.floatValue - expectation.floatValue < 5, "")
 	}
 	/**
@@ -386,7 +386,7 @@ class CoreDataDandyTests: XCTestCase {
 	func testDateToFloatConversion() {
 		let now = NSDate()
 		let expectation = NSNumber(float: Float(now.timeIntervalSinceDate(NSDate(timeIntervalSince1970: 0))))
-		let result = CoreDataValueConverter.convertValue(now, toType: .FloatAttributeType) as! NSNumber
+		let result = CoreDataValueConverter.convert(now, toType: .FloatAttributeType) as! NSNumber
 		XCTAssert(result.floatValue - expectation.floatValue < 5, "")
 	}
 	/**
@@ -395,7 +395,7 @@ class CoreDataDandyTests: XCTestCase {
 	func testDateToIntConversion() {
 		let now = NSDate()
 		let expectation = NSNumber(integer: Int(now.timeIntervalSinceDate(NSDate(timeIntervalSince1970: 0))))
-		let result = CoreDataValueConverter.convertValue(now, toType: .Integer32AttributeType) as! NSNumber
+		let result = CoreDataValueConverter.convert(now, toType: .Integer32AttributeType) as! NSNumber
 		XCTAssert(result.floatValue - expectation.floatValue < 5, "")
 	}
 	/**
@@ -405,32 +405,32 @@ class CoreDataDandyTests: XCTestCase {
 		var testString = "Yes"
 		var result: NSNumber?
 		
-		result = CoreDataValueConverter.convertValue(testString, toType: .BooleanAttributeType) as? NSNumber
+		result = CoreDataValueConverter.convert(testString, toType: .BooleanAttributeType) as? NSNumber
 		XCTAssert(result?.boolValue == true, "")
 		
 		testString = "trUe"
-		result = CoreDataValueConverter.convertValue(testString, toType: .BooleanAttributeType) as? NSNumber
+		result = CoreDataValueConverter.convert(testString, toType: .BooleanAttributeType) as? NSNumber
 		XCTAssert(result?.boolValue == true, "")
 		
 		testString = "1"
-		result = CoreDataValueConverter.convertValue(testString, toType: .BooleanAttributeType) as? NSNumber
+		result = CoreDataValueConverter.convert(testString, toType: .BooleanAttributeType) as? NSNumber
 		XCTAssert(result?.boolValue == true, "")
 		
 		testString = "NO"
-		result = CoreDataValueConverter.convertValue(testString, toType: .BooleanAttributeType) as? NSNumber
+		result = CoreDataValueConverter.convert(testString, toType: .BooleanAttributeType) as? NSNumber
 		XCTAssert(result?.boolValue == false, "")
 		
 		testString = "false"
-		result = CoreDataValueConverter.convertValue(testString, toType: .BooleanAttributeType) as? NSNumber
+		result = CoreDataValueConverter.convert(testString, toType: .BooleanAttributeType) as? NSNumber
 		XCTAssert(result?.boolValue == false, "")
 		
 		testString = "0"
-		result = CoreDataValueConverter.convertValue(testString, toType: .BooleanAttributeType) as? NSNumber
+		result = CoreDataValueConverter.convert(testString, toType: .BooleanAttributeType) as? NSNumber
 		XCTAssert(result?.boolValue == false, "")
 		
 		
 		testString = "undefined"
-		result = CoreDataValueConverter.convertValue(testString, toType: .BooleanAttributeType) as? NSNumber
+		result = CoreDataValueConverter.convert(testString, toType: .BooleanAttributeType) as? NSNumber
 		XCTAssert(result == nil, "")
 	}
 	/**
@@ -438,15 +438,15 @@ class CoreDataDandyTests: XCTestCase {
 	*/
 	func testStringToIntConversion() {
 		var input = "123"
-		var result = CoreDataValueConverter.convertValue(input, toType: .Integer64AttributeType) as? NSNumber
+		var result = CoreDataValueConverter.convert(input, toType: .Integer64AttributeType) as? NSNumber
 		XCTAssert(result?.integerValue == 123, "")
 		
 		input = "456wordsdontmatter123"
-		result = CoreDataValueConverter.convertValue(input, toType: .Integer64AttributeType) as? NSNumber
+		result = CoreDataValueConverter.convert(input, toType: .Integer64AttributeType) as? NSNumber
 		XCTAssert(result?.integerValue == 456, "")
 		
 		input = "nothingHereMatters"
-		result = CoreDataValueConverter.convertValue(input, toType: .Integer64AttributeType) as? NSNumber
+		result = CoreDataValueConverter.convert(input, toType: .Integer64AttributeType) as? NSNumber
 		XCTAssert(result?.integerValue == 0, "")
 	}
 	/**
@@ -454,7 +454,7 @@ class CoreDataDandyTests: XCTestCase {
 	*/
 	func testStringToDecimalConversion() {
 		let expectation = NSDecimalNumber(float: 7.070000171661375488)
-		let result = CoreDataValueConverter.convertValue("7.070000171661375488", toType: .DecimalAttributeType) as? NSDecimalNumber
+		let result = CoreDataValueConverter.convert("7.070000171661375488", toType: .DecimalAttributeType) as? NSDecimalNumber
 		XCTAssert(result == expectation, "Pass")
 	}
 	/**
@@ -462,7 +462,7 @@ class CoreDataDandyTests: XCTestCase {
 	*/
 	func testStringToDoubleConversion() {
 		let expectation = Double(7.07)
-		let result = CoreDataValueConverter.convertValue("7.07", toType: .DoubleAttributeType) as? Double
+		let result = CoreDataValueConverter.convert("7.07", toType: .DoubleAttributeType) as? Double
 		XCTAssert(result == expectation, "Pass")
 	}
 	/**
@@ -470,7 +470,7 @@ class CoreDataDandyTests: XCTestCase {
 	*/
 	func testStringToFloatConversion() {
 		let expectation = Float(7.07)
-		let result = CoreDataValueConverter.convertValue("7.07", toType: .FloatAttributeType) as? Float
+		let result = CoreDataValueConverter.convert("7.07", toType: .FloatAttributeType) as? Float
 		XCTAssert(result == expectation, "Pass")
 	}
 	/**
@@ -479,7 +479,7 @@ class CoreDataDandyTests: XCTestCase {
 	func testStringToDataConversion() {
 		let input = "Long long Time ago"
 		let expectedResult = input.dataUsingEncoding(NSUTF8StringEncoding)!
-		let result = CoreDataValueConverter.convertValue(input, toType: .BinaryDataAttributeType) as? NSData
+		let result = CoreDataValueConverter.convert(input, toType: .BinaryDataAttributeType) as? NSData
 		XCTAssert(result!.isEqualToData(expectedResult) == true, "")
 	}
 	/**
@@ -488,7 +488,7 @@ class CoreDataDandyTests: XCTestCase {
 	func testStringToDateConversion() {
 		let now = NSDate()
 		let nowAsString = CoreDataValueConverter.dateFormatter.stringFromDate(now)
-		let result = CoreDataValueConverter.convertValue(nowAsString, toType: .DateAttributeType) as? NSDate
+		let result = CoreDataValueConverter.convert(nowAsString, toType: .DateAttributeType) as? NSDate
 		let resultAsString = CoreDataValueConverter.dateFormatter.stringFromDate(result!)
 		XCTAssert(resultAsString == nowAsString, "")
 	}
@@ -509,7 +509,7 @@ class CoreDataDandyTests: XCTestCase {
 		The primary key should return the uniquenessConstraint of the entity if one is present.
 	*/
 	func testUniqueConstraintRetrieval() {
-		let conclusion = Dandy.insertManagedObjectForEntity("Conclusion")!
+		let conclusion = Dandy.insert("Conclusion")!
 		XCTAssert(conclusion.entity.primaryKey == "id", "Pass")
 	}
 	
@@ -517,7 +517,7 @@ class CoreDataDandyTests: XCTestCase {
 		The primary key should return the uniquenessConstraint over of the primaryKey decoration if both are present.
 	*/
 	func testUniqueConstraintPriority() {
-		let gossip = Dandy.insertManagedObjectForEntity("Gossip")!
+		let gossip = Dandy.insert("Gossip")!
 		XCTAssert(gossip.entity.primaryKey == "details", "Pass")
 	}
 	/**
@@ -525,7 +525,7 @@ class CoreDataDandyTests: XCTestCase {
 		its parent, Gossip.
 	*/
 	func testPrimaryKeyInheritance() {
-		let flattery = Dandy.insertManagedObjectForEntity("Flattery")!
+		let flattery = Dandy.insert("Flattery")!
 		XCTAssert(flattery.entity.primaryKey == "details", "Pass")
 	}
 	/**
@@ -533,7 +533,7 @@ class CoreDataDandyTests: XCTestCase {
 		override its parent's, Gossip.
 	*/
 	func testPrimaryKeyOverride() {
-		let slander = Dandy.insertManagedObjectForEntity("Slander")!
+		let slander = Dandy.insert("Slander")!
 		XCTAssert(slander.entity.primaryKey == "statement", "Pass")
 	}
 	/**
@@ -675,7 +675,7 @@ class CoreDataDandyTests: XCTestCase {
 		Values should be mapped from json to an object's attributes.
 	*/
 	func testAttributeBuilding() {
-		let space = Dandy.insertManagedObjectForEntity("Space")!
+		let space = Dandy.insert("Space")!
 		let json = ["name": "nebulous", "state": "moderately cool"]
 		ObjectFactory.buildObject(space, fromJSON: json)
 		XCTAssert(space.valueForKey("name") as! String == "nebulous" &&
@@ -686,7 +686,7 @@ class CoreDataDandyTests: XCTestCase {
 		Values should be mapped from json an object's relationships.
 	*/
 	func testRelationshipBuilding() {
-		let gossip = Dandy.insertManagedObjectForEntity("Gossip")!
+		let gossip = Dandy.insert("Gossip")!
 		let json = [
 			"details": "At Bo Peep, unusually cool towards Isabella Brown.",
 			"topic": "John Keats",
@@ -707,7 +707,7 @@ class CoreDataDandyTests: XCTestCase {
 		Values should be recursively mapped from nested json objects.
 	*/
 	func testRecursiveObjectBuilding() {
-		let gossip = Dandy.insertManagedObjectForEntity("Gossip")!
+		let gossip = Dandy.insert("Gossip")!
 		let json = [
 			"details": "At Bo Peep, unusually cool towards Isabella Brown.",
 			"topic": "John Keats",
@@ -742,7 +742,7 @@ class CoreDataDandyTests: XCTestCase {
 		@mapping values that contain a keypath should allow access to json values via a keypath
 	*/
 	func testKeyPathBuilding() {
-		let dandy = Dandy.insertManagedObjectForEntity("Dandy")!
+		let dandy = Dandy.insert("Dandy")!
 		let json = [
 			"id": "BAUD",
 			"relatedDandies": [
@@ -763,7 +763,7 @@ class CoreDataDandyTests: XCTestCase {
 		Property values on an object should not be overwritten if no new values are specified.
 	*/
 	func testIgnoreUnkeyedAttributesWhenBuilding() {
-		let space = Dandy.insertManagedObjectForEntity("Space")!
+		let space = Dandy.insert("Space")!
 		space.setValue("exceptionally relaxed", forKey: "spaceState")
 		let json = ["name": "nebulous"]
 		ObjectFactory.buildObject(space, fromJSON: json)
@@ -773,7 +773,7 @@ class CoreDataDandyTests: XCTestCase {
 		Property values on an object should be overwritten if new values are specified.
 	*/
 	func testOverwritesKeyedAttributesWhenBuilding() {
-		let space = Dandy.insertManagedObjectForEntity("Space")!
+		let space = Dandy.insert("Space")!
 		space.setValue("exceptionally relaxed", forKey: "spaceState")
 		let json = ["state": "significant excitement"]
 		ObjectFactory.buildObject(space, fromJSON: json)
@@ -784,7 +784,7 @@ class CoreDataDandyTests: XCTestCase {
 		rejected.
 	*/
 	func testSingleObjectToManyRelationshipRejection() {
-		let dandy = Dandy.insertManagedObjectForEntity("Dandy")!
+		let dandy = Dandy.insert("Dandy")!
 		let json = [
 			"name": "bowler",
 			"style": "billycock",
@@ -801,7 +801,7 @@ class CoreDataDandyTests: XCTestCase {
 		rejected.
 	*/
 	func testArrayOfObjectToOneRelationshipRejection() {
-		let gossip = Dandy.insertManagedObjectForEntity("Gossip")!
+		let gossip = Dandy.insert("Gossip")!
 		let json = [
 			[
 				"id": "1",
@@ -821,7 +821,7 @@ class CoreDataDandyTests: XCTestCase {
 		unordered relationships.
 	*/
 	func testOrderedRelationshipsBuilding() {
-		let hat = Dandy.insertManagedObjectForEntity("Hat")!
+		let hat = Dandy.insert("Hat")!
 		let json = [
 			[
 				"id": "1",
@@ -843,7 +843,7 @@ class CoreDataDandyTests: XCTestCase {
 	*/
 	func testSimpleObjectConstructionFromJSON() {
 		let json = ["name": "Passerby"]
-		let plebian = Dandy.managedObjectForEntity("Plebian", fromJSON: json)!
+		let plebian = Dandy.upsert("Plebian", fromJSON: json)!
 		XCTAssert(plebian.valueForKey("name") as! String == "Passerby")
 	}
 	/**
@@ -852,7 +852,7 @@ class CoreDataDandyTests: XCTestCase {
 	*/
 	func testUniqueObjectConstructionFromJSON() {
 		let json = ["name": "Lord Byron"]
-		let byron = Dandy.managedObjectForEntity("Dandy", fromJSON: json)
+		let byron = Dandy.upsert("Dandy", fromJSON: json)
 		XCTAssert(byron == nil, "Pass")
 	}
 	
@@ -862,7 +862,7 @@ class CoreDataDandyTests: XCTestCase {
 	*/
 	func testRejectionOfJSONWithoutPrimaryKeyForUniqueObject() {
 		let json = ["name": "Lord Byron"]
-		let byron = Dandy.managedObjectForEntity("Dandy", fromJSON: json)
+		let byron = Dandy.upsert("Dandy", fromJSON: json)
 		XCTAssert(byron == nil, "Pass")
 	}
 	
@@ -874,7 +874,7 @@ class CoreDataDandyTests: XCTestCase {
 		for i in 0...9 {
 			json.append(["id": String(i), "name": "Morty"])
 		}
-		let dandies = Dandy.managedObjectsForEntity("Dandy", fromJSON: json)!
+		let dandies = Dandy.batchUpsert("Dandy", fromJSON: json)!
 		let countIsCorrect = dandies.count == 10
 		var dandiesAreCorrect = true
 		for i in 0...9 {
@@ -899,7 +899,7 @@ class CoreDataDandyTests: XCTestCase {
 			"id": "1",
 			"content": input
 		]
-		let conclusion = ObjectFactory.objectFromEntity(NSEntityDescription.forEntity("Conclusion")!, json: json) as! Conclusion
+		let conclusion = ObjectFactory.buildEntity(NSEntityDescription.forEntity("Conclusion")!, fromJSON: json) as! Conclusion
 		XCTAssert(conclusion.content == expected, "Pass")
 	}
 	
@@ -908,7 +908,7 @@ class CoreDataDandyTests: XCTestCase {
 		An object's attributes should be serializable into json.
 	*/
 	func testAttributeSerialization() {
-		let hat = Dandy.insertManagedObjectForEntity("Hat")!
+		let hat = Dandy.insert("Hat")!
 		hat.setValue("bowler", forKey: "name")
 		hat.setValue("billycock", forKey: "styleDescription")
 		let expected = [
@@ -922,7 +922,7 @@ class CoreDataDandyTests: XCTestCase {
 		Test nil attribute exclusion from serialized json.
 	*/
 	func testNilAttributeSerializationExclusion() {
-		let hat = Dandy.insertManagedObjectForEntity("Hat")!
+		let hat = Dandy.insert("Hat")!
 		hat.setValue("bowler", forKey: "name")
 		hat.setValue(nil, forKey: "styleDescription")
 		let expected = ["name": "bowler"]
@@ -958,10 +958,10 @@ class CoreDataDandyTests: XCTestCase {
 		An object's attributes and to-one relationships should be serializaable into json.
 	*/
 	func testToOneRelationshipSerialization() {
-		let hat = Dandy.insertManagedObjectForEntity("Hat")!
+		let hat = Dandy.insert("Hat")!
 		hat.setValue("bowler", forKey: "name")
 				hat.setValue("billycock", forKey: "styleDescription")
-		let felt = Dandy.insertManagedObjectForEntity("Material")!
+		let felt = Dandy.insert("Material")!
 		felt.setValue("felt", forKey: "name")
 		felt.setValue("Rome", forKey: "origin")
 		hat.setValue(felt, forKey: "primaryMaterial")
@@ -980,13 +980,13 @@ class CoreDataDandyTests: XCTestCase {
 		An array of NSManagedObject should be serializable into json.
 	*/
 	func testObjectArraySerialization() {
-		let byron = Dandy.insertManagedObjectForEntity("Dandy")!
+		let byron = Dandy.insert("Dandy")!
 		byron.setValue("Lord Byron", forKey: "name")
 		byron.setValue("1", forKey: "dandyID")
-		let wilde = Dandy.insertManagedObjectForEntity("Dandy")!
+		let wilde = Dandy.insert("Dandy")!
 		wilde.setValue("Oscar Wilde", forKey: "name")
 		wilde.setValue("2", forKey: "dandyID")
-		let andre = Dandy.insertManagedObjectForEntity("Dandy")!
+		let andre = Dandy.insert("Dandy")!
 		andre.setValue("Andre 3000", forKey: "name")
 		andre.setValue("3", forKey: "dandyID")
 		let expected = [
@@ -1007,13 +1007,13 @@ class CoreDataDandyTests: XCTestCase {
 		An object's attributes and to-many relationships should be serializaable into json.
 	*/
 	func testToManyRelationshipSerialization() {
-		let byron = Dandy.insertManagedObjectForEntity("Dandy")!
+		let byron = Dandy.insert("Dandy")!
 		byron.setValue("Lord Byron", forKey: "name")
 		byron.setValue("1", forKey: "dandyID")
-		let bowler = Dandy.insertManagedObjectForEntity("Hat")!
+		let bowler = Dandy.insert("Hat")!
 		bowler.setValue("bowler", forKey: "name")
 		bowler.setValue("billycock", forKey: "styleDescription")
-		let tyrolean = Dandy.insertManagedObjectForEntity("Hat")!
+		let tyrolean = Dandy.insert("Hat")!
 		tyrolean.setValue("tyrolean", forKey: "name")
 		tyrolean.setValue("alpine", forKey: "styleDescription")
 		byron.setValue(NSSet(objects: bowler, tyrolean), forKey: "hats")
@@ -1035,13 +1035,13 @@ class CoreDataDandyTests: XCTestCase {
 		An object's attributes and relationship tree should be serializaable into json.
 	*/
 	func testNestedRelationshipSerialization() {
-		let gossip = Dandy.insertManagedObjectForEntity("Gossip")!
+		let gossip = Dandy.insert("Gossip")!
 		gossip.setValue("At Bo Peep, unusually cool towards Isabella Brown.", forKey: "details")
 		gossip.setValue("John Keats", forKey: "topic")
-		let byron = Dandy.insertManagedObjectForEntity("Dandy")!
+		let byron = Dandy.insert("Dandy")!
 		byron.setValue("Lord Byron", forKey: "name")
 		byron.setValue("1", forKey: "dandyID")
-		let bowler = Dandy.insertManagedObjectForEntity("Hat")!
+		let bowler = Dandy.insert("Hat")!
 		bowler.setValue("bowler", forKey: "name")
 			bowler.setValue("billycock", forKey: "styleDescription")
 		byron.setValue(NSSet(object: bowler), forKey: "hats")

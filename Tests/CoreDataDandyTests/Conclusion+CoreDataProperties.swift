@@ -33,7 +33,6 @@ extension Conclusion {
     @NSManaged var content: String?
 }
 
-
 extension Conclusion: MappingFinalizer {
 	func finalizeMappingForJSON(json: [String : AnyObject]) {
 		if var content = content {

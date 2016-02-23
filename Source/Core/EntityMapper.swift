@@ -47,12 +47,12 @@ struct EntityMapper {
 				
 				// Map attributes
 				if let attributes = entity.allAttributes {
-					writeUserInfo(attributes, toMap: &map)
+					add(attributes, toMap: &map)
 				}
 				
 				// Map relationships
 				if let relationships = entity.allRelationships {
-					writeUserInfo(relationships, toMap: &map)
+					add(relationships, toMap: &map)
 				}
 				archiveEntityMap(map, forEntity:entityName)
 				return map
@@ -66,7 +66,7 @@ struct EntityMapper {
 	///
 	/// - parameter dictionary: A dictionary containing either NSAttributeDescriptions or NSRelationshipDescriptions
 	/// - parameter map: The map for reading json into an entity
-	private static func writeUserInfo(dictionary: [String: AnyObject], inout toMap map: [String: PropertyDescription]) {
+	private static func add(dictionary: [String: AnyObject], inout toMap map: [String: PropertyDescription]) {
 		for (name, description) in dictionary {
 			if let newMapping = mappingForUserInfo(description.userInfo) {
 				// Do not add values specified as non-mapping to the mapping dictionary

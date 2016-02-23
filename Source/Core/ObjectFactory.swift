@@ -40,16 +40,16 @@ public struct ObjectFactory {
 	/// process json with thousands of objects.
 	/// 
 	/// - parameter entity:	The entity that will be inserted or fetched then read to from the json.
-	/// - parameter json: The json to map into the returned object.
+	/// - parameter fromJSON: The json to map into the returned object.
 	/// 
 	/// - returns: An NSManagedObject if one could be inserted or fetched. The values that could be mapped from the json
 	///		to the object will be found on the returned object.
-	public static func objectFromEntity(entity: NSEntityDescription, json: [String: AnyObject]) -> NSManagedObject? {
+	public static func buildEntity(entity: NSEntityDescription, fromJSON json: [String: AnyObject]) -> NSManagedObject? {
 		// Find primary key
 		if	let name = entity.name,
 			let primaryKeyValue = entity.primaryKeyValueFromJSON(json) {
 			// Attempt to fetch or create unique object for primaryKey
-			let object = Dandy.uniqueManagedObjectForEntity(name, primaryKeyValue: primaryKeyValue)
+			let object = Dandy.insertUnique(name, primaryKeyValue: primaryKeyValue)
 			if var object = object {
 				object = buildObject(object, fromJSON: json)
 				attemptFinalizationOfObject(object, fromJSON: json)
@@ -76,7 +76,7 @@ public struct ObjectFactory {
 					// A valid mapping was found for an attribute of a known type
 					if description.type == .Attribute,
 						let type = description.attributeType {
-							object.setValue(CoreDataValueConverter.convertValue(value, toType: type), forKey: description.name)
+							object.setValue(CoreDataValueConverter.convert(value, toType: type), forKey: description.name)
 					}
 						// A valid mapping was found for a relationship of a known type
 					else if description.type == .Relationship {
@@ -102,7 +102,7 @@ public struct ObjectFactory {
 		if let relatedEntity = relationship.destinationEntity {
 			// A dictionary was passed for a toOne relationship
 			if let json = json as? [String: AnyObject] where !relationship.toMany  {
-				if let relation = objectFromEntity(relatedEntity, json: json) {
+				if let relation = buildEntity(relatedEntity, fromJSON: json) {
 					object.setValue(relation, forKey: relationship.name)
 				} else {
 					log(message("A relationship named \(relationship.name) could not be established for object \(object) from json \n\(json)."))
@@ -113,7 +113,7 @@ public struct ObjectFactory {
 			else if let json = json as? [[String: AnyObject]] where relationship.toMany  {
 				var relations = [NSManagedObject]()
 				for child in json {
-					if let relation = objectFromEntity(relatedEntity, json: child) {
+					if let relation = buildEntity(relatedEntity, fromJSON: child) {
 						relations.append(relation)
 					} else {
 						log(message("A relationship named \(relationship.name) could not be established for object \(object) from json \n\(child)."))

@@ -62,10 +62,10 @@ public struct CoreDataValueConverter {
 	/// - parameter property: The property on the entity where this value will be written.
 	///
 	/// - returns: If the conversion was successful, the converted value. Otherwise, nil.
-	public static func convertValue(value: AnyObject, forEntity entity: NSEntityDescription, property: String) -> AnyObject? {
+	public static func convert(value: AnyObject, forEntity entity: NSEntityDescription, property: String) -> AnyObject? {
 		let attributeDescription = entity.propertiesByName[property] as? NSAttributeDescription
 		if	let attributeDescription = attributeDescription {
-			return convertValue(value, toType: attributeDescription.attributeType)
+			return convert(value, toType: attributeDescription.attributeType)
 		}
 		return nil
 	}
@@ -76,9 +76,9 @@ public struct CoreDataValueConverter {
 	/// - parameter toType: The desired end type of the value.
 	///
 	/// - returns: If the conversion was successful, the converted value. Otherwise, nil.
-	public static func convertValue(value: AnyObject, toType type: NSAttributeType) -> AnyObject? {
+	public static func convert(value: AnyObject, toType type: NSAttributeType) -> AnyObject? {
 		if let converter = typeConverters[type] {
-			return converter.convertValue(value)
+			return converter.convert(value)
 		}
 		return nil
 	}
