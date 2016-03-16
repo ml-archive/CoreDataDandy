@@ -30,7 +30,6 @@ import CoreData
 	Serializes NSManagedObjects objects to json.
 */
 public struct Serializer {
-	
 	/// Produces json representing an object and, potentially, members of its relationship tree.
 	///
 	/// Specify each relationship you wish to include in the serialization by including its name in the relationship 
