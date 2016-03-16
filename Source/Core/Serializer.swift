@@ -30,6 +30,7 @@ import CoreData
 	Serializes NSManagedObjects objects to json.
 */
 public struct Serializer {
+	
 	/// Produces json representing an object and, potentially, members of its relationship tree.
 	///
 	/// Specify each relationship you wish to include in the serialization by including its name in the relationship 
@@ -56,9 +57,9 @@ public struct Serializer {
 	/// - parameter relationships: Relationships and keypaths to nested relationships targeted for serialization.
 	///
 	/// - returns: A json representation of this object and its relationships if one could be produced. Otherwise, nil.
-	public static func serializeObject(object: NSManagedObject, includeRelationships relationships: [String]? = nil) -> [String: AnyObject]? {
+	public static func serialize(object: NSManagedObject, including relationships: [String]? = nil) -> [String: AnyObject]? {
 		var json = [String: AnyObject]()
-		let map = EntityMapper.mapForEntity(object.entity)
+		let map = EntityMapper.map(object.entity)
 		if let map = map {
 			for (property, description) in map {
 				// Map attributes, ensuring mapping conversion
@@ -67,14 +68,14 @@ public struct Serializer {
 				}
 				else if let relationships = relationships
 					where (relationships.contains(description.name)
-					|| nestedSerializationTargetsForRelationship(description.name, includeRelationships: relationships)?.count > 0) {
-					let nestedRelationships = nestedSerializationTargetsForRelationship(description.name, includeRelationships: relationships)
+					|| nestedSerializationTargetsFor(description.name, including: relationships)?.count > 0) {
+					let nestedRelationships = nestedSerializationTargetsFor(description.name, including: relationships)
 					// Map relationships and recurse into nested relationships
 					if description.toMany {
 						let relatedObjects = description.ordered ? object.valueForKey(description.name)?.array: object.valueForKey(description.name)?.allObjects
 						if let relatedObjects = relatedObjects as? [NSManagedObject] {
 							if relatedObjects.count > 0 {
-								json[property] = serializeObjects(relatedObjects, includeRelationships: nestedRelationships)
+								json[property] = serialize(relatedObjects, including: nestedRelationships)
 							}
 							else {
 								json[property] = [[:]]
@@ -87,7 +88,7 @@ public struct Serializer {
 					}
 					else {
 						if let relationship = object.valueForKey(description.name) as? NSManagedObject {
-							json[property] = serializeObject(relationship, includeRelationships: nestedRelationships) as? AnyObject
+							json[property] = serialize(relationship, including: nestedRelationships) as? AnyObject
 						}
 						// Assume nils to intend empty objects
 						else {
@@ -103,21 +104,23 @@ public struct Serializer {
 		}
 		return json
 	}
+	
 	/// Recursively invokes other class methods to produce a json array, including relationships.
 	///
 	/// - parameter objects: An array of `NSManagedObjects` to serialize
 	/// - parameter relationships: The relationships targeted for serialization.
 	///
 	/// - returns: A json representation of the objects and their relationships if one could be produced. Otherwise, nil.
-	public static func serializeObjects(objects: [NSManagedObject], includeRelationships relationships: [String]? = nil) -> [[String: AnyObject]]? {
+	public static func serialize(objects: [NSManagedObject], including relationships: [String]? = nil) -> [[String: AnyObject]]? {
 		var json = [[String: AnyObject]]()
 		for object in objects {
-			if let relationshipJSON = serializeObject(object, includeRelationships: relationships) {
+			if let relationshipJSON = serialize(object, including: relationships) {
 				json.append(relationshipJSON)
 			}
 		}
 		return json.count > 0 ? json: nil
 	}
+	
 	/// Determines which relationships to a given relationship require serialization. Relationships to a relationship
 	/// are referred to as "nested" relationships. Invoked at every "level" of serialization to recursively convert
 	/// keypaths with the name of a top-level relationship into a string which no longer references that relationship.
@@ -126,9 +129,10 @@ public struct Serializer {
 	/// - parameter relationships: All serialization targets for the top-level object.
 	///
 	/// - returns: An array of nested relationships targeted for serialization.
-	static func nestedSerializationTargetsForRelationship(relationship: String, includeRelationships relationships: [String]?) -> [String]? {
-		if let relationships = relationships {
-			let keypaths = relationships.filter({$0.rangeOfString(relationship) != nil && $0.rangeOfString(".") != nil})
+	// TODO: Move the preposition the the first parameter in 2.3.
+	static func nestedSerializationTargetsFor(relationship: String, including nestedRelationships: [String]?) -> [String]? {
+		if let nestedRelationships = nestedRelationships {
+			let keypaths = nestedRelationships.filter({$0.rangeOfString(relationship) != nil && $0.rangeOfString(".") != nil})
 			// Eliminate the relationship name and the period, recursing one level deeper.
 			let nestedTargets = keypaths.map({$0.stringByReplacingOccurrencesOfString(relationship + ".", withString: "")})
 			return nestedTargets.count > 0 ? nestedTargets: nil

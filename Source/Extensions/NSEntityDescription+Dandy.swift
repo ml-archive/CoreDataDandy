@@ -131,7 +131,7 @@ extension NSEntityDescription {
 	/// - parameter json: JSON form which a primaryKey will be extracted
 	func primaryKeyValueFromJSON(json: [String: AnyObject]) -> AnyObject? {
 		if	let primaryKey = primaryKey,
-			let entityMap = EntityMapper.mapForEntity(self) {
+			let entityMap = EntityMapper.map(self) {
 				let filteredMap = entityMap.filter({ $1.name == primaryKey }).map({ $0.0 })
 				// If the primary key has an alternate mapping, return the value from the alternate mapping.
 				// Otherwise, return the json value matching the name of the primary key.

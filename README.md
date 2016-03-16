@@ -44,9 +44,9 @@ Save with or without a closure.
 
 ```swift
 Dandy.save()
-Dandy.save({
+Dandy.save { (error: NSError) in
 	// Respond to save completion.
-})
+}
 ```
 
 Delete with or without a closure.
@@ -81,7 +81,7 @@ Dandy.fetchUnique("Hat", primaryKeyValue: "bowler")
 Fetch an array of objects filtered by a predicate.
 
 ```swift
-Dandy.fetch("Gossip", predicate: NSPredicate(format: "topic == %@", "John Keats"))
+Dandy.fetch("Gossip", filterBy: NSPredicate(format: "topic == %@", "John Keats"))
 ```
 
 ### Insertions and updates
@@ -101,13 +101,13 @@ Dandy.insertUnique("Dandy", primaryKeyValue: "WILDE")
 Upsert a unique object, or insert and update a non-unique object.
 
 ```swift
-CoreDataDandy.sharedDandy.upsert("Gossip", fromJSON: json)
+CoreDataDandy.sharedDandy.upsert("Gossip", from: json)
 ```
 
 Upsert an array of unique objects, or insert and update non-unique objects.
 
 ```swift
-CoreDataDandy.sharedDandy.batchUpsert("Gossip", fromJson: json)
+CoreDataDandy.sharedDandy.batchUpsert("Gossip", from: json)
 ```
 
 ### Mapping finalization
@@ -127,25 +127,25 @@ extension Conclusion: MappingFinalizer {
 Serialize a single object.
 
 ```swift
-Serializer.deserializeObject(gossip)
+Serializer.serialize(gossip)
 ```
 
 Serialize an array of objects.
 
 ```swift
-Serializer.serializeObjects([byron, wilde, andre3000])
+Serializer.serialize([byron, wilde, andre3000])
 ```
 
 Serialize an object and its relationships.
 
 ```swift
-Serializer.serializeObject(gossip, includeRelationships: ["purveyor"])
+Serializer.serialize(gossip, including: ["purveyor"])
 ```
 
 Serialize an object and its nested relationships.
 
 ```swift
-Serializer.serializeObject(gossip, includeRelationships: ["purveyor.hats.material, purveyor.predecessor"])
+Serializer.serialize(gossip, including: ["purveyor.hats.material, purveyor.predecessor"])
 ```
 
 ## xcdatamodel decorations

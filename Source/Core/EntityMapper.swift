@@ -28,6 +28,7 @@
 import CoreData
 
 struct EntityMapper {
+	
 	// MARK: - Entity Mapping -
 	/// The primary function of this class. Creates, caches, and returns mappings that are subsequently
 	/// used to read json into an instance of an entity.
@@ -35,7 +36,7 @@ struct EntityMapper {
 	/// - parameter entity: The `NSEntityDescription` to map
 	///
 	/// - returns: A mapping used to read json into the specified entity.
-	static func mapForEntity(entity: NSEntityDescription) -> [String: PropertyDescription]? {
+	static func map(entity: NSEntityDescription) -> [String: PropertyDescription]? {
 		// Search for a cached entity map
 		if let entityName = entity.name {
 			// A mapping has already been created for this entity. Return it.
@@ -47,14 +48,14 @@ struct EntityMapper {
 				
 				// Map attributes
 				if let attributes = entity.allAttributes {
-					add(attributes, toMap: &map)
+					add(attributes, to: &map)
 				}
 				
 				// Map relationships
 				if let relationships = entity.allRelationships {
-					add(relationships, toMap: &map)
+					add(relationships, to: &map)
 				}
-				archiveEntityMap(map, forEntity:entityName)
+				archive(map, forEntity:entityName)
 				return map
 			}
 		} else {
@@ -62,11 +63,12 @@ struct EntityMapper {
 		}
 		return nil
 	}
+	
 	/// A convenience function for producing mapped values of an entity's attributes relationships.
 	///
 	/// - parameter dictionary: A dictionary containing either NSAttributeDescriptions or NSRelationshipDescriptions
 	/// - parameter map: The map for reading json into an entity
-	private static func add(dictionary: [String: AnyObject], inout toMap map: [String: PropertyDescription]) {
+	private static func add(dictionary: [String: AnyObject], inout to map: [String: PropertyDescription]) {
 		for (name, description) in dictionary {
 			if let newMapping = mappingForUserInfo(description.userInfo) {
 				// Do not add values specified as non-mapping to the mapping dictionary
@@ -79,6 +81,7 @@ struct EntityMapper {
 			}
 		}
 	}
+	
 	/// Returns any mapping values found in a userInfo dictionary.
 	///
 	/// - parameter userInfo: The userInfo of an `NSEntityDescription`, `NSAttributeDescription`, or `NSRelationshipDescription`
@@ -114,21 +117,24 @@ extension EntityMapper {
 			_cachedEntityMap = newValue
 		}
 	}
+	
 	/// - returns: The file path where the entityMap is archived.
 	private static var entityMapFilePath: String = {
 		let pathArray = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)
 		let documentPath = pathArray.first!
 		return NSString(string: documentPath).stringByAppendingPathComponent(CACHED_MAPPING_LOCATION)
 	}()
+	
 	/// Archives an entity's mapping. Note, this mapping, will be saved to the `cachedEntityMap` at the key
 	/// of the forEntity parameter.
 	///
 	/// - parameter map: A mapping for reading json into an entity.
 	/// - parameter forEntity: The name of the entity `map` corresponds to.
-	private static func archiveEntityMap(map: [String: PropertyDescription], forEntity entity: String) {
+	private static func archive(map: [String: PropertyDescription], forEntity entity: String) {
 		cachedEntityMap[entity] = map;
 		NSKeyedArchiver.archiveRootObject(cachedEntityMap, toFile: entityMapFilePath)
 	}
+	
 	/// Clears cached mappings.
 	///
 	/// This method should be invoked when the database is undergoing a migration or any other time

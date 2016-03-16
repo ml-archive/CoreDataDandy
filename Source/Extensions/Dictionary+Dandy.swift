@@ -39,7 +39,7 @@ public extension Dictionary {
 }
 
 /// Functions similarly to `NSDictionary's` valueForKeyPath.
-func _valueForKeyPath(keypath: String, dictionary: [String: AnyObject]) -> AnyObject? {
+func valueAt(keypath: String, of dictionary: [String: AnyObject]) -> AnyObject? {
 	let keys = keypath.componentsSeparatedByString(".")
 	var copy = dictionary
 	var possibleValue: AnyObject?

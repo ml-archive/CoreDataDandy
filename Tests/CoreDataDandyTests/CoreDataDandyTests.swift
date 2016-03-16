@@ -135,7 +135,7 @@ class CoreDataDandyTests: XCTestCase {
 		let byron = Dandy.insertUnique("Dandy", primaryKeyValue: "BYRON")!
 		byron.setValue("A poet, let's say", forKey: "bio")
 		let dandies = try! Dandy.fetch("Dandy")?.count
-		let byrons = try! Dandy.fetch("Dandy", predicate: NSPredicate(format: "bio == %@", "A poet, let's say"))?.count
+		let byrons = try! Dandy.fetch("Dandy", filterBy: NSPredicate(format: "bio == %@", "A poet, let's say"))?.count
 		XCTAssert(dandies == 2 && byrons == 1, "Pass")
 	}
 	/**
@@ -563,7 +563,7 @@ class CoreDataDandyTests: XCTestCase {
 			"origin": PropertyDescription(description: entity.allAttributes!["origin"]!),
 			"hats": PropertyDescription(description: entity.allRelationships!["hats"]!)
 		]
-		let result = EntityMapper.mapForEntity(entity)
+		let result = EntityMapper.map(entity)
 		XCTAssert(result! == expectedMap, "Pass")
 	}
 	/**
@@ -578,7 +578,7 @@ class CoreDataDandyTests: XCTestCase {
 			// "secret": "unmapped"
 			"purveyor": PropertyDescription(description: entity.allRelationships!["purveyor"]!)
 		]
-		let result = EntityMapper.mapForEntity(entity)!
+		let result = EntityMapper.map(entity)!
 		XCTAssert(result == expectedMap, "Pass")
 	}
 	/**
@@ -591,7 +591,7 @@ class CoreDataDandyTests: XCTestCase {
 			"name": PropertyDescription(description: entity.allAttributes!["name"]!),
 			"state": PropertyDescription(description: entity.allAttributes!["spaceState"]!)
 		]
-		let result = EntityMapper.mapForEntity(entity)!
+		let result = EntityMapper.map(entity)!
 		XCTAssert(result == expectedMap, "Pass")
 	}
 	
@@ -631,7 +631,7 @@ class CoreDataDandyTests: XCTestCase {
 	func testMapCaching() {
 		let entityName = "Material"
 		if let entityDescription = NSEntityDescription.entityForName(entityName, inManagedObjectContext: Dandy.coordinator.mainContext) {
-			EntityMapper.mapForEntity(entityDescription)
+			EntityMapper.map(entityDescription)
 			let entityCacheMap = EntityMapper.cachedEntityMap[entityName]!
 			XCTAssert(entityCacheMap.count > 0, "")
 		}
@@ -642,7 +642,7 @@ class CoreDataDandyTests: XCTestCase {
 	func testMapCacheCleanUp() {
 		let entityName = "Material"
 		if let entityDescription = NSEntityDescription.entityForName(entityName, inManagedObjectContext: Dandy.coordinator.mainContext) {
-			EntityMapper.mapForEntity(entityDescription)
+			EntityMapper.map(entityDescription)
 			let initialCacheCount = EntityMapper.cachedEntityMap.count
 			EntityMapper.clearCache()
 			let finalCacheCount = EntityMapper.cachedEntityMap.count
@@ -655,7 +655,7 @@ class CoreDataDandyTests: XCTestCase {
 	func testPerformanceOfNewMapCreation() {
 		self.measureBlock {
 			let entityDescription = NSEntityDescription.entityForName("Material", inManagedObjectContext: Dandy.coordinator.mainContext)
-			EntityMapper.mapForEntity(entityDescription!)
+			EntityMapper.map(entityDescription!)
 		}
 	}
 	/**
@@ -663,9 +663,9 @@ class CoreDataDandyTests: XCTestCase {
 	*/
 	func testPerformanceOfCachedMapRetrieval() {
 		let entityDescription = NSEntityDescription.entityForName("Material", inManagedObjectContext: Dandy.coordinator.mainContext)!
-		EntityMapper.mapForEntity(entityDescription)
+		EntityMapper.map(entityDescription)
 		self.measureBlock {
-			EntityMapper.mapForEntity(entityDescription)
+			EntityMapper.map(entityDescription)
 		}
 	}
 	
@@ -676,7 +676,7 @@ class CoreDataDandyTests: XCTestCase {
 	func testAttributeBuilding() {
 		let space = Dandy.insert("Space")!
 		let json = ["name": "nebulous", "state": "moderately cool"]
-		ObjectFactory.buildObject(space, fromJSON: json)
+		ObjectFactory.build(space, from: json)
 		XCTAssert(space.valueForKey("name") as! String == "nebulous" &&
 			space.valueForKey("spaceState") as! String ==  "moderately cool",
 			"Pass")
@@ -694,7 +694,7 @@ class CoreDataDandyTests: XCTestCase {
 				"name": "Lord Byron",
 			]
 		]
-		ObjectFactory.buildObject(gossip, fromJSON: json)
+		ObjectFactory.build(gossip, from: json)
 		let byron = gossip.valueForKey("purveyor") as! NSManagedObject
 		XCTAssert(gossip.valueForKey("details") as! String == "At Bo Peep, unusually cool towards Isabella Brown." &&
 			gossip.valueForKey("topic") as! String ==  "John Keats" &&
@@ -723,7 +723,7 @@ class CoreDataDandyTests: XCTestCase {
 				]]
 			]
 		]
-		ObjectFactory.buildObject(gossip, fromJSON: json)
+		ObjectFactory.build(gossip, from: json)
 		let byron = gossip.valueForKey("purveyor") as! NSManagedObject
 		let bowler = byron.valueForKey("hats")!.anyObject() as! NSManagedObject
 		let felt = bowler.valueForKey("primaryMaterial") as! NSManagedObject
@@ -751,7 +751,7 @@ class CoreDataDandyTests: XCTestCase {
 				]
 			]
 		] as [String: AnyObject]
-		ObjectFactory.buildObject(dandy, fromJSON: json)
+		ObjectFactory.build(dandy, from: json)
 		let balzac = dandy.valueForKey("predecessor") as! NSManagedObject
 		XCTAssert(balzac.valueForKey("dandyID") as! String == "BALZ" &&
 			balzac.valueForKey("name") as! String ==  "Honoré de Balzac" &&
@@ -765,7 +765,7 @@ class CoreDataDandyTests: XCTestCase {
 		let space = Dandy.insert("Space")!
 		space.setValue("exceptionally relaxed", forKey: "spaceState")
 		let json = ["name": "nebulous"]
-		ObjectFactory.buildObject(space, fromJSON: json)
+		ObjectFactory.build(space, from: json)
 		XCTAssert(space.valueForKey("spaceState") as! String == "exceptionally relaxed", "Pass")
 	}
 	/**
@@ -775,7 +775,7 @@ class CoreDataDandyTests: XCTestCase {
 		let space = Dandy.insert("Space")!
 		space.setValue("exceptionally relaxed", forKey: "spaceState")
 		let json = ["state": "significant excitement"]
-		ObjectFactory.buildObject(space, fromJSON: json)
+		ObjectFactory.build(space, from: json)
 		XCTAssert(space.valueForKey("spaceState") as! String == "significant excitement", "Pass")
 	}
 	/**
@@ -792,7 +792,7 @@ class CoreDataDandyTests: XCTestCase {
 				"origin": "Rome"
 			]
 		]
-		ObjectFactory.buildRelationship(PropertyDescription(description: dandy.entity.allRelationships!["hats"]!), fromJSON: json, forObject: dandy)
+		ObjectFactory.make(PropertyDescription(description: dandy.entity.allRelationships!["hats"]!), to: dandy, from: json)
 		XCTAssert((dandy.valueForKey("hats") as! NSSet).count == 0, "Pass")
 	}
 	/**
@@ -812,7 +812,7 @@ class CoreDataDandyTests: XCTestCase {
 				"id": "3",
 				"name": "Andre 3000"]
 		]
-		ObjectFactory.buildRelationship(PropertyDescription(description: gossip.entity.allRelationships!["purveyor"]!), fromJSON: json, forObject: gossip)
+		ObjectFactory.make(PropertyDescription(description: gossip.entity.allRelationships!["purveyor"]!), to: gossip, from: json)
 		XCTAssert(gossip.valueForKey("purveyor") == nil, "Pass")
 	}
 	/**
@@ -832,7 +832,7 @@ class CoreDataDandyTests: XCTestCase {
 				"id": "3",
 				"name": "Andre 3000"]
 		]
-		ObjectFactory.buildRelationship(PropertyDescription(description: hat.entity.allRelationships!["dandies"]!), fromJSON: json, forObject: hat)
+		ObjectFactory.make(PropertyDescription(description: hat.entity.allRelationships!["dandies"]!), to: hat, from: json)
 		XCTAssert(hat.valueForKey("dandies") is NSOrderedSet && (hat.valueForKey("dandies") as! NSOrderedSet).count == 3, "Pass")
 	}
 	
@@ -842,7 +842,7 @@ class CoreDataDandyTests: XCTestCase {
 	*/
 	func testSimpleObjectConstructionFromJSON() {
 		let json = ["name": "Passerby"]
-		let plebian = Dandy.upsert("Plebian", fromJSON: json)!
+		let plebian = Dandy.upsert("Plebian", from: json)!
 		XCTAssert(plebian.valueForKey("name") as! String == "Passerby")
 	}
 	/**
@@ -851,7 +851,7 @@ class CoreDataDandyTests: XCTestCase {
 	*/
 	func testUniqueObjectConstructionFromJSON() {
 		let json = ["name": "Lord Byron"]
-		let byron = Dandy.upsert("Dandy", fromJSON: json)
+		let byron = Dandy.upsert("Dandy", from: json)
 		XCTAssert(byron == nil, "Pass")
 	}
 	
@@ -861,7 +861,7 @@ class CoreDataDandyTests: XCTestCase {
 	*/
 	func testRejectionOfJSONWithoutPrimaryKeyForUniqueObject() {
 		let json = ["name": "Lord Byron"]
-		let byron = Dandy.upsert("Dandy", fromJSON: json)
+		let byron = Dandy.upsert("Dandy", from: json)
 		XCTAssert(byron == nil, "Pass")
 	}
 	
@@ -873,7 +873,7 @@ class CoreDataDandyTests: XCTestCase {
 		for i in 0...9 {
 			json.append(["id": String(i), "name": "Morty"])
 		}
-		let dandies = Dandy.batchUpsert("Dandy", fromJSON: json)!
+		let dandies = Dandy.batchUpsert("Dandy", from: json)!
 		let countIsCorrect = dandies.count == 10
 		var dandiesAreCorrect = true
 		for i in 0...9 {
@@ -898,7 +898,7 @@ class CoreDataDandyTests: XCTestCase {
 			"id": "1",
 			"content": input
 		]
-		let conclusion = ObjectFactory.buildEntity(NSEntityDescription.forEntity("Conclusion")!, fromJSON: json) as! Conclusion
+		let conclusion = ObjectFactory.make(NSEntityDescription.forEntity("Conclusion")!, from: json) as! Conclusion
 		XCTAssert(conclusion.content == expected, "Pass")
 	}
 	
@@ -914,7 +914,7 @@ class CoreDataDandyTests: XCTestCase {
 			"name": "bowler",
 			"style": "billycock"
 		]
-		let result = Serializer.serializeObject(hat) as! [String: String]
+		let result = Serializer.serialize(hat) as! [String: String]
 		XCTAssert(result == expected, "Pass")
 	}
 	/**
@@ -925,7 +925,7 @@ class CoreDataDandyTests: XCTestCase {
 		hat.setValue("bowler", forKey: "name")
 		hat.setValue(nil, forKey: "styleDescription")
 		let expected = ["name": "bowler"]
-		let result = Serializer.serializeObject(hat) as! [String: String]
+		let result = Serializer.serialize(hat) as! [String: String]
 		XCTAssert(result == expected, "Pass")
 	}
 	/**
@@ -933,7 +933,7 @@ class CoreDataDandyTests: XCTestCase {
 	*/
 	func testNestedRelationshipSerializationExclusion() {
 		let relationships = ["hats", "gossip", "predecessor"]
-		let result = Serializer.nestedSerializationTargetsForRelationship("hats", includeRelationships: relationships)
+		let result = Serializer.nestedSerializationTargetsFor("hats", including: relationships)
 		XCTAssert(result == nil, "Pass")
 	}
 	/**
@@ -942,7 +942,7 @@ class CoreDataDandyTests: XCTestCase {
 	func testNestedRelationshipSerializationTargeting() {
 		let relationships = ["purveyor.successor", "purveyor.hats.material", "anomaly"]
 		let expected = ["successor", "hats.material"]
-		let result = Serializer.nestedSerializationTargetsForRelationship("purveyor", includeRelationships: relationships)!
+		let result = Serializer.nestedSerializationTargetsFor("purveyor", including: relationships)!
 		XCTAssert(result == expected, "Pass")
 	}
 	/**
@@ -950,7 +950,7 @@ class CoreDataDandyTests: XCTestCase {
 	*/
 		func testNoMatchingRelationshipsSerializationTargeting() {
 			let relationships = ["purveyor.successor", "purveyor.hats.material"]
-			let result = Serializer.nestedSerializationTargetsForRelationship("anomaly", includeRelationships: relationships)
+			let result = Serializer.nestedSerializationTargetsFor("anomaly", including: relationships)
 			XCTAssert(result == nil, "Pass")
 		}
 	/**
@@ -972,7 +972,7 @@ class CoreDataDandyTests: XCTestCase {
 					"origin": "Rome"
 				]
 		]
-		let result = Serializer.serializeObject(hat, includeRelationships:["primaryMaterial"])!
+		let result = Serializer.serialize(hat, including:["primaryMaterial"])!
 		XCTAssert(json(result, isEqualJSON: expected), "Pass")
 	}
 	/**
@@ -999,7 +999,7 @@ class CoreDataDandyTests: XCTestCase {
 				"id": "3",
 				"name": "Andre 3000"]
 		]
-		let result = Serializer.serializeObjects([byron, wilde, andre])!
+		let result = Serializer.serialize([byron, wilde, andre])!
 		XCTAssert(result == expected, "Pass")
 	}
 	/**
@@ -1026,7 +1026,7 @@ class CoreDataDandyTests: XCTestCase {
 					"style": "alpine"]
 				]
 		]
-		var result = Serializer.serializeObject(byron, includeRelationships:["hats"])!
+		var result = Serializer.serialize(byron, including:["hats"])!
 		result["hats"] = (result["hats"] as! NSArray).sortedArrayUsingDescriptors([NSSortDescriptor(key: "name", ascending: true)])
 		XCTAssert(json(result, isEqualJSON:expected), "Pass")
 	}
@@ -1057,7 +1057,7 @@ class CoreDataDandyTests: XCTestCase {
 					]]
 				]
 		]
-		let result = Serializer.serializeObject(gossip, includeRelationships: ["purveyor.hats"]) as! [String: NSObject]
+		let result = Serializer.serialize(gossip, including: ["purveyor.hats"]) as! [String: NSObject]
 		XCTAssert(result == expected, "Pass")
 	}
 	
@@ -1093,7 +1093,7 @@ class CoreDataDandyTests: XCTestCase {
 				"hats": hats
 			]
 		]
-		let value = _valueForKeyPath("purveyor.hats", dictionary: gossip) as! [[String: AnyObject]]
+		let value = valueAt("purveyor.hats", of: gossip) as! [[String: AnyObject]]
 		XCTAssert(value == hats, "Pass")
 	}
 	
@@ -1106,7 +1106,7 @@ class CoreDataDandyTests: XCTestCase {
 	func testWarningErrorEmission() {
 		let error = NSError(domain: "DANDY_FETCH_ERROR", code: 1, userInfo: nil)
 		let warning = "Failed to serialize object Dandy including relationships hats"
-		let log = message(warning, withError: error)
+		let log = message(warning, with: error)
 		XCTAssert(log == "(CoreDataDandy) warning: " + warning + " Error:\n" + error.description, "Pass")
 	}
 	

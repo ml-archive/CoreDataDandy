@@ -45,12 +45,14 @@ public class PersistentStackCoordinator {
 		let modelURL = NSBundle(forClass: self.dynamicType).URLForResource(self.managedObjectModelName, withExtension: "momd")!
 		return NSManagedObjectModel(contentsOfURL: modelURL)!
 	}()
+	
 	/// The persistent store coordinator, which manages disk operations.
 	public lazy var persistentStoreCoordinator: NSPersistentStoreCoordinator = {
 		var coordinator = NSPersistentStoreCoordinator(managedObjectModel: self.managedObjectModel)
 		coordinator.resetPersistentStore()
 		return coordinator
 	}()
+	
 	/// The primary managed object context. Note the inclusion of the parent context, which takes disk operations off
 	/// the main thread.
 	public lazy var mainContext: NSManagedObjectContext = { [unowned self] in
@@ -60,6 +62,7 @@ public class PersistentStackCoordinator {
 		mainContext.parentContext = self.privateContext
 		return mainContext
 	}()
+	
 	/// Connects the private context with its PSC on the correct thread, waits for the connection to take place,
 	/// then announces its completion via the initializationCompletion closure.
 	func connectPrivateContextToPersistentStoreCoordinator() {
@@ -72,6 +75,7 @@ public class PersistentStackCoordinator {
 			}
 		})
 	}
+	
 	/// A context that escorts disk operations off the main thread.
 	lazy var privateContext: NSManagedObjectContext = { [unowned self] in
 		var privateContext = NSManagedObjectContext(concurrencyType: .PrivateQueueConcurrencyType)
@@ -86,6 +90,7 @@ public class PersistentStackCoordinator {
 		let urls = NSFileManager.defaultManager().URLsForDirectory(.DocumentDirectory, inDomains: .UserDomainMask)
 		return urls[urls.count - 1]
 		}()
+	
 	/// - returns: The path to the sqlite file that stores the application's data.
 	static var persistentStoreURL: NSURL = {
 		return applicationDocumentsDirectory.URLByAppendingPathComponent("Model.sqlite")
@@ -101,6 +106,7 @@ public class PersistentStackCoordinator {
 			})
 		})
 	}
+	
 	/// Attempt to remove existing persistent stores attach a new one.
 	/// Note: this method should not be invoked in lazy instantiatiations of a persistentStoreCoordinator. Instead,
 	/// directly call the corresponding function on the coordinator itself.
@@ -131,7 +137,7 @@ extension NSPersistentStoreCoordinator {
 			dict[NSLocalizedFailureReasonErrorKey] = "There was an error creating or loading the application's saved data."
 			dict[NSUnderlyingErrorKey] = error as NSError
 			let error = NSError(domain: DandyErrorDomain, code: 9999, userInfo: dict)
-			log(message("Failure to add persistent store", withError: error))
+			log(message("Failure to add persistent store", with: error))
 			do {
 				try NSFileManager.defaultManager().removeItemAtURL(PersistentStackCoordinator.persistentStoreURL)
 			} catch {

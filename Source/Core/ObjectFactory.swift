@@ -40,19 +40,19 @@ public struct ObjectFactory {
 	/// process json with thousands of objects.
 	/// 
 	/// - parameter entity:	The entity that will be inserted or fetched then read to from the json.
-	/// - parameter fromJSON: The json to map into the returned object.
+	/// - parameter from: The json to map into the returned object.
 	/// 
 	/// - returns: An NSManagedObject if one could be inserted or fetched. The values that could be mapped from the json
 	///		to the object will be found on the returned object.
-	public static func buildEntity(entity: NSEntityDescription, fromJSON json: [String: AnyObject]) -> NSManagedObject? {
+	public static func make(entity: NSEntityDescription, from json: [String: AnyObject]) -> NSManagedObject? {
 		// Find primary key
 		if	let name = entity.name,
 			let primaryKeyValue = entity.primaryKeyValueFromJSON(json) {
 			// Attempt to fetch or create unique object for primaryKey
 			let object = Dandy.insertUnique(name, primaryKeyValue: primaryKeyValue)
 			if var object = object {
-				object = buildObject(object, fromJSON: json)
-				attemptFinalizationOfObject(object, fromJSON: json)
+				object = build(object, from: json)
+				finalizeMapping(of: object, from: json)
 			} else {
 				log(message("A unique object could not be generated for entity \(entity.name) from json \n\(json)."))
 			}
@@ -61,6 +61,7 @@ public struct ObjectFactory {
 		log(message("A unique object could not be generated for entity \(entity.name) from json \n\(json)."))
 		return nil
 	}
+	
 	/// Transcribes attributes and relationships from json to a given object. Use this function to perform bulk upates
 	/// on an object from json.
 	///
@@ -68,11 +69,11 @@ public struct ObjectFactory {
 	/// - parameter json: The json to map into the returned object.
 	///
 	/// - returns: The object passed in with newly mapped values where mapping was possible.
-	public static func buildObject(object: NSManagedObject, fromJSON json: [String: AnyObject]) -> NSManagedObject {
-		if let map = EntityMapper.mapForEntity(object.entity) {
+	public static func build(object: NSManagedObject, from json: [String: AnyObject]) -> NSManagedObject {
+		if let map = EntityMapper.map(object.entity) {
 			// Begin mapping values from json to object properties
 			for (key, description) in map {
-				if let value: AnyObject = _valueForKeyPath(key, dictionary: json) {
+				if let value: AnyObject = valueAt(key, of: json) {
 					// A valid mapping was found for an attribute of a known type
 					if description.type == .Attribute,
 						let type = description.attributeType {
@@ -80,29 +81,30 @@ public struct ObjectFactory {
 					}
 						// A valid mapping was found for a relationship of a known type
 					else if description.type == .Relationship {
-						buildRelationship(description, fromJSON: value, forObject: object)
+						make(description, to: object, from: value)
 					}
 				}
 			}
 		}
 		return object
 	}
+	
 	/// Builds a relationship to a passed in object from json.
 	/// Note that the json type must match the relationship type. For instance, passing a json array to build a toOne
 	/// relationship is invalid, just as passing a single json object to build a toMany relationship is invalid.
 	///
+	/// - parameter relationship: An object specifying the details of the relationship, including its name, whether it is
+	/// 	toMany, and whether it is ordered.
 	/// - parameter object:	The parent object or "owner" of the relationship. If relationship objects are built, they will
 	/// 	be assigned to this object relationship.
-	/// - parameter relationshipDescription: An object specifying the details of the relationship, including its name, whether it is
-	/// 	toMany, and whether it is ordered.
 	/// - parameter json: The json with which to build the related objects.
 	///
 	/// - returns: The object passed in with a newly mapped relationship if relationship objects were built.
-	static func buildRelationship(relationship: PropertyDescription, fromJSON json: AnyObject, forObject object: NSManagedObject) -> NSManagedObject {
+	static func make(relationship: PropertyDescription, to object: NSManagedObject, from json: AnyObject) -> NSManagedObject {
 		if let relatedEntity = relationship.destinationEntity {
 			// A dictionary was passed for a toOne relationship
 			if let json = json as? [String: AnyObject] where !relationship.toMany  {
-				if let relation = buildEntity(relatedEntity, fromJSON: json) {
+				if let relation = make(relatedEntity, from: json) {
 					object.setValue(relation, forKey: relationship.name)
 				} else {
 					log(message("A relationship named \(relationship.name) could not be established for object \(object) from json \n\(json)."))
@@ -113,7 +115,7 @@ public struct ObjectFactory {
 			else if let json = json as? [[String: AnyObject]] where relationship.toMany  {
 				var relations = [NSManagedObject]()
 				for child in json {
-					if let relation = buildEntity(relatedEntity, fromJSON: child) {
+					if let relation = make(relatedEntity, from: child) {
 						relations.append(relation)
 					} else {
 						log(message("A relationship named \(relationship.name) could not be established for object \(object) from json \n\(child)."))
@@ -126,15 +128,16 @@ public struct ObjectFactory {
 		log(message("A relationship named \(relationship.name) could not be established for object \(object) from json \n\(json)."))
 		return object
 	}
+	
 	/// Allows for adopters of `MappingFinalizer` to perform custom mapping after the ObjectFactory has completed its 
 	/// work.
 	///
 	/// - parameter object:	The newly created object and the potential adopter of `MappingFinalizer`.
-	/// - parameter fromJSON: The json that was used to create the object. Note that this json will include all nested 
+	/// - parameter from: The json that was used to create the object. Note that this json will include all nested 
 	///		"child" relationships, but no "parent" relationships.
-	private static func attemptFinalizationOfObject(object: NSManagedObject, fromJSON json: [String: AnyObject]) {
+	private static func finalizeMapping(of object: NSManagedObject, from json: [String: AnyObject]) {
 		if let object = object as? MappingFinalizer {
-			object.finalizeMappingForJSON(json)
+			object.finalizeMapping(from: json)
 		}
 	}
 }
