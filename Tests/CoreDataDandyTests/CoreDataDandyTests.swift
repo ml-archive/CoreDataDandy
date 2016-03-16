@@ -512,6 +512,17 @@ class CoreDataDandyTests: XCTestCase {
 		let conclusion = Dandy.insert("Conclusion")!
 		XCTAssert(conclusion.entity.primaryKey == "id", "Pass")
 	}
+	/**
+		If a uniqueness constraint is present, `hasUniquenessConstraint` should be true.
+		If not, `hasUniquenessConstraint` should be false.
+	*/
+	func testHasUniquenessConstraintReporting() {
+		let conclusion = Dandy.insert("Conclusion")!
+		XCTAssert(conclusion.entity.hasUniqueConstraint == true, "Pass")
+		
+		let dandy = Dandy.insert("Dandy")!
+		XCTAssert(dandy.entity.hasUniqueConstraint == false, "Pass")
+	}
 	
 	/**
 		The primary key should return the uniquenessConstraint over of the primaryKey decoration if both are present.

@@ -34,11 +34,13 @@ public class CoreDataDandy {
 	// MARK: - Properties -
 	/// A singleton encapsulating much of CoreDataDandy's base functionality.
 	private static let defaultDandy = CoreDataDandy()
+	
 	/// The default implementation of Dandy. Subclasses looking to extend or alter Dandy's functionality
 	/// should override this getter and provide a new instance.
 	public class var sharedDandy: CoreDataDandy {
 		return defaultDandy
 	}
+	
 	/// A manager of the NSManagedObjectContext, NSPersistentStore, and NSPersistentStoreCoordinator.
 	/// Accessing this property directly is generaly discouraged - it is intended for use within the module alone.
 	public var coordinator: PersistentStackCoordinator!
@@ -131,6 +133,7 @@ public class CoreDataDandy {
 		
 		return nil
 	}
+	
 	/// Attempts to build an array of managed objects from a json array. Through recursion, behaves identically to
 	/// upsert(_:, _:) -> NSManagedObject?.
 	///
@@ -170,6 +173,7 @@ public class CoreDataDandy {
 		}
 		return nil
 	}
+	
 	/// Invokes `upsertUnique(_:, primaryKeyValue:) -> NSManagedObject?`, then attempts to write values from
 	/// the provided JSON into the returned object.
 	///
@@ -201,6 +205,7 @@ public class CoreDataDandy {
 	public func fetchUnique(entityName: String, primaryKeyValue: AnyObject) -> NSManagedObject? {
 		return fetchUnique(entityName, primaryKeyValue: primaryKeyValue, emitResultCountWarnings: true)
 	}
+	
 	/// A private version of `fetchUnique(_:_:) used for toggling warnings that would be of no interest
 	/// to the user. The warning accompanying an upsert request that begins by yielding a fetch of 0 results, for instance,
 	/// is silenced.
@@ -246,6 +251,7 @@ public class CoreDataDandy {
 			return nil
 		}
 	}
+	
 	/// A wrapper around NSFetchRequest.
 	///
 	/// - parameter entity: The name of the fetched entity
@@ -255,6 +261,7 @@ public class CoreDataDandy {
 	public func fetch(entityName: String) throws -> [NSManagedObject]? {
 		return try fetch(entityName, predicate: nil)
 	}
+	
 	/// A simple wrapper around NSFetchRequest.
 	///	
 	/// - parameter entity: The name of the fetched entity
@@ -308,6 +315,7 @@ public class CoreDataDandy {
 				})
 			})
 	}
+	
 	/// Delete a managed object.
 	///
 	/// - parameter object: The object to be deleted.
@@ -350,6 +358,7 @@ public class CoreDataDandy {
 		log(message("Failed to fetch unique instance of entity named " + entityName + "."))
 		return nil
 	}
+	
 	/// Returns a predicate that may be used to fetch unique objects
 	private func primaryPredicateForEntity(entity: NSEntityDescription, primaryKeyValue: AnyObject) -> NSPredicate? {
 			if	let primaryKey = entity.primaryKey,
