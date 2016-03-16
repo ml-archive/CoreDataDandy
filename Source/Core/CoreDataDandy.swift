@@ -229,13 +229,13 @@ public class CoreDataDandy {
 					do  {
 						results = try fetch(entityName, predicate: predicate)
 					} catch {
-						log(message("Your unique fetch for entity named \(entityName) with primary key \(primaryKeyValue) raised an exception. This is a serious error that should be resolved immediately."))
+						log(message("Your fetch for a unique entity named \(entityName) with primary key \(primaryKeyValue) raised an exception. This is a serious error that should be resolved immediately."))
 					}
 					if results?.count == 0 && emitResultCountWarnings {
-						log(message("Your unique fetch for entity named \(entityName) with primary key \(primaryKeyValue) returned no results."))
+						log(message("Your fetch for a unique entity named \(entityName) with primary key \(primaryKeyValue) returned no results."))
 					}
 					else if results?.count > 1 && emitResultCountWarnings {
-						log(message("Your unique fetch for entity named \(entityName) with primary key \(primaryKeyValue) returned multiple results. This is a serious error that should be resolved immediately."))
+						log(message("Your fetch for a unique entity named \(entityName) with primary key \(primaryKeyValue) returned multiple results. This is a serious error that should be resolved immediately."))
 					}
 					return results?.first
 				}

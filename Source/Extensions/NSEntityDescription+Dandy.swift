@@ -66,11 +66,6 @@ extension NSEntityDescription {
 		}
 	}
 	
-	///
-	var hasUniqueConstraint: Bool {
-		return uniqueConstraint == nil ? false : true
-	}
-	
 	/// Recursively collects arbitrary values from potential superentities. This function contains the boilerplate
 	/// required for collecting userInfo, attributesByName, and relationshipsByName.
 	///
