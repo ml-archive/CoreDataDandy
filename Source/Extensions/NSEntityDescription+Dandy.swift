@@ -147,7 +147,7 @@ extension NSEntityDescription {
 	///
 	/// - parameter primaryKeyValue: The value of the entity's primary key
 	/// - returns: A predicate that may be used to fetch unique objects
-	func primaryKeyPredicate(with primaryKeyValue: AnyObject) -> NSPredicate? {
+	func primaryKeyPredicate(for primaryKeyValue: AnyObject) -> NSPredicate? {
 		if	let primaryKey = primaryKey,
 			let value: AnyObject = CoreDataValueConverter.convert(primaryKeyValue, forEntity: self, property: primaryKey) {
 				return NSPredicate(format: "%K = %@", argumentArray: [primaryKey, value])

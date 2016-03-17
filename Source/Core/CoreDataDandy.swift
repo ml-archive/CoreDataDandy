@@ -224,7 +224,7 @@ public class CoreDataDandy {
 				}
 			}
 			else {
-				if let predicate = entityDescription.primaryKeyPredicate(with: primaryKeyValue) {
+				if let predicate = entityDescription.primaryKeyPredicate(for: primaryKeyValue) {
 					var results: [NSManagedObject]? = nil
 					do  {
 						results = try fetch(entityName, filterBy: predicate)

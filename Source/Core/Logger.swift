@@ -29,7 +29,7 @@
 import Foundation
 
 // MARK: - Warnings -
-func log(@autoclosure message: () -> String, filename: String = __FILE__, function: String = __FUNCTION__, line: Int = __LINE__) {
+func log(@autoclosure message: () -> String, filename: String = #file, function: String = #function, line: Int = #line) {
 #if DEBUG
 	NSLog("[\(NSString(string: filename).lastPathComponent):\(line)] \(function) - %@", message())
 #endif
