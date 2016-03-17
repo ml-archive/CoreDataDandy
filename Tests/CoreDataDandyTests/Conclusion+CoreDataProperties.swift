@@ -34,7 +34,7 @@ extension Conclusion {
 }
 
 extension Conclusion: MappingFinalizer {
-	func finalizeMapping(from json: [String : AnyObject]) {
+	func finalizeMapping(of json: [String : AnyObject]) {
 		if var content = content {
 			content += "_FINALIZED"
 			self.content = content

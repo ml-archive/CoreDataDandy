@@ -31,7 +31,7 @@ import CoreData
 class CoreDataDandyTests: XCTestCase {
 
 	override func setUp() {
-		CoreDataDandy.wakeWithMangedObjectModel("DandyModel")
+		CoreDataDandy.wake(with: "DandyModel")
 		CoreDataValueConverter.dateFormatter.dateStyle = .LongStyle
 		CoreDataValueConverter.dateFormatter.timeStyle = .ShortStyle
 		super.setUp()

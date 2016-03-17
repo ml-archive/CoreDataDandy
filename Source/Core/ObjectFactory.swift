@@ -137,7 +137,7 @@ public struct ObjectFactory {
 	///		"child" relationships, but no "parent" relationships.
 	private static func finalizeMapping(of object: NSManagedObject, from json: [String: AnyObject]) {
 		if let object = object as? MappingFinalizer {
-			object.finalizeMapping(from: json)
+			object.finalizeMapping(of: json)
 		}
 	}
 }

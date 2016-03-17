@@ -28,7 +28,6 @@
 import CoreData
 
 struct EntityMapper {
-	
 	// MARK: - Entity Mapping -
 	/// The primary function of this class. Creates, caches, and returns mappings that are subsequently
 	/// used to read json into an instance of an entity.
