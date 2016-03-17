@@ -35,7 +35,7 @@ All standard usage of Core Data Dandy should flow through CoreDataDandy's shared
 
 ### Bootstrapping 
 ```swift
-CoreDataDandy.wakeWithMangedObjectModel("ModelName")
+CoreDataDandy.wake("ModelName")
 ```
 
 ### Saving and deleting

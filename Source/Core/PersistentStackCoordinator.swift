@@ -33,26 +33,26 @@ import CoreData
 public class PersistentStackCoordinator {
 	private var managedObjectModelName: String
 	private var persistentStoreConnectionCompletion: (() -> Void)?
-	
+
 	public init(managedObjectModelName: String, persistentStoreConnectionCompletion: (() -> Void)? = nil) {
 		self.managedObjectModelName = managedObjectModelName
 		self.persistentStoreConnectionCompletion = persistentStoreConnectionCompletion
 	}
-	
+
 	// MARK: - Lazy stack initialization -
 	/// The .xcdatamodel to read from.
 	lazy var managedObjectModel: NSManagedObjectModel = {
 		let modelURL = NSBundle(forClass: self.dynamicType).URLForResource(self.managedObjectModelName, withExtension: "momd")!
 		return NSManagedObjectModel(contentsOfURL: modelURL)!
 	}()
-	
+
 	/// The persistent store coordinator, which manages disk operations.
 	public lazy var persistentStoreCoordinator: NSPersistentStoreCoordinator = {
 		var coordinator = NSPersistentStoreCoordinator(managedObjectModel: self.managedObjectModel)
 		coordinator.resetPersistentStore()
 		return coordinator
 	}()
-	
+
 	/// The primary managed object context. Note the inclusion of the parent context, which takes disk operations off
 	/// the main thread.
 	public lazy var mainContext: NSManagedObjectContext = { [unowned self] in
@@ -62,7 +62,7 @@ public class PersistentStackCoordinator {
 		mainContext.parentContext = self.privateContext
 		return mainContext
 	}()
-	
+
 	/// Connects the private context with its PSC on the correct thread, waits for the connection to take place,
 	/// then announces its completion via the initializationCompletion closure.
 	func connectPrivateContextToPersistentStoreCoordinator() {
@@ -75,14 +75,14 @@ public class PersistentStackCoordinator {
 			}
 		})
 	}
-	
+
 	/// A context that escorts disk operations off the main thread.
 	lazy var privateContext: NSManagedObjectContext = { [unowned self] in
 		var privateContext = NSManagedObjectContext(concurrencyType: .PrivateQueueConcurrencyType)
 		privateContext.mergePolicy = NSMergePolicy(mergeType: NSMergePolicyType.MergeByPropertyObjectTrumpMergePolicyType)
 		return privateContext
 	}()
-	
+
 	// MARK: - Convenience accessors -
 	/// - returns: The path to the Documents directory of a given device. This is where the sqlite file will be saved, and is a
 	/// useful value for debugging purposes.
@@ -90,12 +90,12 @@ public class PersistentStackCoordinator {
 		let urls = NSFileManager.defaultManager().URLsForDirectory(.DocumentDirectory, inDomains: .UserDomainMask)
 		return urls[urls.count - 1]
 		}()
-	
+
 	/// - returns: The path to the sqlite file that stores the application's data.
 	static var persistentStoreURL: NSURL = {
 		return applicationDocumentsDirectory.URLByAppendingPathComponent("Model.sqlite")
 		}()
-	
+
 	// MARK: - Stack clearing -
 	/// Clear the managed object contexts.
 	func resetManageObjectContext() {
@@ -106,7 +106,7 @@ public class PersistentStackCoordinator {
 			})
 		})
 	}
-	
+
 	/// Attempt to remove existing persistent stores attach a new one.
 	/// Note: this method should not be invoked in lazy instantiatiations of a persistentStoreCoordinator. Instead,
 	/// directly call the corresponding function on the coordinator itself.

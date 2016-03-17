@@ -28,23 +28,23 @@
 import CoreData
 
 /// `CoreDataDandy` provides an interface to the majority of the module's features, which include Core Data
-/// bootstrapping, main and background-threaded context management, convenient `NSFetchRequests`, 
+/// bootstrapping, main and background-threaded context management, convenient `NSFetchRequests`,
 /// database inserts, database deletes, and `NSManagedObject` deserialization.
 public class CoreDataDandy {
 	// MARK: - Properties -
 	/// A singleton encapsulating much of CoreDataDandy's base functionality.
 	private static let defaultDandy = CoreDataDandy()
-	
+
 	/// The default implementation of Dandy. Subclasses looking to extend or alter Dandy's functionality
 	/// should override this getter and provide a new instance.
 	public class var sharedDandy: CoreDataDandy {
 		return defaultDandy
 	}
-	
+
 	/// A manager of the NSManagedObjectContext, NSPersistentStore, and NSPersistentStoreCoordinator.
 	/// Accessing this property directly is generaly discouraged - it is intended for use within the module alone.
 	public var coordinator: PersistentStackCoordinator!
-	
+
 	// MARK: - Initialization-
 	/// Bootstraps the application's core data stack.
 	///
@@ -56,24 +56,24 @@ public class CoreDataDandy {
 												persistentStoreConnectionCompletion: completion)
 		return sharedDandy
 	}
-	
+
 	// MARK: -  Deinitialization -
 	/// Removes all cached data from the application without endangering future database
 	/// interactions.
 	public func tearDown() {
 		coordinator.resetManageObjectContext()
-		
+
 		do {
 			try NSFileManager.defaultManager().removeItemAtURL(PersistentStackCoordinator.persistentStoreURL)
 		} catch {
 			log(message("Failed to delete persistent store"))
 		}
-		
+
 		coordinator.resetPersistentStore()
 		EntityMapper.clearCache()
 		save()
 	}
-	
+
 	// MARK: - Inserts -
 	/// Inserts a new managed object from the specified entity name. In general, this function should not be invoked
 	/// directly, as its incautious use is likely to lead to database use.
@@ -91,19 +91,18 @@ public class CoreDataDandy {
 			}
 			// Otherwise, insert a new managed object
 			return NSManagedObject(entity: entityDescription, insertIntoManagedObjectContext: coordinator.mainContext)
-		}
-		else {
+		} else {
 			log(message("NSEntityDescriptionNotFound for entity named " + entityName + ". No object will be returned"))
 			return nil
 		}
 	}
-	
+
 	/// MARK: - Upserts -
 	/// This function performs upserts differently depending on whether the entity is marked as unique or not.
 	///
 	/// If the entity is marked as unique (either through an @primaryKey decoration or an xcdatamode constraint), the
 	/// primaryKeyValue is extracted and an upsert is performed through
-	/// `upsertUnique(_:, primaryKeyValue:) -> NSManagedObject?`. 
+	/// `upsertUnique(_:, primaryKeyValue:) -> NSManagedObject?`.
 	///
 	/// Otherwise, an insert is performed and a managed object is written to from the json provided.
 	///
@@ -116,7 +115,7 @@ public class CoreDataDandy {
 			log(message("Could not retrieve NSEntityDescription or for entity named \(entityName)"))
 			return nil
 		}
-		
+
 		let isUniqueEntity = entityDescription.primaryKey != nil
 		if isUniqueEntity {
 			if let primaryKeyValue = entityDescription.primaryKeyValueFromJSON(json) {
@@ -126,14 +125,14 @@ public class CoreDataDandy {
 				return nil
 			}
 		}
-		
+
 		if let managedObject = insert(entityName) {
 			return ObjectFactory.build(managedObject, from: json)
 		}
-		
+
 		return nil
 	}
-	
+
 	/// Attempts to build an array of managed objects from a json array. Through recursion, behaves identically to
 	/// upsert(_:, _:) -> NSManagedObject?.
 	///
@@ -150,10 +149,10 @@ public class CoreDataDandy {
 		}
 		return (managedObjects.count > 0) ? managedObjects: nil
 	}
-	
+
 	// MARK: - Unique objects -
 	/// Attempts to fetch an `NSManagedObject` of the specified entity name matching the primary key provided.
-	/// - If no property on the entity's `NSEntityDescription` is marked with the @primaryKey identifier or constraint, 
+	/// - If no property on the entity's `NSEntityDescription` is marked with the @primaryKey identifier or constraint,
 	/// a warning is issued and no managed object is returned.
 	/// - If an object matching the primaryKey is found, it is returned. Otherwise a new object is inserted and returned.
 	/// - If more than one object is fetched for this primaryKey, a warning is issued and one is returned.
@@ -173,7 +172,7 @@ public class CoreDataDandy {
 		}
 		return nil
 	}
-	
+
 	/// Invokes `upsertUnique(_:, primaryKeyValue:) -> NSManagedObject?`, then attempts to write values from
 	/// the provided JSON into the returned object.
 	///
@@ -191,7 +190,7 @@ public class CoreDataDandy {
 			return nil
 		}
 	}
-	
+
 	// MARK: - Fetches -
 	/// Attempts to fetch a unique object of a given entity with a primary key value matching the passed in parameter.
 	/// Because this function first verifies the existence of a given `NSEntityDescription`, its fetch request
@@ -205,7 +204,7 @@ public class CoreDataDandy {
 	public func fetchUnique(entityName: String, primaryKeyValue: AnyObject) -> NSManagedObject? {
 		return fetchUnique(entityName, primaryKeyValue: primaryKeyValue, emitResultCountWarnings: true)
 	}
-	
+
 	/// A private version of `fetchUnique(_:_:) used for toggling warnings that would be of no interest
 	/// to the user. The warning accompanying an upsert request that begins by yielding a fetch of 0 results, for instance,
 	/// is silenced.
@@ -222,11 +221,10 @@ public class CoreDataDandy {
 				if let singleton = singletonEntity(entityName) {
 					return singleton
 				}
-			}
-			else {
+			} else {
 				if let predicate = entityDescription.primaryKeyPredicate(with: primaryKeyValue) {
 					var results: [NSManagedObject]? = nil
-					do  {
+					do {
 						results = try fetch(entityName, filterBy: predicate)
 					} catch {
 						log(message("Your fetch for a unique entity named \(entityName) with primary key \(primaryKeyValue) raised an exception. This is a serious error that should be resolved immediately."))
@@ -238,8 +236,7 @@ public class CoreDataDandy {
 						log(message("Your fetch for a unique entity named \(entityName) with primary key \(primaryKeyValue) returned multiple results. This is a serious error that should be resolved immediately."))
 					}
 					return results?.first
-				}
-				else {
+				} else {
 					log(message("Failed to produce predicate for \(entityName) with primary key \(primaryKeyValue)."))
 				}
 			}
@@ -251,7 +248,7 @@ public class CoreDataDandy {
 			return nil
 		}
 	}
-	
+
 	/// A wrapper around NSFetchRequest.
 	///
 	/// - parameter entityName: The name of the fetched entity
@@ -261,9 +258,9 @@ public class CoreDataDandy {
 	public func fetch(entityName: String) throws -> [NSManagedObject]? {
 		return try fetch(entityName, filterBy: nil)
 	}
-	
+
 	/// A simple wrapper around NSFetchRequest.
-	///	
+	///
 	/// - parameter entityName: The name of the fetched entity
 	/// - parameter predicate: The predicate used to filter results
 	///
@@ -276,7 +273,7 @@ public class CoreDataDandy {
 		let results = try coordinator.mainContext.executeFetchRequest(request)
 		return results as? [NSManagedObject]
 	}
-	
+
 	// MARK: - Saves and Deletes -
 	/// Save the current state of the `NSManagedObjectContext` to disk and optionally receive notice of the save
 	/// operation's completion.
@@ -302,7 +299,7 @@ public class CoreDataDandy {
 				completion?(error: error as NSError)
 				return
 			}
-			
+
 			self.coordinator.privateContext.performBlock({ [unowned self] in
 				do {
 					try self.coordinator.privateContext.save()
@@ -315,7 +312,7 @@ public class CoreDataDandy {
 				})
 			})
 	}
-	
+
 	/// Delete a managed object.
 	///
 	/// - parameter object: The object to be deleted.
@@ -328,7 +325,7 @@ public class CoreDataDandy {
 			})
 		}
 	}
-	
+
 	// MARK: - Private helpers -
 	/// Attempts to return a predicate which may be used to fetch a unique version of an object.
 	///
@@ -350,8 +347,7 @@ public class CoreDataDandy {
 
 					}
 				}
-			}
-				catch {
+			} catch {
 					log(message("Your singleton fetch for entity named \(entityName) raised an exception. This is a serious error that should be resolved immediately."))
 			}
 		}

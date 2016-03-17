@@ -1,0 +1,7 @@
+reporter: "xcode"
+line_length: 180
+excluded:
+  - CoreDataDandyTests/CoreDataDandyTests.swift
+  - CoreDataDandyTests/Conclusion+CoreDataProperties.swift
+disabled_rules:
+  - trailing_newline

@@ -32,13 +32,13 @@ import CoreData
 /// `CoreDataValueConverter` compares a given value to a given entity's property type, then attempts to convert the value
 /// to the property type. This class ensures that values written to the NSManagedObject are always of the appropriate
 /// tyope.
-/// 
+///
 /// The actual conversion is conducted by an appropriate `ValueConverter`.
 public struct CoreDataValueConverter {
 	/// A shared dateFormatter for regularly converting strings of a known pattern
 	/// to dates and vice-versa.
 	public static let dateFormatter = NSDateFormatter()
-	
+
 	/// Maps `NSAttributeTypes` to their corresponding type converters.
 	private static let typeConverters: [NSAttributeType: ValueConverter] = [
 		.Integer16AttributeType: IntConverter(),

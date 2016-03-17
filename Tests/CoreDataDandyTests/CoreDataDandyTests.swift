@@ -52,7 +52,7 @@ class CoreDataDandyTests: XCTestCase {
 		let finalResultsCount = try! Dandy.fetch("Dandy")?.count
 		XCTAssert(initialResultsCount == 1 && finalResultsCount == 0, "Pass")
 	}
-	
+
 	// MARK: - Saves -
 	/**
 		After a save, the size of the persistent store should increase
@@ -74,14 +74,14 @@ class CoreDataDandyTests: XCTestCase {
 					XCTAssert(false, "Failure to retrieive file attributes.")
 					expectation.fulfill()
 				}
-			});
+			})
 		} catch {
 			XCTAssert(false, "Failure to retrieive file attributes.")
 			expectation.fulfill()
 		}
 		self.waitForExpectationsWithTimeout(20, handler: { (let error) -> Void in })
 	}
-	
+
 	// MARK: - Object insertions, deletions, and fetches -
 	/**
 		Objects should be insertable.
@@ -116,7 +116,7 @@ class CoreDataDandyTests: XCTestCase {
 		XCTAssert(object == nil, "Pass")
 	}
 	/**
-		After a value has been inserted with a primary key, the next fetch for it should return it and 
+		After a value has been inserted with a primary key, the next fetch for it should return it and
 		it alone.
 	*/
 	func testUniqueObjectMaintenance() {
@@ -139,7 +139,7 @@ class CoreDataDandyTests: XCTestCase {
 		XCTAssert(dandies == 2 && byrons == 1, "Pass")
 	}
 	/**
-		After a fetch for an object with a primaryKey of the wrong type should undergo type conversion and 
+		After a fetch for an object with a primaryKey of the wrong type should undergo type conversion and
 		resolve correctly..
 	*/
 	func testPrimaryKeyTypeConversion() {
@@ -190,7 +190,7 @@ class CoreDataDandyTests: XCTestCase {
 		}
 		self.waitForExpectationsWithTimeout(0.5, handler: { (let error) -> Void in })
 	}
-	
+
 	// MARK: - Persistent Stack -
 	/**
 		The managed object model associated with the stack coordinator should be consistent with DandyModel.xcdatamodel.
@@ -237,7 +237,7 @@ class CoreDataDandyTests: XCTestCase {
 		persistentStackCoordinator.connectPrivateContextToPersistentStoreCoordinator()
 		self.waitForExpectationsWithTimeout(5, handler: { (let error) -> Void in })
 	}
-	
+
 	// MARK: - Value conversions -
 	/**
 		Conversions to undefined types should not occur
@@ -259,16 +259,16 @@ class CoreDataDandyTests: XCTestCase {
 	func testSameTypeConversion() {
 		let string: AnyObject? = CoreDataValueConverter.convert("For us, life is five minutes of introspection", toType: .StringAttributeType)
 		XCTAssert(string is String, "Pass")
-		
+
 		let number: AnyObject? = CoreDataValueConverter.convert(1, toType: .Integer64AttributeType)
 		XCTAssert(number is NSNumber, "Pass")
-		
+
 		let decimal: AnyObject? = CoreDataValueConverter.convert(NSDecimalNumber(integer: 1), toType: .DecimalAttributeType)
 		XCTAssert(decimal is NSDecimalNumber, "Pass")
-		
+
 		let date: AnyObject? = CoreDataValueConverter.convert(NSDate(), toType: .DateAttributeType)
 		XCTAssert(date is NSDate, "Pass")
-		
+
 		let encodedString = "suave".dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: true)
 		let data: AnyObject? = CoreDataValueConverter.convert(encodedString!, toType: .BinaryDataAttributeType)
 		XCTAssert(data is NSData, "Pass")
@@ -340,15 +340,15 @@ class CoreDataDandyTests: XCTestCase {
 		var input = -1
 		var result = CoreDataValueConverter.convert(input, toType: .BooleanAttributeType) as? NSNumber
 		XCTAssert(result?.boolValue == nil, "")
-		
+
 		input = 1
 		result = CoreDataValueConverter.convert(input, toType: .BooleanAttributeType) as? NSNumber
 		XCTAssert(result?.boolValue == true, "")
-		
+
 		input = 0
 		result = CoreDataValueConverter.convert(input, toType: .BooleanAttributeType) as? NSNumber
 		XCTAssert(result?.boolValue == false, "")
-		
+
 		input = 99
 		result = CoreDataValueConverter.convert(input, toType: .BooleanAttributeType) as? NSNumber
 		XCTAssert(result == true, "Pass")
@@ -404,31 +404,31 @@ class CoreDataDandyTests: XCTestCase {
 	func testStringToBooleanConversion() {
 		var testString = "Yes"
 		var result: NSNumber?
-		
+
 		result = CoreDataValueConverter.convert(testString, toType: .BooleanAttributeType) as? NSNumber
 		XCTAssert(result?.boolValue == true, "")
-		
+
 		testString = "trUe"
 		result = CoreDataValueConverter.convert(testString, toType: .BooleanAttributeType) as? NSNumber
 		XCTAssert(result?.boolValue == true, "")
-		
+
 		testString = "1"
 		result = CoreDataValueConverter.convert(testString, toType: .BooleanAttributeType) as? NSNumber
 		XCTAssert(result?.boolValue == true, "")
-		
+
 		testString = "NO"
 		result = CoreDataValueConverter.convert(testString, toType: .BooleanAttributeType) as? NSNumber
 		XCTAssert(result?.boolValue == false, "")
-		
+
 		testString = "false"
 		result = CoreDataValueConverter.convert(testString, toType: .BooleanAttributeType) as? NSNumber
 		XCTAssert(result?.boolValue == false, "")
-		
+
 		testString = "0"
 		result = CoreDataValueConverter.convert(testString, toType: .BooleanAttributeType) as? NSNumber
 		XCTAssert(result?.boolValue == false, "")
-		
-		
+
+
 		testString = "undefined"
 		result = CoreDataValueConverter.convert(testString, toType: .BooleanAttributeType) as? NSNumber
 		XCTAssert(result == nil, "")
@@ -440,11 +440,11 @@ class CoreDataDandyTests: XCTestCase {
 		var input = "123"
 		var result = CoreDataValueConverter.convert(input, toType: .Integer64AttributeType) as? NSNumber
 		XCTAssert(result?.integerValue == 123, "")
-		
+
 		input = "456wordsdontmatter123"
 		result = CoreDataValueConverter.convert(input, toType: .Integer64AttributeType) as? NSNumber
 		XCTAssert(result?.integerValue == 456, "")
-		
+
 		input = "nothingHereMatters"
 		result = CoreDataValueConverter.convert(input, toType: .Integer64AttributeType) as? NSNumber
 		XCTAssert(result?.integerValue == 0, "")
@@ -492,7 +492,7 @@ class CoreDataDandyTests: XCTestCase {
 		let resultAsString = CoreDataValueConverter.dateFormatter.stringFromDate(result!)
 		XCTAssert(resultAsString == nowAsString, "")
 	}
-	
+
 	// MARK: - Mapping -
 	func testEntityDescriptionFromString() {
 		let expected = NSEntityDescription.entityForName("Dandy", inManagedObjectContext: Dandy.coordinator.mainContext)
@@ -536,7 +536,7 @@ class CoreDataDandyTests: XCTestCase {
 		XCTAssert(slander.entity.primaryKey == "statement", "Pass")
 	}
 	/**
-		Children's userInfo should contain the userInfo of their parents. In this case, Slander's userInfo should 
+		Children's userInfo should contain the userInfo of their parents. In this case, Slander's userInfo should
 		contain a value from its parent, Gossip.
 	*/
 	func testUserInfoHierarchyCollection() {
@@ -594,7 +594,7 @@ class CoreDataDandyTests: XCTestCase {
 		let result = EntityMapper.map(entity)!
 		XCTAssert(result == expectedMap, "Pass")
 	}
-	
+
 	// MARK: - Property description comparisons and caching -
 	/**
 		Comparisons of property descriptions should evaluate correctly.
@@ -613,7 +613,7 @@ class CoreDataDandyTests: XCTestCase {
 	*/
 	func testPropertyDescriptionInitialization() {
 		let _ = PropertyDescription()
-		
+
 		let entity = NSEntityDescription.forEntity("Space")!
 		let propertyDescription = PropertyDescription(description: entity.allAttributes!["name"]!)
 		let pathArray = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)
@@ -623,7 +623,7 @@ class CoreDataDandyTests: XCTestCase {
 		let unarchivedPropertyDescription = NSKeyedUnarchiver.unarchiveObjectWithFile(archivePath) as! PropertyDescription
 		XCTAssert(unarchivedPropertyDescription == propertyDescription, "Pass")
 	}
-	
+
 	// MARK: - Map caching -
 	/**
 		The first access to an entity's map should result in that map's caching
@@ -668,7 +668,7 @@ class CoreDataDandyTests: XCTestCase {
 			EntityMapper.map(entityDescription)
 		}
 	}
-	
+
 	// MARK: - Object building -
 	/**
 		Values should be mapped from json to an object's attributes.
@@ -816,7 +816,7 @@ class CoreDataDandyTests: XCTestCase {
 		XCTAssert(gossip.valueForKey("purveyor") == nil, "Pass")
 	}
 	/**
-		NSOrderedSets should be created for ordered relationships. NSSets should be created for 
+		NSOrderedSets should be created for ordered relationships. NSSets should be created for
 		unordered relationships.
 	*/
 	func testOrderedRelationshipsBuilding() {
@@ -835,7 +835,7 @@ class CoreDataDandyTests: XCTestCase {
 		ObjectFactory.make(PropertyDescription(description: hat.entity.allRelationships!["dandies"]!), to: hat, from: json)
 		XCTAssert(hat.valueForKey("dandies") is NSOrderedSet && (hat.valueForKey("dandies") as! NSOrderedSet).count == 3, "Pass")
 	}
-	
+
 	// MARK: -  Object factory via CoreDataDandy -
 	/**
 		json containing a valid primary key should result in unique, mapped objects.
@@ -854,7 +854,7 @@ class CoreDataDandyTests: XCTestCase {
 		let byron = Dandy.upsert("Dandy", from: json)
 		XCTAssert(byron == nil, "Pass")
 	}
-	
+
 	/**
 		json lacking a primary key should be rejected. A nil value should be returned and a warning
 		emitted.
@@ -864,7 +864,7 @@ class CoreDataDandyTests: XCTestCase {
 		let byron = Dandy.upsert("Dandy", from: json)
 		XCTAssert(byron == nil, "Pass")
 	}
-	
+
 	/**
 		An array of objects should be returned from a json array containing mappable objects.
 	*/
@@ -877,7 +877,7 @@ class CoreDataDandyTests: XCTestCase {
 		let countIsCorrect = dandies.count == 10
 		var dandiesAreCorrect = true
 		for i in 0...9 {
-			let matchingDandies = (dandies.filter{$0.valueForKey("dandyID")! as! String == String(i)})
+			let matchingDandies = (dandies.filter {$0.valueForKey("dandyID")! as! String == String(i)})
 			if matchingDandies.count != 1 {
 				dandiesAreCorrect = false
 				break
@@ -887,8 +887,8 @@ class CoreDataDandyTests: XCTestCase {
 	}
 	/**
 		Objects that adopt `MappingFinalizer` should invoke `finalizeMappingForJSON(_:)` at the conclusion of its
-		construction. 
-		
+		construction.
+
 		Gossip's map appends "_FINALIZE" to its content.
 	*/
 	func testMappingFinalization() {
@@ -901,7 +901,7 @@ class CoreDataDandyTests: XCTestCase {
 		let conclusion = ObjectFactory.make(NSEntityDescription.forEntity("Conclusion")!, from: json) as! Conclusion
 		XCTAssert(conclusion.content == expected, "Pass")
 	}
-	
+
 	// MARK: - Serialization tests -
 	/**
 		An object's attributes should be serializable into json.
@@ -1060,7 +1060,7 @@ class CoreDataDandyTests: XCTestCase {
 		let result = Serializer.serialize(gossip, including: ["purveyor.hats"]) as! [String: NSObject]
 		XCTAssert(result == expected, "Pass")
 	}
-	
+
 	// MARK: - Extension tests -
 	/**
 		Entries from one dictionary should add correctly to another dictionary of the same type
@@ -1083,7 +1083,7 @@ class CoreDataDandyTests: XCTestCase {
 				"origin": "Rome"
 			]
 		]]
-			
+
 		let gossip = [
 			"details": "At Bo Peep, unusually cool towards Isabella Brown.",
 			"topic": "John Keats",
@@ -1096,7 +1096,7 @@ class CoreDataDandyTests: XCTestCase {
 		let value = valueAt("purveyor.hats", of: gossip) as! [[String: AnyObject]]
 		XCTAssert(value == hats, "Pass")
 	}
-	
+
 	// MARK: - Warning emission tests -
 	func testWarningEmission() {
 		let warning = "Failed to serialize object Dandy including relationships hats"
@@ -1109,7 +1109,7 @@ class CoreDataDandyTests: XCTestCase {
 		let log = message(warning, with: error)
 		XCTAssert(log == "(CoreDataDandy) warning: " + warning + " Error:\n" + error.description, "Pass")
 	}
-	
+
 	func json(lhs: [String: AnyObject], isEqualJSON rhs: [String: AnyObject]) -> Bool {
 		// Dictionaries of unequal counts are not equal
 		if lhs.count != rhs.count { return false }

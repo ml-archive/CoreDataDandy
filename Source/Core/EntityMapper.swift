@@ -44,12 +44,12 @@ struct EntityMapper {
 			} else {
 				// A mapping has not been created for this entity. Create it, cache it, and return it.
 				var map = [String: PropertyDescription]()
-				
+
 				// Map attributes
 				if let attributes = entity.allAttributes {
 					add(attributes, to: &map)
 				}
-				
+
 				// Map relationships
 				if let relationships = entity.allRelationships {
 					add(relationships, to: &map)
@@ -62,7 +62,7 @@ struct EntityMapper {
 		}
 		return nil
 	}
-	
+
 	/// A convenience function for producing mapped values of an entity's attributes relationships.
 	///
 	/// - parameter dictionary: A dictionary containing either NSAttributeDescriptions or NSRelationshipDescriptions
@@ -80,7 +80,7 @@ struct EntityMapper {
 			}
 		}
 	}
-	
+
 	/// Returns any mapping values found in a userInfo dictionary.
 	///
 	/// - parameter userInfo: The userInfo of an `NSEntityDescription`, `NSAttributeDescription`, or `NSRelationshipDescription`
@@ -111,29 +111,29 @@ extension EntityMapper {
 			}
 			return _cachedEntityMap!
 		}
-		
+
 		set {
 			_cachedEntityMap = newValue
 		}
 	}
-	
+
 	/// - returns: The file path where the entityMap is archived.
 	private static var entityMapFilePath: String = {
 		let pathArray = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)
 		let documentPath = pathArray.first!
 		return NSString(string: documentPath).stringByAppendingPathComponent(CACHED_MAPPING_LOCATION)
 	}()
-	
+
 	/// Archives an entity's mapping. Note, this mapping, will be saved to the `cachedEntityMap` at the key
 	/// of the forEntity parameter.
 	///
 	/// - parameter map: A mapping for reading json into an entity.
 	/// - parameter forEntity: The name of the entity `map` corresponds to.
 	private static func archive(map: [String: PropertyDescription], forEntity entity: String) {
-		cachedEntityMap[entity] = map;
+		cachedEntityMap[entity] = map
 		NSKeyedArchiver.archiveRootObject(cachedEntityMap, toFile: entityMapFilePath)
 	}
-	
+
 	/// Clears cached mappings.
 	///
 	/// This method should be invoked when the database is undergoing a migration or any other time

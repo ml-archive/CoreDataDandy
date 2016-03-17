@@ -32,7 +32,7 @@ import CoreData
 public struct Serializer {
 	/// Produces json representing an object and, potentially, members of its relationship tree.
 	///
-	/// Specify each relationship you wish to include in the serialization by including its name in the relationship 
+	/// Specify each relationship you wish to include in the serialization by including its name in the relationship
 	/// array. To serialize further into a relationship "tree", use keypaths.
 	///
 	/// As an example, imagine the following relationship tree:
@@ -42,14 +42,14 @@ public struct Serializer {
 	///							-> gossip	(relationship to)
 	///														->	purveyor
 	///
-	/// - If no relationships are specified when serializing the dandy object, only its attributes will be serialized 
+	/// - If no relationships are specified when serializing the dandy object, only its attributes will be serialized
 	/// into json.
 	/// - If ["hats", "gossip"] is specified when serializing the dandy object, Dandy's attributes will be serialize
 	/// along with its hats and gossipe relationships.
-	/// - If ["gossip.purveyor"] is specified when serializing the dandy object, Dandy's attributes, gossip, and 
+	/// - If ["gossip.purveyor"] is specified when serializing the dandy object, Dandy's attributes, gossip, and
 	/// gossip's purveyor will be serialized into json.
 	///
-	/// Note: attributes with nil values will not be included in the returned json. However, nil relationships that are 
+	/// Note: attributes with nil values will not be included in the returned json. However, nil relationships that are
 	/// specified will be included as empty arrays or objects.
 	///
 	/// - parameter object: An object to serialize into json
@@ -80,7 +80,7 @@ public struct Serializer {
 								json[property] = [[:]]
 							}
 						}
-						// Assume nils to intend empty objects
+						// Assume nils to denote empty objects
 						else {
 							json[property] = [[:]]
 						}
@@ -89,7 +89,7 @@ public struct Serializer {
 						if let relationship = object.valueForKey(description.name) as? NSManagedObject {
 							json[property] = serialize(relationship, including: nestedRelationships) as? AnyObject
 						}
-						// Assume nils to intend empty objects
+						// Assume nils to denote empty objects
 						else {
 							json[property] = [:]
 						}
@@ -103,7 +103,7 @@ public struct Serializer {
 		}
 		return json
 	}
-	
+
 	/// Recursively invokes other class methods to produce a json array, including relationships.
 	///
 	/// - parameter objects: An array of `NSManagedObjects` to serialize
@@ -119,7 +119,7 @@ public struct Serializer {
 		}
 		return json.count > 0 ? json: nil
 	}
-	
+
 	/// Determines which relationships to a given relationship require serialization. Relationships to a relationship
 	/// are referred to as "nested" relationships. Invoked at every "level" of serialization to recursively convert
 	/// keypaths with the name of a top-level relationship into a string which no longer references that relationship.

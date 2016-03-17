@@ -35,21 +35,21 @@ extension NSEntityDescription {
 			return collectedEntityValuesFromDictionaryClosure({return $0.userInfo as? [String: AnyObject]})
 		}
 	}
-	
+
 	/// Recursively collects all attribute values from potential superentities
 	var allAttributes: [String: NSAttributeDescription]? {
 		get {
 			return collectedEntityValuesFromDictionaryClosure({return $0.attributesByName}) as? [String: NSAttributeDescription]
 		}
 	}
-	
+
 	/// Recursively collects all relationship values from potential superentities
 	var allRelationships: [String: NSRelationshipDescription]? {
 		get {
 			return collectedEntityValuesFromDictionaryClosure({return $0.relationshipsByName}) as? [String: NSRelationshipDescription]
 		}
 	}
-	
+
 	/// Returns a single unique constraint. Core Data Dandy does not support the use of multiple unique constraints.
 	/// The constraint returned is prioritized over any marked by the @primaryKey decorator.
 	var uniqueConstraint: String? {
@@ -57,15 +57,14 @@ extension NSEntityDescription {
 			if #available(iOS 9.0, *) {
 				if let constraint = uniquenessConstraints.first?.first?.name {
 					return constraint
-				}
-				else if let superEntity = superentity {
+				} else if let superEntity = superentity {
 					return superEntity.uniqueConstraint
 				}
 			}
 			return nil
 		}
 	}
-	
+
 	/// Recursively collects arbitrary values from potential superentities. This function contains the boilerplate
 	/// required for collecting userInfo, attributesByName, and relationshipsByName.
 	///
@@ -83,7 +82,7 @@ extension NSEntityDescription {
 		}
 		return values
 	}
-	
+
 	/// - returns: The entity's hierarchy, sorted by "superiority". The most super entity will be the first element
 	/// in the array, the current entity will be the last.
 	private var entityHierarchy: [NSEntityDescription] {
@@ -111,11 +110,11 @@ extension NSEntityDescription {
 	/// Returns the primary key of of the `NSEntityDescription`, a value used to ensure a unique record
 	///	for this entity.
 	///
-	/// - returns: The property on the entity marked as a unique constraint or as its primaryKey if either is found. 
+	/// - returns: The property on the entity marked as a unique constraint or as its primaryKey if either is found.
 	///	Otherwise, nil.
 	var primaryKey: String? {
 		get {
-			if let uniqueConstraint = uniqueConstraint  {
+			if let uniqueConstraint = uniqueConstraint {
 				return uniqueConstraint
 			}
 			if let userInfo = allUserInfo {
@@ -124,7 +123,7 @@ extension NSEntityDescription {
 			return nil
 		}
 	}
-	
+
 	/// Extracts the value of a primary key from the passed in json if one can be extracted. Takes alternate mappings
 	/// for the primaryKey into account.
 	///
@@ -142,7 +141,7 @@ extension NSEntityDescription {
 		}
 		return nil
 	}
-	
+
 	/// Generates a predicate to fetch for the entity with a given primary key value
 	///
 	/// - parameter primaryKeyValue: The value of the entity's primary key
