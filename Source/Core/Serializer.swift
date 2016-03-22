@@ -67,8 +67,8 @@ public struct Serializer {
 				}
 				else if let relationships = relationships
 					where (relationships.contains(description.name)
-					|| nestedSerializationTargetsFor(description.name, including: relationships)?.count > 0) {
-					let nestedRelationships = nestedSerializationTargetsFor(description.name, including: relationships)
+						|| nestedSerializationTargets(for: description.name, including: relationships)?.count > 0) {
+					let nestedRelationships = nestedSerializationTargets(for: description.name, including: relationships)
 					// Map relationships and recurse into nested relationships
 					if description.toMany {
 						let relatedObjects = description.ordered ? object.valueForKey(description.name)?.array: object.valueForKey(description.name)?.allObjects
@@ -128,8 +128,7 @@ public struct Serializer {
 	/// - parameter relationships: All serialization targets for the top-level object.
 	///
 	/// - returns: An array of nested relationships targeted for serialization.
-	// TODO: Move the preposition the the first parameter in 2.3.
-	static func nestedSerializationTargetsFor(relationship: String, including nestedRelationships: [String]?) -> [String]? {
+	static func nestedSerializationTargets(for relationship: String, including nestedRelationships: [String]?) -> [String]? {
 		if let nestedRelationships = nestedRelationships {
 			let keypaths = nestedRelationships.filter({$0.rangeOfString(relationship) != nil && $0.rangeOfString(".") != nil})
 			// Eliminate the relationship name and the period, recursing one level deeper.

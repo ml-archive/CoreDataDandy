@@ -933,7 +933,7 @@ class CoreDataDandyTests: XCTestCase {
 	*/
 	func testNestedRelationshipSerializationExclusion() {
 		let relationships = ["hats", "gossip", "predecessor"]
-		let result = Serializer.nestedSerializationTargetsFor("hats", including: relationships)
+		let result = Serializer.nestedSerializationTargets(for: "hats", including: relationships)
 		XCTAssert(result == nil, "Pass")
 	}
 	/**
@@ -942,7 +942,7 @@ class CoreDataDandyTests: XCTestCase {
 	func testNestedRelationshipSerializationTargeting() {
 		let relationships = ["purveyor.successor", "purveyor.hats.material", "anomaly"]
 		let expected = ["successor", "hats.material"]
-		let result = Serializer.nestedSerializationTargetsFor("purveyor", including: relationships)!
+		let result = Serializer.nestedSerializationTargets(for: "purveyor", including: relationships)!
 		XCTAssert(result == expected, "Pass")
 	}
 	/**
@@ -950,7 +950,7 @@ class CoreDataDandyTests: XCTestCase {
 	*/
 		func testNoMatchingRelationshipsSerializationTargeting() {
 			let relationships = ["purveyor.successor", "purveyor.hats.material"]
-			let result = Serializer.nestedSerializationTargetsFor("anomaly", including: relationships)
+			let result = Serializer.nestedSerializationTargets(for: "anomaly", including: relationships)
 			XCTAssert(result == nil, "Pass")
 		}
 	/**

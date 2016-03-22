@@ -221,8 +221,7 @@ public class CoreDataDandy {
 				if let singleton = singletonEntity(entityName) {
 					return singleton
 				}
-			} else {
-				if let predicate = entityDescription.primaryKeyPredicate(with: primaryKeyValue) {
+			} else if let predicate = entityDescription.primaryKeyPredicate(for: primaryKeyValue) {
 					var results: [NSManagedObject]? = nil
 					do {
 						results = try fetch(entityName, filterBy: predicate)
@@ -236,17 +235,12 @@ public class CoreDataDandy {
 						log(message("Your fetch for a unique entity named \(entityName) with primary key \(primaryKeyValue) returned multiple results. This is a serious error that should be resolved immediately."))
 					}
 					return results?.first
-				} else {
-					log(message("Failed to produce predicate for \(entityName) with primary key \(primaryKeyValue)."))
-				}
+			} else {
+				log(message("Failed to produce predicate for \(entityName) with primary key \(primaryKeyValue)."))
 			}
-			log(message("A unique NSManaged for entity named \(entityName) could not be retrieved for primaryKey \(primaryKeyValue). No object will be returned"))
-			return nil
 		}
-		else {
-			log(message("NSEntityDescriptionNotFound for entity named \(entityName). No object will be returned"))
-			return nil
-		}
+		log(message("A unique NSManaged for entity named \(entityName) could not be retrieved for primaryKey \(primaryKeyValue). No object will be returned"))
+		return nil
 	}
 
 	/// A wrapper around NSFetchRequest.
