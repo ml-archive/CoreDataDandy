@@ -101,23 +101,26 @@ Dandy.insertUnique("Dandy", primaryKeyValue: "WILDE")
 Upsert a unique object, or insert and update a non-unique object.
 
 ```swift
-CoreDataDandy.sharedDandy.upsert("Gossip", from: json)
+Dandy.upsert("Gossip", from: json)
 ```
 
 Upsert an array of unique objects, or insert and update non-unique objects.
 
 ```swift
-CoreDataDandy.sharedDandy.batchUpsert("Gossip", from: json)
+Dandy.batchUpsert("Gossip", from: json)
 ```
 
 ### Mapping finalization
 
-Objects requiring custom mapping finalization should adopt the `MappingFinalizer` protocol. The protocol has a single function, `finalizeMappingForJSON(_:)`.
+Objects requiring custom mapping finalization should adopt the `MappingFinalizer` protocol. The protocol has a single function, `finalizeMapping(_:)`.
 
 ```swift
 extension Conclusion: MappingFinalizer {
-	func finalizeMappingForJSON(json: [String : AnyObject]) {
-		content += "APPROVED"
+	func finalizeMapping(of json: [String : AnyObject]) {
+		if var content = content {
+			content += "_FINALIZED"
+			self.content = content
+		}
 	}
 }
 ```
