@@ -1,7 +1,7 @@
 ![header](header.png)
 
 [![Carthage Compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/fuzz-productions/CoreDataDandy)
-[![CocoaPods Compatible](https://img.shields.io/badge/pod-0.4.0-blue.svg)](https://cocoapods.org/pods/CoreDataDandy)
+[![CocoaPods Compatible](https://img.shields.io/badge/pod-0.4.1-blue.svg)](https://cocoapods.org/pods/CoreDataDandy)
 [![GitHub license](https://img.shields.io/badge/license-MIT-lightgrey.svg)](https://github.com/fuzz-productions/CoreDataDandy/blob/master/LICENSE) 
 
 ## Introduction
@@ -20,13 +20,13 @@ Core Data Dandy is a feature-light wrapper around Core Data that simplifies comm
 
 
 ```ogdl
-github "fuzz-productions/CoreDataDandy" ~> 0.4.0
+github "fuzz-productions/CoreDataDandy" ~> 0.4.1
 ```
 
 ### CocoaPods
 
 ```ogdl
-pod 'CoreDataDandy', '0.4.0'
+pod 'CoreDataDandy', '0.4.1'
 ```
 
 ## Usage
