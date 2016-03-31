@@ -40,4 +40,5 @@ extension Conclusion: MappingFinalizer {
 			self.content = content
 		}
 	}
+	
 }

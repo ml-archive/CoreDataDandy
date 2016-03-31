@@ -42,8 +42,13 @@ public class PersistentStackCoordinator {
 	// MARK: - Lazy stack initialization -
 	/// The .xcdatamodel to read from.
 	lazy var managedObjectModel: NSManagedObjectModel = {
-		let modelURL = NSBundle(forClass: self.dynamicType).URLForResource(self.managedObjectModelName, withExtension: "momd")!
-		return NSManagedObjectModel(contentsOfURL: modelURL)!
+		for bundle in NSBundle.allBundles() {
+			if let url = bundle.URLForResource(self.managedObjectModelName, withExtension: "momd"),
+				let mom = NSManagedObjectModel(contentsOfURL: url) {
+				return mom
+			}
+		}
+		preconditionFailure("Failed to find a managed object model named \(self.managedObjectModelName) in any bundle.")
 	}()
 
 	/// The persistent store coordinator, which manages disk operations.
