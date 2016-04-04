@@ -100,8 +100,13 @@ extension NSEntityDescription {
 
 // MARK: - NSEntityDescription+Construction -
 extension NSEntityDescription {
-	class func forEntity(name: String) -> NSEntityDescription? {
+	class func forManagedObject<ManagedObject: NSManagedObject>(type: ManagedObject.Type) -> NSEntityDescription? {
+		let name = NSStringFromClass(type)
 		return NSEntityDescription.entityForName(name, inManagedObjectContext: Dandy.coordinator.mainContext)
+	}
+	
+	func toManagedObjectType<ManagedObject: NSManagedObject>() -> ManagedObject.Type? {
+		return NSClassFromString(self.managedObjectClassName) as? ManagedObject.Type
 	}
 }
 

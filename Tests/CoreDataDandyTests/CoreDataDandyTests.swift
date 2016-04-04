@@ -45,11 +45,11 @@ class CoreDataDandyTests: XCTestCase {
 		When the clean up completes, no data should remain.
 	*/
 	func testCleanUp() {
-		Dandy.insert("Dandy")
+		Dandy.insert(Dandy_.self)
 		Dandy.save()
-		let initialResultsCount = try! Dandy.fetch("Dandy")?.count
+		let initialResultsCount = try! Dandy.fetch(Dandy_.self)?.count
 		Dandy.tearDown()
-		let finalResultsCount = try! Dandy.fetch("Dandy")?.count
+		let finalResultsCount = try! Dandy.fetch(Dandy_.self)?.count
 		XCTAssert(initialResultsCount == 1 && finalResultsCount == 0, "Pass")
 	}
 
@@ -62,7 +62,7 @@ class CoreDataDandyTests: XCTestCase {
 		do {
 			let unsavedData = try NSFileManager.defaultManager().attributesOfItemAtPath(PersistentStackCoordinator.persistentStoreURL.path!)["NSFileSize"] as! Int
 			for i in 0...100000 {
-				let dandy = Dandy.insert("Dandy")
+				let dandy = Dandy.insert(Dandy_.self)
 				dandy?.setValue("\(i)", forKey: "dandyID")
 			}
 			Dandy.save({ (error) in
@@ -87,32 +87,34 @@ class CoreDataDandyTests: XCTestCase {
 		Objects should be insertable.
 	*/
 	func testObjectInsertion() {
-		let dandy = Dandy.insert("Dandy")
+		let dandy = Dandy.insert(Dandy_.self)
 		XCTAssert(dandy != nil, "Pass")
-		XCTAssert(try! Dandy.fetch("Dandy")?.count == 1, "Pass")
+		XCTAssert(try! Dandy.fetch(Dandy_.self)?.count == 1, "Pass")
 	}
 	/**
 		Objects should be insertable in multiples.
 	*/
 	func testMultipleObjectInsertion() {
 		for _ in 0...2 {
-			Dandy.insert("Dandy")
+			Dandy.insert(Dandy_.self)
 		}
-		XCTAssert(try! Dandy.fetch("Dandy")?.count == 3, "Pass")
+		XCTAssert(try! Dandy.fetch(Dandy_.self)?.count == 3, "Pass")
 	}
 	/**
 		Objects marked with the `@unique` primaryKey should not be inserted more than once.
 	*/
 	func testUniqueObjectInsertion() {
-		Dandy.insert("Space")
-		Dandy.insert("Space")
-		XCTAssert(try! Dandy.fetch("Space")?.count == 1, "Pass")
+		Dandy.insert(Space.self)
+		Dandy.insert(Space.self)
+		XCTAssert(try! Dandy.fetch(Space.self)?.count == 1, "Pass")
 	}
 	/**
 		Passing an invalid entity name should result in warning emission and a nil return
 	*/
 	func testInvalidObjectInsertion() {
-		let object = Dandy.insert("ZZZ")
+		class ZZZ: NSManagedObject {}
+		
+		let object = Dandy.insert(ZZZ.self)
 		XCTAssert(object == nil, "Pass")
 	}
 	/**
@@ -120,22 +122,22 @@ class CoreDataDandyTests: XCTestCase {
 		it alone.
 	*/
 	func testUniqueObjectMaintenance() {
-		let dandy = Dandy.insertUnique("Dandy", primaryKeyValue: "WILDE")
+		let dandy = Dandy.insertUnique(Dandy_.self, primaryKeyValue: "WILDE")
 		dandy?.setValue("An author, let's say", forKey: "bio")
-		let repeatedDandy = Dandy.insertUnique("Dandy", primaryKeyValue: "WILDE")
-		let dandies = try! Dandy.fetch("Dandy")?.count
+		let repeatedDandy = Dandy.insertUnique(Dandy_.self, primaryKeyValue: "WILDE")
+		let dandies = try! Dandy.fetch(Dandy_.self)?.count
 		XCTAssert(dandies == 1 && (repeatedDandy!.valueForKey("bio") as! String == "An author, let's say"), "Pass")
 	}
 	/**
 		Objects should be fetchable via typical NSPredicate configured NSFetchRequests.
 	*/
 	func testPredicateFetch() {
-		let wilde = Dandy.insertUnique("Dandy", primaryKeyValue: "WILDE")!
+		let wilde = Dandy.insertUnique(Dandy_.self, primaryKeyValue: "WILDE")!
 		wilde.setValue("An author, let's say", forKey: "bio")
-		let byron = Dandy.insertUnique("Dandy", primaryKeyValue: "BYRON")!
+		let byron = Dandy.insertUnique(Dandy_.self, primaryKeyValue: "BYRON")!
 		byron.setValue("A poet, let's say", forKey: "bio")
-		let dandies = try! Dandy.fetch("Dandy")?.count
-		let byrons = try! Dandy.fetch("Dandy", filterBy: NSPredicate(format: "bio == %@", "A poet, let's say"))?.count
+		let dandies = try! Dandy.fetch(Dandy_.self)?.count
+		let byrons = try! Dandy.fetch(Dandy_.self, filterBy: NSPredicate(format: "bio == %@", "A poet, let's say"))?.count
 		XCTAssert(dandies == 2 && byrons == 1, "Pass")
 	}
 	/**
@@ -143,10 +145,10 @@ class CoreDataDandyTests: XCTestCase {
 		resolve correctly..
 	*/
 	func testPrimaryKeyTypeConversion() {
-		let dandy = Dandy.insertUnique("Dandy", primaryKeyValue: 1)
+		let dandy = Dandy.insertUnique(Dandy_.self, primaryKeyValue: 1)
 		dandy?.setValue("A poet, let's say", forKey: "bio")
-		let repeatedDandy = Dandy.insertUnique("Dandy", primaryKeyValue: "1")
-		let dandies = try! Dandy.fetch("Dandy")?.count
+		let repeatedDandy = Dandy.insertUnique(Dandy_.self, primaryKeyValue: "1")
+		let dandies = try! Dandy.fetch(Dandy_.self)?.count
 		XCTAssert(dandies == 1 && (repeatedDandy!.valueForKey("bio") as! String == "A poet, let's say"), "Pass")
 	}
 	/**
@@ -154,37 +156,37 @@ class CoreDataDandyTests: XCTestCase {
 		behavior.
 	*/
 	func testSingletonsIgnorePrimaryKey() {
-		let space = Dandy.insertUnique("Space", primaryKeyValue: "name")
+		let space = Dandy.insertUnique(Space.self, primaryKeyValue: "name")
 		space?.setValue("The Gogol Empire, let's say", forKey: "name")
-		let repeatedSpace = Dandy.insertUnique("Space", primaryKeyValue: "void")
-		let spaces = try! Dandy.fetch("Space")?.count
+		let repeatedSpace = Dandy.insertUnique(Space.self, primaryKeyValue: "void")
+		let spaces = try! Dandy.fetch(Space.self)?.count
 		XCTAssert(spaces == 1 && (repeatedSpace!.valueForKey("name") as! String == "The Gogol Empire, let's say"), "Pass")
 	}
 	/**
 		The convenience function for fetching objects by primary key should return a unique object that has been inserted.
 	*/
 	func testUniqueObjectFetch() {
-		let dandy = Dandy.insertUnique("Dandy", primaryKeyValue: "WILDE")
+		let dandy = Dandy.insertUnique(Dandy_.self, primaryKeyValue: "WILDE")
 		dandy?.setValue("An author, let's say", forKey: "bio")
-		let fetchedDandy = Dandy.fetchUnique("Dandy", primaryKeyValue: "WILDE")!
+		let fetchedDandy = Dandy.fetchUnique(Dandy_.self, primaryKeyValue: "WILDE")!
 		XCTAssert((fetchedDandy.valueForKey("bio") as! String == "An author, let's say"), "Pass")
 	}
 	/**
 		If a primary key is not specified for an object, the fetch should fail and emit a warning.
 	*/
 	func testUnspecifiedPrimaryKeyValueUniqueObjectFetch() {
-		let plebian = Dandy.insertUnique("Plebian", primaryKeyValue: "plebianID")
+		let plebian = Dandy.insertUnique(Plebian.self, primaryKeyValue: "plebianID")
 		XCTAssert(plebian == nil, "Pass")
 	}
 	/**
 		A deleted object should not be represented in the database
 	*/
 	func testObjectDeletion() {
-		let space = Dandy.insertUnique("Space", primaryKeyValue: "name")
-		let previousSpaceCount = try! Dandy.fetch("Space")?.count
+		let space = Dandy.insertUnique(Space.self, primaryKeyValue: "name")
+		let previousSpaceCount = try! Dandy.fetch(Space.self)?.count
 		let expectation = self.expectationWithDescription("Object deletion")
 		Dandy.delete(space!) {
-			let newSpaceCount = try! Dandy.fetch("Space")?.count
+			let newSpaceCount = try! Dandy.fetch(Space.self)?.count
 			XCTAssert(previousSpaceCount == 1 && newSpaceCount == 0, "Pass")
 			expectation.fulfill()
 		}
@@ -495,13 +497,13 @@ class CoreDataDandyTests: XCTestCase {
 
 	// MARK: - Mapping -
 	func testEntityDescriptionFromString() {
-		let expected = NSEntityDescription.entityForName("Dandy", inManagedObjectContext: Dandy.coordinator.mainContext)
-		let result = NSEntityDescription.forEntity("Dandy")!
+		let expected = NSEntityDescription.entityForName(Dandy_.self, inManagedObjectContext: Dandy.coordinator.mainContext)
+		let result = NSEntityDescription.forManagedObject(Dandy_.self)!
 		XCTAssert(expected == result, "Pass")
 	}
 	func testPrimaryKeyIdentification() {
 		let expected = "dandyID"
-		let dandy = NSEntityDescription.forEntity("Dandy")!
+		let dandy = NSEntityDescription.forManagedObject(Dandy_.self)!
 		let result = dandy.primaryKey!
 		XCTAssert(expected == result, "Pass")
 	}
@@ -509,14 +511,14 @@ class CoreDataDandyTests: XCTestCase {
 		The primary key should return the uniquenessConstraint of the entity if one is present.
 	*/
 	func testUniqueConstraintRetrieval() {
-		let conclusion = Dandy.insert("Conclusion")!
+		let conclusion = Dandy.insert(Conclusion.self)!
 		XCTAssert(conclusion.entity.primaryKey == "id", "Pass")
 	}
 	/**
 		The primary key should return the uniquenessConstraint over of the primaryKey decoration if both are present.
 	*/
 	func testUniqueConstraintPriority() {
-		let gossip = Dandy.insert("Gossip")!
+		let gossip = Dandy.insert(Gossip.self)!
 		XCTAssert(gossip.entity.primaryKey == "details", "Pass")
 	}
 	/**
@@ -524,7 +526,7 @@ class CoreDataDandyTests: XCTestCase {
 		its parent, Gossip.
 	*/
 	func testPrimaryKeyInheritance() {
-		let flattery = Dandy.insert("Flattery")!
+		let flattery = Dandy.insert(Flattery.self)!
 		XCTAssert(flattery.entity.primaryKey == "details", "Pass")
 	}
 	/**
@@ -532,7 +534,7 @@ class CoreDataDandyTests: XCTestCase {
 		override its parent's, Gossip.
 	*/
 	func testPrimaryKeyOverride() {
-		let slander = Dandy.insert("Slander")!
+		let slander = Dandy.insert(Slander.self)!
 		XCTAssert(slander.entity.primaryKey == "statement", "Pass")
 	}
 	/**
@@ -540,7 +542,7 @@ class CoreDataDandyTests: XCTestCase {
 		contain a value from its parent, Gossip.
 	*/
 	func testUserInfoHierarchyCollection() {
-		let slanderDescription = NSEntityDescription.forEntity("Slander")!
+		let slanderDescription = NSEntityDescription.forManagedObject(Slander.self)!
 		let userInfo = slanderDescription.allUserInfo!
 		XCTAssert((userInfo["testValue"] as! String) == "testKey", "Pass")
 	}
@@ -549,7 +551,7 @@ class CoreDataDandyTests: XCTestCase {
 		override its parent's, Gossip.
 	*/
 	func testUserInfoOverride() {
-		let slanderDescription = NSEntityDescription.forEntity("Slander")!
+		let slanderDescription = NSEntityDescription.forManagedObject(Slander.self)!
 		let userInfo = slanderDescription.allUserInfo!
 		XCTAssert((userInfo[PRIMARY_KEY] as! String) == "statement", "Pass")
 	}
@@ -557,7 +559,7 @@ class CoreDataDandyTests: XCTestCase {
 		Entity descriptions with no specified mapping should read into mapping dictionaries with all "same name" mapping
 	*/
 	func testSameNameMap() {
-		let entity = NSEntityDescription.forEntity("Material")!
+		let entity = NSEntityDescription.forManagedObject(Material.self)!
 		let expectedMap = [
 			"name": PropertyDescription(description: entity.allAttributes!["name"]!),
 			"origin": PropertyDescription(description: entity.allAttributes!["origin"]!),
@@ -571,7 +573,7 @@ class CoreDataDandyTests: XCTestCase {
 		as such.
 	*/
 	func testNOMappingKeywordResponse() {
-		let entity = NSEntityDescription.forEntity("Gossip")!
+		let entity = NSEntityDescription.forManagedObject(Gossip.self)!
 		let expectedMap = [
 			"details": PropertyDescription(description: entity.allAttributes!["details"]!),
 			"topic": PropertyDescription(description: entity.allAttributes!["topic"]!),
@@ -586,7 +588,7 @@ class CoreDataDandyTests: XCTestCase {
 		to map from "state."
 	*/
 	func testAlternateKeypathMappingResponse() {
-		let entity = NSEntityDescription.forEntity("Space")!
+		let entity = NSEntityDescription.forManagedObject(Space.self)!
 		let expectedMap = [
 			"name": PropertyDescription(description: entity.allAttributes!["name"]!),
 			"state": PropertyDescription(description: entity.allAttributes!["spaceState"]!)
@@ -600,7 +602,7 @@ class CoreDataDandyTests: XCTestCase {
 		Comparisons of property descriptions should evaluate correctly.
 	*/
 	func testPropertyDescriptionComparison() {
-		let entity = NSEntityDescription.forEntity("Space")!
+		let entity = NSEntityDescription.forManagedObject(Space.self)!
 		let name = PropertyDescription(description: entity.allAttributes!["name"]!)
 		let secondName = PropertyDescription(description: entity.allAttributes!["name"]!)
 		let state = PropertyDescription(description: entity.allAttributes!["spaceState"]!)
@@ -614,7 +616,7 @@ class CoreDataDandyTests: XCTestCase {
 	func testPropertyDescriptionInitialization() {
 		let _ = PropertyDescription()
 
-		let entity = NSEntityDescription.forEntity("Space")!
+		let entity = NSEntityDescription.forManagedObject(Space.self)!
 		let propertyDescription = PropertyDescription(description: entity.allAttributes!["name"]!)
 		let pathArray = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)
 		let documentPath = pathArray.first!
@@ -629,10 +631,9 @@ class CoreDataDandyTests: XCTestCase {
 		The first access to an entity's map should result in that map's caching
 	*/
 	func testMapCaching() {
-		let entityName = "Material"
-		if let entityDescription = NSEntityDescription.entityForName(entityName, inManagedObjectContext: Dandy.coordinator.mainContext) {
+		if let entityDescription = NSEntityDescription.forManagedObject(Material.self) {
 			EntityMapper.map(entityDescription)
-			let entityCacheMap = EntityMapper.cachedEntityMap[entityName]!
+			let entityCacheMap = EntityMapper.cachedEntityMap[Material.self]!
 			XCTAssert(entityCacheMap.count > 0, "")
 		}
 	}
@@ -640,8 +641,7 @@ class CoreDataDandyTests: XCTestCase {
 		When clean up is called, no cached maps should remain
 	*/
 	func testMapCacheCleanUp() {
-		let entityName = "Material"
-		if let entityDescription = NSEntityDescription.entityForName(entityName, inManagedObjectContext: Dandy.coordinator.mainContext) {
+		if let entityDescription = NSEntityDescription.forManagedObject(Material.self) {
 			EntityMapper.map(entityDescription)
 			let initialCacheCount = EntityMapper.cachedEntityMap.count
 			EntityMapper.clearCache()
@@ -654,7 +654,7 @@ class CoreDataDandyTests: XCTestCase {
 	*/
 	func testPerformanceOfNewMapCreation() {
 		self.measureBlock {
-			let entityDescription = NSEntityDescription.entityForName("Material", inManagedObjectContext: Dandy.coordinator.mainContext)
+			let entityDescription = NSEntityDescription.forManagedObject(Material.self)
 			EntityMapper.map(entityDescription!)
 		}
 	}
@@ -662,7 +662,7 @@ class CoreDataDandyTests: XCTestCase {
 		The fetching of a cached map should be performant, and more performant than the creation of a new map
 	*/
 	func testPerformanceOfCachedMapRetrieval() {
-		let entityDescription = NSEntityDescription.entityForName("Material", inManagedObjectContext: Dandy.coordinator.mainContext)!
+		let entityDescription = NSEntityDescription.forManagedObject(Material.self)!
 		EntityMapper.map(entityDescription)
 		self.measureBlock {
 			EntityMapper.map(entityDescription)
@@ -674,7 +674,7 @@ class CoreDataDandyTests: XCTestCase {
 		Values should be mapped from json to an object's attributes.
 	*/
 	func testAttributeBuilding() {
-		let space = Dandy.insert("Space")!
+		let space = Dandy.insert(Space.self)!
 		let json = ["name": "nebulous", "state": "moderately cool"]
 		ObjectFactory.build(space, from: json)
 		XCTAssert(space.valueForKey("name") as! String == "nebulous" &&
@@ -685,7 +685,7 @@ class CoreDataDandyTests: XCTestCase {
 		Values should be mapped from json an object's relationships.
 	*/
 	func testRelationshipBuilding() {
-		let gossip = Dandy.insert("Gossip")!
+		let gossip = Dandy.insert(Gossip.self)!
 		let json = [
 			"details": "At Bo Peep, unusually cool towards Isabella Brown.",
 			"topic": "John Keats",
@@ -706,7 +706,7 @@ class CoreDataDandyTests: XCTestCase {
 		Values should be recursively mapped from nested json objects.
 	*/
 	func testRecursiveObjectBuilding() {
-		let gossip = Dandy.insert("Gossip")!
+		let gossip = Dandy.insert(Gossip.self)!
 		let json = [
 			"details": "At Bo Peep, unusually cool towards Isabella Brown.",
 			"topic": "John Keats",
@@ -741,7 +741,7 @@ class CoreDataDandyTests: XCTestCase {
 		@mapping values that contain a keypath should allow access to json values via a keypath
 	*/
 	func testKeyPathBuilding() {
-		let dandy = Dandy.insert("Dandy")!
+		let dandy = Dandy.insert(Dandy_.self)!
 		let json = [
 			"id": "BAUD",
 			"relatedDandies": [
@@ -762,7 +762,7 @@ class CoreDataDandyTests: XCTestCase {
 		Property values on an object should not be overwritten if no new values are specified.
 	*/
 	func testIgnoreUnkeyedAttributesWhenBuilding() {
-		let space = Dandy.insert("Space")!
+		let space = Dandy.insert(Space.self)!
 		space.setValue("exceptionally relaxed", forKey: "spaceState")
 		let json = ["name": "nebulous"]
 		ObjectFactory.build(space, from: json)
@@ -772,7 +772,7 @@ class CoreDataDandyTests: XCTestCase {
 		Property values on an object should be overwritten if new values are specified.
 	*/
 	func testOverwritesKeyedAttributesWhenBuilding() {
-		let space = Dandy.insert("Space")!
+		let space = Dandy.insert(Space.self)!
 		space.setValue("exceptionally relaxed", forKey: "spaceState")
 		let json = ["state": "significant excitement"]
 		ObjectFactory.build(space, from: json)
@@ -783,7 +783,7 @@ class CoreDataDandyTests: XCTestCase {
 		rejected.
 	*/
 	func testSingleObjectToManyRelationshipRejection() {
-		let dandy = Dandy.insert("Dandy")!
+		let dandy = Dandy.insert(Dandy_.self)!
 		let json = [
 			"name": "bowler",
 			"style": "billycock",
@@ -800,7 +800,7 @@ class CoreDataDandyTests: XCTestCase {
 		rejected.
 	*/
 	func testArrayOfObjectToOneRelationshipRejection() {
-		let gossip = Dandy.insert("Gossip")!
+		let gossip = Dandy.insert(Gossip.self)!
 		let json = [
 			[
 				"id": "1",
@@ -820,7 +820,7 @@ class CoreDataDandyTests: XCTestCase {
 		unordered relationships.
 	*/
 	func testOrderedRelationshipsBuilding() {
-		let hat = Dandy.insert("Hat")!
+		let hat = Dandy.insert(Hat.self)!
 		let json = [
 			[
 				"id": "1",
@@ -842,7 +842,7 @@ class CoreDataDandyTests: XCTestCase {
 	*/
 	func testSimpleObjectConstructionFromJSON() {
 		let json = ["name": "Passerby"]
-		let plebian = Dandy.upsert("Plebian", from: json)!
+		let plebian = Dandy.upsert(Plebian.self, from: json)!
 		XCTAssert(plebian.valueForKey("name") as! String == "Passerby")
 	}
 	/**
@@ -851,7 +851,7 @@ class CoreDataDandyTests: XCTestCase {
 	*/
 	func testUniqueObjectConstructionFromJSON() {
 		let json = ["name": "Lord Byron"]
-		let byron = Dandy.upsert("Dandy", from: json)
+		let byron = Dandy.upsert(Dandy_.self, from: json)
 		XCTAssert(byron == nil, "Pass")
 	}
 
@@ -861,7 +861,7 @@ class CoreDataDandyTests: XCTestCase {
 	*/
 	func testRejectionOfJSONWithoutPrimaryKeyForUniqueObject() {
 		let json = ["name": "Lord Byron"]
-		let byron = Dandy.upsert("Dandy", from: json)
+		let byron = Dandy.upsert(Dandy_.self, from: json)
 		XCTAssert(byron == nil, "Pass")
 	}
 
@@ -873,7 +873,7 @@ class CoreDataDandyTests: XCTestCase {
 		for i in 0...9 {
 			json.append(["id": String(i), "name": "Morty"])
 		}
-		let dandies = Dandy.batchUpsert("Dandy", from: json)!
+		let dandies = Dandy.batchUpsert(Dandy_.self, from: json)!
 		let countIsCorrect = dandies.count == 10
 		var dandiesAreCorrect = true
 		for i in 0...9 {
@@ -898,7 +898,7 @@ class CoreDataDandyTests: XCTestCase {
 			"id": "1",
 			"content": input
 		]
-		let conclusion = ObjectFactory.make(NSEntityDescription.forEntity("Conclusion")!, from: json) as! Conclusion
+		let conclusion = ObjectFactory.make(NSEntityDescription.forManagedObject(Conclusion.self)!, from: json) as! Conclusion
 		XCTAssert(conclusion.content == expected, "Pass")
 	}
 
@@ -907,7 +907,7 @@ class CoreDataDandyTests: XCTestCase {
 		An object's attributes should be serializable into json.
 	*/
 	func testAttributeSerialization() {
-		let hat = Dandy.insert("Hat")!
+		let hat = Dandy.insert(Hat.self)!
 		hat.setValue("bowler", forKey: "name")
 		hat.setValue("billycock", forKey: "styleDescription")
 		let expected = [
@@ -921,7 +921,7 @@ class CoreDataDandyTests: XCTestCase {
 		Test nil attribute exclusion from serialized json.
 	*/
 	func testNilAttributeSerializationExclusion() {
-		let hat = Dandy.insert("Hat")!
+		let hat = Dandy.insert(Hat.self)!
 		hat.setValue("bowler", forKey: "name")
 		hat.setValue(nil, forKey: "styleDescription")
 		let expected = ["name": "bowler"]
@@ -957,10 +957,10 @@ class CoreDataDandyTests: XCTestCase {
 		An object's attributes and to-one relationships should be serializaable into json.
 	*/
 	func testToOneRelationshipSerialization() {
-		let hat = Dandy.insert("Hat")!
+		let hat = Dandy.insert(Hat.self)!
 		hat.setValue("bowler", forKey: "name")
 				hat.setValue("billycock", forKey: "styleDescription")
-		let felt = Dandy.insert("Material")!
+		let felt = Dandy.insert(Material.self)!
 		felt.setValue("felt", forKey: "name")
 		felt.setValue("Rome", forKey: "origin")
 		hat.setValue(felt, forKey: "primaryMaterial")
@@ -979,13 +979,13 @@ class CoreDataDandyTests: XCTestCase {
 		An array of NSManagedObject should be serializable into json.
 	*/
 	func testObjectArraySerialization() {
-		let byron = Dandy.insert("Dandy")!
+		let byron = Dandy.insert(Dandy_.self)!
 		byron.setValue("Lord Byron", forKey: "name")
 		byron.setValue("1", forKey: "dandyID")
-		let wilde = Dandy.insert("Dandy")!
+		let wilde = Dandy.insert(Dandy_.self)!
 		wilde.setValue("Oscar Wilde", forKey: "name")
 		wilde.setValue("2", forKey: "dandyID")
-		let andre = Dandy.insert("Dandy")!
+		let andre = Dandy.insert(Dandy_.self)!
 		andre.setValue("Andre 3000", forKey: "name")
 		andre.setValue("3", forKey: "dandyID")
 		let expected = [
@@ -1006,13 +1006,13 @@ class CoreDataDandyTests: XCTestCase {
 		An object's attributes and to-many relationships should be serializaable into json.
 	*/
 	func testToManyRelationshipSerialization() {
-		let byron = Dandy.insert("Dandy")!
+		let byron = Dandy.insert(Dandy_.self)!
 		byron.setValue("Lord Byron", forKey: "name")
 		byron.setValue("1", forKey: "dandyID")
-		let bowler = Dandy.insert("Hat")!
+		let bowler = Dandy.insert(Hat.self)!
 		bowler.setValue("bowler", forKey: "name")
 		bowler.setValue("billycock", forKey: "styleDescription")
-		let tyrolean = Dandy.insert("Hat")!
+		let tyrolean = Dandy.insert(Hat.self)!
 		tyrolean.setValue("tyrolean", forKey: "name")
 		tyrolean.setValue("alpine", forKey: "styleDescription")
 		byron.setValue(NSSet(objects: bowler, tyrolean), forKey: "hats")
@@ -1034,13 +1034,13 @@ class CoreDataDandyTests: XCTestCase {
 		An object's attributes and relationship tree should be serializaable into json.
 	*/
 	func testNestedRelationshipSerialization() {
-		let gossip = Dandy.insert("Gossip")!
+		let gossip = Dandy.insert(Gossip.self)!
 		gossip.setValue("At Bo Peep, unusually cool towards Isabella Brown.", forKey: "details")
 		gossip.setValue("John Keats", forKey: "topic")
-		let byron = Dandy.insert("Dandy")!
+		let byron = Dandy.insert(Dandy_.self)!
 		byron.setValue("Lord Byron", forKey: "name")
 		byron.setValue("1", forKey: "dandyID")
-		let bowler = Dandy.insert("Hat")!
+		let bowler = Dandy.insert(Hat.self)!
 		bowler.setValue("bowler", forKey: "name")
 			bowler.setValue("billycock", forKey: "styleDescription")
 		byron.setValue(NSSet(object: bowler), forKey: "hats")
