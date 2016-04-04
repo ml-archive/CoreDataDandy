@@ -127,7 +127,7 @@ public class CoreDataDandy {
 		}
 
 		if let managedObject = insert(type) {
-			return ObjectFactory.build(managedObject, from: json) as? ManagedObject
+			return ObjectFactory.build(managedObject, from: json)
 		}
 
 		return nil
@@ -251,7 +251,7 @@ public class CoreDataDandy {
 	/// - throws: If the ensuing NSManagedObjectContext's executeFetchRequest() throws, the exception will be passed.
 	/// - returns: If the fetch was successful, the fetched NSManagedObjects.
 	public func fetch<ManagedObject: NSManagedObject>(type: ManagedObject.Type, filterBy predicate: NSPredicate? = nil) throws -> [ManagedObject]? {
-		let request = NSFetchRequest(entityName: NSStringFromClass(type))
+		let request = NSFetchRequest(entityName: String(type))
 		request.predicate = predicate
 		let results = try coordinator.mainContext.executeFetchRequest(request)
 		return results as? [ManagedObject]
@@ -316,7 +316,7 @@ public class CoreDataDandy {
 	///
 	/// - returns: The singleton for this entity if one could be found.
 	private func singleton<ManagedObject: NSManagedObject>(of type: ManagedObject.Type) -> ManagedObject? {
-		let entityName = NSStringFromClass(ManagedObject)
+		let entityName = String(ManagedObject)
 		// Validate the entity description to ensure fetch safety
 		if let entityDescription = NSEntityDescription.entityForName(entityName, inManagedObjectContext: coordinator.mainContext) {
 			do {

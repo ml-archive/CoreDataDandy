@@ -9,7 +9,7 @@
             </uniquenessConstraint>
         </uniquenessConstraints>
     </entity>
-    <entity name="Dandy_" representedClassName="PRODUCT_MODULE_NAME.Dandy" syncable="YES">
+    <entity name="Dandy_" representedClassName=".Dandy_" syncable="YES">
         <attribute name="bio" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="dandyID" optional="YES" attributeType="String" syncable="YES">
             <userInfo>

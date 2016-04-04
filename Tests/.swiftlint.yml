@@ -5,3 +5,5 @@ excluded:
   - CoreDataDandyTests/Conclusion+CoreDataProperties.swift
 disabled_rules:
   - trailing_newline
+  - type_name
+  - variable_name
