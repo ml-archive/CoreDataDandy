@@ -58,14 +58,13 @@ public struct CoreDataValueConverter {
 	/// For a list of supported `value` types, see `ConvertibleType`
 	///
 	/// - parameter value: The value to convert.
-	/// - parameter forEntity: The entity this value is expected to map to.
+	/// - parameter entity: The entity this value is expected to map to.
 	/// - parameter property: The property on the entity where this value will be written.
 	///
 	/// - returns: If the conversion was successful, the converted value. Otherwise, nil.
-	public static func convert(value: AnyObject, forEntity entity: NSEntityDescription, property: String) -> AnyObject? {
-		let attributeDescription = entity.propertiesByName[property] as? NSAttributeDescription
-		if	let attributeDescription = attributeDescription {
-			return convert(value, toType: attributeDescription.attributeType)
+	public static func convert(value: AnyObject, for entity: NSEntityDescription, property: String) -> AnyObject? {
+		if	let attributeDescription = entity.propertiesByName[property] as? NSAttributeDescription {
+			return convert(value, to: attributeDescription.attributeType)
 		}
 		return nil
 	}
@@ -73,10 +72,10 @@ public struct CoreDataValueConverter {
 	/// In general, this method is invoked indirectly via convertValue:forEntity:property
 	///
 	/// - parameter value: The value to convert.
-	/// - parameter toType: The desired end type of the value.
+	/// - parameter type: The desired end type of the value.
 	///
 	/// - returns: If the conversion was successful, the converted value. Otherwise, nil.
-	public static func convert(value: AnyObject, toType type: NSAttributeType) -> AnyObject? {
+	public static func convert(value: AnyObject, to type: NSAttributeType) -> AnyObject? {
 		if let converter = typeConverters[type] {
 			return converter.convert(value)
 		}

@@ -27,6 +27,24 @@
 		983830BF1CB2FEC40094CD04 /* Dandy_+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 983830AF1CB2FEC40094CD04 /* Dandy_+CoreDataProperties.swift */; };
 		983830C01CB2FEC40094CD04 /* Dandy_.swift in Sources */ = {isa = PBXBuildFile; fileRef = 983830B01CB2FEC40094CD04 /* Dandy_.swift */; };
 		983AE9271C64ED99001312AE /* MappingFinalizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 983AE9261C64ED99001312AE /* MappingFinalizer.swift */; };
+		9867478E1CBBFD6400559E35 /* Conclusion+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9867478C1CBBFD6400559E35 /* Conclusion+CoreDataProperties.swift */; };
+		9867478F1CBBFD6400559E35 /* Conclusion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9867478D1CBBFD6400559E35 /* Conclusion.swift */; };
+		986747A01CBBFD7800559E35 /* Space+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 986747901CBBFD7800559E35 /* Space+CoreDataProperties.swift */; };
+		986747A11CBBFD7800559E35 /* Space.swift in Sources */ = {isa = PBXBuildFile; fileRef = 986747911CBBFD7800559E35 /* Space.swift */; };
+		986747A21CBBFD7800559E35 /* Hat+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 986747921CBBFD7800559E35 /* Hat+CoreDataProperties.swift */; };
+		986747A31CBBFD7800559E35 /* Hat.swift in Sources */ = {isa = PBXBuildFile; fileRef = 986747931CBBFD7800559E35 /* Hat.swift */; };
+		986747A41CBBFD7800559E35 /* Slander+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 986747941CBBFD7800559E35 /* Slander+CoreDataProperties.swift */; };
+		986747A51CBBFD7800559E35 /* Slander.swift in Sources */ = {isa = PBXBuildFile; fileRef = 986747951CBBFD7800559E35 /* Slander.swift */; };
+		986747A61CBBFD7800559E35 /* Gossip+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 986747961CBBFD7800559E35 /* Gossip+CoreDataProperties.swift */; };
+		986747A71CBBFD7800559E35 /* Gossip.swift in Sources */ = {isa = PBXBuildFile; fileRef = 986747971CBBFD7800559E35 /* Gossip.swift */; };
+		986747A81CBBFD7800559E35 /* Plebian+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 986747981CBBFD7800559E35 /* Plebian+CoreDataProperties.swift */; };
+		986747A91CBBFD7800559E35 /* Plebian.swift in Sources */ = {isa = PBXBuildFile; fileRef = 986747991CBBFD7800559E35 /* Plebian.swift */; };
+		986747AA1CBBFD7800559E35 /* Dandy_+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9867479A1CBBFD7800559E35 /* Dandy_+CoreDataProperties.swift */; };
+		986747AB1CBBFD7800559E35 /* Dandy_.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9867479B1CBBFD7800559E35 /* Dandy_.swift */; };
+		986747AC1CBBFD7800559E35 /* Flattery+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9867479C1CBBFD7800559E35 /* Flattery+CoreDataProperties.swift */; };
+		986747AD1CBBFD7800559E35 /* Flattery.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9867479D1CBBFD7800559E35 /* Flattery.swift */; };
+		986747AE1CBBFD7800559E35 /* Material+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9867479E1CBBFD7800559E35 /* Material+CoreDataProperties.swift */; };
+		986747AF1CBBFD7800559E35 /* Material.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9867479F1CBBFD7800559E35 /* Material.swift */; };
 		988F4A6A1B3632EE00E71046 /* CoreDataDandyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 988F4A691B3632EE00E71046 /* CoreDataDandyTests.swift */; };
 		988FF8A31C5592BE00E81FAF /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 988FF8931C5592BE00E81FAF /* Constants.swift */; };
 		988FF8A41C5592BE00E81FAF /* CoreDataDandy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 988FF8951C5592BE00E81FAF /* CoreDataDandy.swift */; };
@@ -41,6 +59,7 @@
 		988FF8AD1C5592BE00E81FAF /* ConvertibleType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 988FF8A01C5592BE00E81FAF /* ConvertibleType.swift */; };
 		988FF8AE1C5592BE00E81FAF /* CoreDataValueConverter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 988FF8A11C5592BE00E81FAF /* CoreDataValueConverter.swift */; };
 		988FF8AF1C5592BE00E81FAF /* ValueConverter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 988FF8A21C5592BE00E81FAF /* ValueConverter.swift */; };
+		98AC9B9F1CB6F18400DF0BB9 /* CoreDataDandy+Internal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98AC9B9E1CB6F18400DF0BB9 /* CoreDataDandy+Internal.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -64,6 +83,24 @@
 		983830AF1CB2FEC40094CD04 /* Dandy_+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Dandy_+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		983830B01CB2FEC40094CD04 /* Dandy_.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Dandy_.swift; sourceTree = "<group>"; };
 		983AE9261C64ED99001312AE /* MappingFinalizer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MappingFinalizer.swift; sourceTree = "<group>"; };
+		9867478C1CBBFD6400559E35 /* Conclusion+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Conclusion+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		9867478D1CBBFD6400559E35 /* Conclusion.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Conclusion.swift; sourceTree = "<group>"; };
+		986747901CBBFD7800559E35 /* Space+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Space+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		986747911CBBFD7800559E35 /* Space.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Space.swift; sourceTree = "<group>"; };
+		986747921CBBFD7800559E35 /* Hat+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Hat+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		986747931CBBFD7800559E35 /* Hat.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Hat.swift; sourceTree = "<group>"; };
+		986747941CBBFD7800559E35 /* Slander+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Slander+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		986747951CBBFD7800559E35 /* Slander.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Slander.swift; sourceTree = "<group>"; };
+		986747961CBBFD7800559E35 /* Gossip+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Gossip+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		986747971CBBFD7800559E35 /* Gossip.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Gossip.swift; sourceTree = "<group>"; };
+		986747981CBBFD7800559E35 /* Plebian+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Plebian+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		986747991CBBFD7800559E35 /* Plebian.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Plebian.swift; sourceTree = "<group>"; };
+		9867479A1CBBFD7800559E35 /* Dandy_+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Dandy_+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		9867479B1CBBFD7800559E35 /* Dandy_.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Dandy_.swift; sourceTree = "<group>"; };
+		9867479C1CBBFD7800559E35 /* Flattery+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Flattery+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		9867479D1CBBFD7800559E35 /* Flattery.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Flattery.swift; sourceTree = "<group>"; };
+		9867479E1CBBFD7800559E35 /* Material+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Material+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		9867479F1CBBFD7800559E35 /* Material.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Material.swift; sourceTree = "<group>"; };
 		988F4A641B3632EE00E71046 /* CoreDataDandyTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CoreDataDandyTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		988F4A681B3632EE00E71046 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		988F4A691B3632EE00E71046 /* CoreDataDandyTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataDandyTests.swift; sourceTree = "<group>"; };
@@ -80,6 +117,7 @@
 		988FF8A01C5592BE00E81FAF /* ConvertibleType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConvertibleType.swift; sourceTree = "<group>"; };
 		988FF8A11C5592BE00E81FAF /* CoreDataValueConverter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreDataValueConverter.swift; sourceTree = "<group>"; };
 		988FF8A21C5592BE00E81FAF /* ValueConverter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ValueConverter.swift; sourceTree = "<group>"; };
+		98AC9B9E1CB6F18400DF0BB9 /* CoreDataDandy+Internal.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CoreDataDandy+Internal.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -93,27 +131,27 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		9838309C1CB2FE910094CD04 /* Models */ = {
+		9867478B1CBBFD6400559E35 /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				9838309D1CB2FE910094CD04 /* Conclusion+CoreDataProperties.swift */,
-				9838309E1CB2FE910094CD04 /* Conclusion.swift */,
-				983830A11CB2FEC40094CD04 /* Flattery+CoreDataProperties.swift */,
-				983830A21CB2FEC40094CD04 /* Flattery.swift */,
-				983830A31CB2FEC40094CD04 /* Hat+CoreDataProperties.swift */,
-				983830A41CB2FEC40094CD04 /* Hat.swift */,
-				983830A51CB2FEC40094CD04 /* Plebian+CoreDataProperties.swift */,
-				983830A61CB2FEC40094CD04 /* Plebian.swift */,
-				983830A71CB2FEC40094CD04 /* Gossip+CoreDataProperties.swift */,
-				983830A81CB2FEC40094CD04 /* Gossip.swift */,
-				983830A91CB2FEC40094CD04 /* Material+CoreDataProperties.swift */,
-				983830AA1CB2FEC40094CD04 /* Material.swift */,
-				983830AB1CB2FEC40094CD04 /* Slander+CoreDataProperties.swift */,
-				983830AC1CB2FEC40094CD04 /* Slander.swift */,
-				983830AD1CB2FEC40094CD04 /* Space+CoreDataProperties.swift */,
-				983830AE1CB2FEC40094CD04 /* Space.swift */,
-				983830AF1CB2FEC40094CD04 /* Dandy_+CoreDataProperties.swift */,
-				983830B01CB2FEC40094CD04 /* Dandy_.swift */,
+				9867478C1CBBFD6400559E35 /* Conclusion+CoreDataProperties.swift */,
+				9867478D1CBBFD6400559E35 /* Conclusion.swift */,
+				986747901CBBFD7800559E35 /* Space+CoreDataProperties.swift */,
+				986747911CBBFD7800559E35 /* Space.swift */,
+				986747921CBBFD7800559E35 /* Hat+CoreDataProperties.swift */,
+				986747931CBBFD7800559E35 /* Hat.swift */,
+				986747941CBBFD7800559E35 /* Slander+CoreDataProperties.swift */,
+				986747951CBBFD7800559E35 /* Slander.swift */,
+				986747961CBBFD7800559E35 /* Gossip+CoreDataProperties.swift */,
+				986747971CBBFD7800559E35 /* Gossip.swift */,
+				986747981CBBFD7800559E35 /* Plebian+CoreDataProperties.swift */,
+				986747991CBBFD7800559E35 /* Plebian.swift */,
+				9867479A1CBBFD7800559E35 /* Dandy_+CoreDataProperties.swift */,
+				9867479B1CBBFD7800559E35 /* Dandy_.swift */,
+				9867479C1CBBFD7800559E35 /* Flattery+CoreDataProperties.swift */,
+				9867479D1CBBFD7800559E35 /* Flattery.swift */,
+				9867479E1CBBFD7800559E35 /* Material+CoreDataProperties.swift */,
+				9867479F1CBBFD7800559E35 /* Material.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -139,7 +177,7 @@
 			isa = PBXGroup;
 			children = (
 				98213DF21C654F19004B732B /* DandyModel.xcdatamodeld */,
-				9838309C1CB2FE910094CD04 /* Models */,
+				9867478B1CBBFD6400559E35 /* Models */,
 				988F4A691B3632EE00E71046 /* CoreDataDandyTests.swift */,
 				988F4A671B3632EE00E71046 /* Supporting Files */,
 			);
@@ -170,6 +208,7 @@
 			isa = PBXGroup;
 			children = (
 				988FF8951C5592BE00E81FAF /* CoreDataDandy.swift */,
+				98AC9B9E1CB6F18400DF0BB9 /* CoreDataDandy+Internal.swift */,
 				988FF8961C5592BE00E81FAF /* EntityMapper.swift */,
 				983AE9261C64ED99001312AE /* MappingFinalizer.swift */,
 				988FF8971C5592BE00E81FAF /* Logger.swift */,
@@ -284,40 +323,43 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				983830BA1CB2FEC40094CD04 /* Material.swift in Sources */,
-				983830B81CB2FEC40094CD04 /* Gossip.swift in Sources */,
-				983830B21CB2FEC40094CD04 /* Flattery.swift in Sources */,
-				983830B41CB2FEC40094CD04 /* Hat.swift in Sources */,
-				983830A01CB2FE910094CD04 /* Conclusion.swift in Sources */,
-				983830B61CB2FEC40094CD04 /* Plebian.swift in Sources */,
+				986747AF1CBBFD7800559E35 /* Material.swift in Sources */,
 				988FF8A51C5592BE00E81FAF /* EntityMapper.swift in Sources */,
 				988FF8AA1C5592BE00E81FAF /* Serializer.swift in Sources */,
-				9838309F1CB2FE910094CD04 /* Conclusion+CoreDataProperties.swift in Sources */,
+				986747A11CBBFD7800559E35 /* Space.swift in Sources */,
 				988FF8A31C5592BE00E81FAF /* Constants.swift in Sources */,
 				983830B11CB2FEC40094CD04 /* Flattery+CoreDataProperties.swift in Sources */,
 				988FF8A41C5592BE00E81FAF /* CoreDataDandy.swift in Sources */,
 				988FF8A71C5592BE00E81FAF /* ObjectFactory.swift in Sources */,
-				983830BD1CB2FEC40094CD04 /* Space+CoreDataProperties.swift in Sources */,
+				986747AC1CBBFD7800559E35 /* Flattery+CoreDataProperties.swift in Sources */,
+				986747AA1CBBFD7800559E35 /* Dandy_+CoreDataProperties.swift in Sources */,
 				988F4A6A1B3632EE00E71046 /* CoreDataDandyTests.swift in Sources */,
+				986747A31CBBFD7800559E35 /* Hat.swift in Sources */,
+				986747A91CBBFD7800559E35 /* Plebian.swift in Sources */,
+				9867478E1CBBFD6400559E35 /* Conclusion+CoreDataProperties.swift in Sources */,
 				988FF8A81C5592BE00E81FAF /* PersistentStackCoordinator.swift in Sources */,
+				986747A61CBBFD7800559E35 /* Gossip+CoreDataProperties.swift in Sources */,
 				988FF8AC1C5592BE00E81FAF /* NSEntityDescription+Dandy.swift in Sources */,
-				983830B71CB2FEC40094CD04 /* Gossip+CoreDataProperties.swift in Sources */,
-				983830C01CB2FEC40094CD04 /* Dandy_.swift in Sources */,
-				983830BF1CB2FEC40094CD04 /* Dandy_+CoreDataProperties.swift in Sources */,
-				983830BE1CB2FEC40094CD04 /* Space.swift in Sources */,
 				988FF8AB1C5592BE00E81FAF /* Dictionary+Dandy.swift in Sources */,
+				98AC9B9F1CB6F18400DF0BB9 /* CoreDataDandy+Internal.swift in Sources */,
 				988FF8A91C5592BE00E81FAF /* PropertyDescription.swift in Sources */,
-				983830BC1CB2FEC40094CD04 /* Slander.swift in Sources */,
+				986747A71CBBFD7800559E35 /* Gossip.swift in Sources */,
+				986747A51CBBFD7800559E35 /* Slander.swift in Sources */,
+				986747A41CBBFD7800559E35 /* Slander+CoreDataProperties.swift in Sources */,
+				986747A21CBBFD7800559E35 /* Hat+CoreDataProperties.swift in Sources */,
+				9867478F1CBBFD6400559E35 /* Conclusion.swift in Sources */,
 				988FF8A61C5592BE00E81FAF /* Logger.swift in Sources */,
 				988FF8AF1C5592BE00E81FAF /* ValueConverter.swift in Sources */,
 				983830B31CB2FEC40094CD04 /* Hat+CoreDataProperties.swift in Sources */,
 				983AE9271C64ED99001312AE /* MappingFinalizer.swift in Sources */,
-				983830B51CB2FEC40094CD04 /* Plebian+CoreDataProperties.swift in Sources */,
+				986747A01CBBFD7800559E35 /* Space+CoreDataProperties.swift in Sources */,
 				988FF8AD1C5592BE00E81FAF /* ConvertibleType.swift in Sources */,
+				986747AB1CBBFD7800559E35 /* Dandy_.swift in Sources */,
 				98213DF41C654F19004B732B /* DandyModel.xcdatamodeld in Sources */,
-				983830BB1CB2FEC40094CD04 /* Slander+CoreDataProperties.swift in Sources */,
+				986747A81CBBFD7800559E35 /* Plebian+CoreDataProperties.swift in Sources */,
 				988FF8AE1C5592BE00E81FAF /* CoreDataValueConverter.swift in Sources */,
-				983830B91CB2FEC40094CD04 /* Material+CoreDataProperties.swift in Sources */,
+				986747AE1CBBFD7800559E35 /* Material+CoreDataProperties.swift in Sources */,
+				986747AD1CBBFD7800559E35 /* Flattery.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -104,6 +104,9 @@ extension NSEntityDescription {
 		let name = String(type)
 		return NSEntityDescription.entityForName(name, inManagedObjectContext: Dandy.coordinator.mainContext)
 	}
+	class func forType<T>(type: T.Type) -> NSEntityDescription? {
+		return NSEntityDescription.entityForName(String(type), inManagedObjectContext: Dandy.coordinator.mainContext)
+	}
 }
 
 // MARK: - NSEntityDescription+PrimaryKey -
@@ -149,7 +152,7 @@ extension NSEntityDescription {
 	/// - returns: A predicate that may be used to fetch unique objects
 	func primaryKeyPredicate(for primaryKeyValue: AnyObject) -> NSPredicate? {
 		if	let primaryKey = primaryKey,
-			let value: AnyObject = CoreDataValueConverter.convert(primaryKeyValue, forEntity: self, property: primaryKey) {
+			let value: AnyObject = CoreDataValueConverter.convert(primaryKeyValue, for: self, property: primaryKey) {
 				return NSPredicate(format: "%K = %@", argumentArray: [primaryKey, value])
 		}
 		return nil
