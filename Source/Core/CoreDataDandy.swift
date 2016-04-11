@@ -50,7 +50,7 @@ public class CoreDataDandy {
 	///
 	/// - parameter managedObjectModelName: The name of the .xcdatamodel file
 	/// - parameter completion: A completion block executed on initialization completion
-	public class func wake(with managedObjectModelName: String, completion: (() -> Void)? = nil) -> CoreDataDandy {
+	public class func wake(managedObjectModelName: String, completion: (() -> Void)? = nil) -> CoreDataDandy {
 		EntityMapper.clearCache()
 		sharedDandy.coordinator = PersistentStackCoordinator(managedObjectModelName: managedObjectModelName,
 												persistentStoreConnectionCompletion: completion)
@@ -75,26 +75,14 @@ public class CoreDataDandy {
 	}
 
 	// MARK: - Inserts -
-	/// Inserts a new managed object from the specified entity name. In general, this function should not be invoked
-	/// directly, as its incautious use is likely to lead to database use.
+	/// Inserts a new managed object from the specified entity type. In general, this function should not be invoked
+	/// directly, as its incautious use is likely to lead to database leaks.
 	///
 	/// - parameter entityName: The name of the requested entity
 	///
 	/// - returns: A managed object if one could be inserted for the specified Entity.
-	public func insert(entityName: String) -> NSManagedObject? {
-		if let entityDescription = NSEntityDescription.forEntity(entityName) {
-			// Ignore this insert if the entity is a singleton and a pre-existing insert exists.
-			if entityDescription.primaryKey == SINGLETON {
-				if let singleton = singletonEntity(entityName) {
-					return singleton
-				}
-			}
-			// Otherwise, insert a new managed object
-			return NSManagedObject(entity: entityDescription, insertIntoManagedObjectContext: coordinator.mainContext)
-		} else {
-			log(message("NSEntityDescriptionNotFound for entity named " + entityName + ". No object will be returned"))
-			return nil
-		}
+	public func insert<Model: NSManagedObject>(type: Model.Type) -> Model? {
+		return _insert(String(type)) as? Model
 	}
 
 	/// MARK: - Upserts -
@@ -110,23 +98,23 @@ public class CoreDataDandy {
 	/// - parameter json: A dictionary to map into the returned object's attributes and relationships
 	///
 	/// - returns: A managed object if one could be created.
-	public func upsert(entityName: String, from json: [String: AnyObject]) -> NSManagedObject? {
-		guard let entityDescription = NSEntityDescription.forEntity(entityName) else {
-			log(message("Could not retrieve NSEntityDescription or for entity named \(entityName)"))
+	public func upsert<Model: NSManagedObject>(type: Model.Type, from json: [String: AnyObject]) -> Model? {
+		guard let entityDescription = NSEntityDescription.forType(type) else {
+			log(message("Could not retrieve NSEntityDescription for type \(type)"))
 			return nil
 		}
 
 		let isUniqueEntity = entityDescription.primaryKey != nil
 		if isUniqueEntity {
 			if let primaryKeyValue = entityDescription.primaryKeyValueFromJSON(json) {
-				return upsertUnique(entityDescription, primaryKeyValue: primaryKeyValue, from: json)
+				return upsertUnique(type, primaryKeyValue: primaryKeyValue, from: json)
 			} else {
 				log(message("Could not retrieve primary key from json \(json)."))
 				return nil
 			}
 		}
 
-		if let managedObject = insert(entityName) {
+		if let managedObject = insert(type) {
 			return ObjectFactory.build(managedObject, from: json)
 		}
 
@@ -140,14 +128,14 @@ public class CoreDataDandy {
 	/// - parameter json: An array to map into the returned objects' attributes and relationships
 	///
 	/// - returns: An array of managed objects if one could be created.
-	public func batchUpsert(entityName: String, from json: [[String:AnyObject]]) -> [NSManagedObject]? {
-		var managedObjects = [NSManagedObject]()
+	public func batchUpsert<Model: NSManagedObject>(type: Model.Type, from json: [[String:AnyObject]]) -> [Model]? {
+		var models = [Model]()
 		for object in json {
-			if let managedObject = upsert(entityName, from: object) {
-				managedObjects.append(managedObject)
+			if let model = upsert(type, from: object) {
+				models.append(model)
 			}
 		}
-		return (managedObjects.count > 0) ? managedObjects: nil
+		return (models.count > 0) ? models: nil
 	}
 
 	// MARK: - Unique objects -
@@ -159,18 +147,8 @@ public class CoreDataDandy {
 	///
 	/// - parameter entityName: The name of the requested entity.
 	/// - parameter primaryKeyValue: The value of the unique object's primary key
-	public func insertUnique(entityName: String, primaryKeyValue: AnyObject) -> NSManagedObject? {
-		// Return an object if one exists. Otherwise, attempt to insert one.
-		if let object = fetchUnique(entityName, primaryKeyValue: primaryKeyValue, emitResultCountWarnings: false) {
-			return object
-		} else if let entityDescription = NSEntityDescription.forEntity(entityName),
-			let primaryKey = entityDescription.primaryKey {
-			let object = insert(entityName)
-			let convertedPrimaryKeyValue: AnyObject? = CoreDataValueConverter.convert(primaryKeyValue, forEntity: entityDescription, property: primaryKey)
-			object?.setValue(convertedPrimaryKeyValue, forKey: primaryKey)
-			return object
-		}
-		return nil
+	public func insertUnique<Model: NSManagedObject>(type: Model.Type, primaryKeyValue: AnyObject) -> Model? {
+		return _insertUnique(String(type), primaryKeyValue: primaryKeyValue) as? Model
 	}
 
 	/// Invokes `upsertUnique(_:, primaryKeyValue:) -> NSManagedObject?`, then attempts to write values from
@@ -181,12 +159,12 @@ public class CoreDataDandy {
 	/// - parameter json: A dictionary to map into the returned object's attributes and relationships
 	///
 	/// - returns: A managed object if one could be created.
-	private func upsertUnique(entityDescription: NSEntityDescription, primaryKeyValue: AnyObject, from json: [String: AnyObject]) -> NSManagedObject? {
-		if let object = insertUnique(entityDescription.name ?? "", primaryKeyValue: primaryKeyValue) {
+	private func upsertUnique<Model: NSManagedObject>(type: Model.Type, primaryKeyValue: AnyObject, from json: [String: AnyObject]) -> Model? {
+		if let object = insertUnique(type, primaryKeyValue: primaryKeyValue) {
 			ObjectFactory.build(object, from: json)
 			return object
 		} else {
-			log(message("Could not upsert managed object for entity description \(entityDescription), primary key \(primaryKeyValue), json \(json)."))
+			log(message("Could not upsert managed object of type \(type), primary key \(primaryKeyValue), json \(json)."))
 			return nil
 		}
 	}
@@ -201,8 +179,8 @@ public class CoreDataDandy {
 	/// - parameter primaryKeyValue: The value of unique object's primary key.
 	///
 	/// - returns: If the fetch was successful, the fetched NSManagedObject.
-	public func fetchUnique(entityName: String, primaryKeyValue: AnyObject) -> NSManagedObject? {
-		return fetchUnique(entityName, primaryKeyValue: primaryKeyValue, emitResultCountWarnings: true)
+	public func fetchUnique<Model: NSManagedObject>(type: Model.Type, identifiedBy primaryKeyValue: AnyObject) -> Model? {
+		return fetchUnique(type, identifiedBy: primaryKeyValue, emitResultCountWarnings: true)
 	}
 
 	/// A private version of `fetchUnique(_:_:) used for toggling warnings that would be of no interest
@@ -214,46 +192,11 @@ public class CoreDataDandy {
 	/// - parameter emitResultCountWarnings: When true, fetch results without exactly one object emit warnings.
 	///
 	/// - returns: If the fetch was successful, the fetched NSManagedObject.
-	private func fetchUnique(entityName: String, primaryKeyValue: AnyObject, emitResultCountWarnings: Bool) -> NSManagedObject? {
-		let entityDescription = NSEntityDescription.forEntity(entityName)
-		if let entityDescription = entityDescription {
-			if entityDescription.primaryKey == SINGLETON {
-				if let singleton = singletonEntity(entityName) {
-					return singleton
-				}
-			} else if let predicate = entityDescription.primaryKeyPredicate(for: primaryKeyValue) {
-					var results: [NSManagedObject]? = nil
-					do {
-						results = try fetch(entityName, filterBy: predicate)
-					} catch {
-						log(message("Your fetch for a unique entity named \(entityName) with primary key \(primaryKeyValue) raised an exception. This is a serious error that should be resolved immediately."))
-					}
-					if results?.count == 0 && emitResultCountWarnings {
-						log(message("Your fetch for a unique entity named \(entityName) with primary key \(primaryKeyValue) returned no results."))
-					}
-					else if results?.count > 1 && emitResultCountWarnings {
-						log(message("Your fetch for a unique entity named \(entityName) with primary key \(primaryKeyValue) returned multiple results. This is a serious error that should be resolved immediately."))
-					}
-					return results?.first
-			} else {
-				log(message("Failed to produce predicate for \(entityName) with primary key \(primaryKeyValue)."))
-			}
-		}
-		log(message("A unique NSManaged for entity named \(entityName) could not be retrieved for primaryKey \(primaryKeyValue). No object will be returned"))
-		return nil
+	private func fetchUnique<Model: NSManagedObject>(type: Model.Type, identifiedBy primaryKeyValue: AnyObject, emitResultCountWarnings: Bool) -> Model? {
+		return _fetchUnique(String(type), identifiedBy: primaryKeyValue, emitResultCountWarnings: emitResultCountWarnings) as? Model
 	}
 
 	/// A wrapper around NSFetchRequest.
-	///
-	/// - parameter entityName: The name of the fetched entity
-	///
-	/// - throws: If the ensuing NSManagedObjectContext's executeFetchRequest() throws, the exception will be passed.
-	/// - returns: If the fetch was successful, the fetched NSManagedObjects.
-	public func fetch(entityName: String) throws -> [NSManagedObject]? {
-		return try fetch(entityName, filterBy: nil)
-	}
-
-	/// A simple wrapper around NSFetchRequest.
 	///
 	/// - parameter entityName: The name of the fetched entity
 	/// - parameter predicate: The predicate used to filter results
@@ -261,11 +204,8 @@ public class CoreDataDandy {
 	/// - throws: If the ensuing NSManagedObjectContext's executeFetchRequest() throws, the exception will be passed.
 	///
 	/// - returns: If the fetch was successful, the fetched NSManagedObjects.
-	public func fetch(entityName: String, filterBy predicate: NSPredicate?) throws -> [NSManagedObject]? {
-		let request = NSFetchRequest(entityName: entityName)
-		request.predicate = predicate
-		let results = try coordinator.mainContext.executeFetchRequest(request)
-		return results as? [NSManagedObject]
+	public func fetch<Model: NSManagedObject>(type: Model.Type, filterBy predicate: NSPredicate? = nil) throws -> [Model]? {
+		return try _fetch(String(type), filterBy: predicate) as? [Model]
 	}
 
 	// MARK: - Saves and Deletes -
@@ -319,34 +259,15 @@ public class CoreDataDandy {
 			})
 		}
 	}
-
+	
 	// MARK: - Private helpers -
 	/// Attempts to return a predicate which may be used to fetch a unique version of an object.
 	///
 	/// - parameter entity: The name of the singleton entity
 	///
 	/// - returns: The singleton for this entity if one could be found.
-	private func singletonEntity(entityName: String) -> NSManagedObject? {
-		// Validate the entity description to ensure fetch safety
-		if let entityDescription = NSEntityDescription.entityForName(entityName, inManagedObjectContext: coordinator.mainContext) {
-			do {
-				if let results = try fetch(entityName) {
-					if results.count == 1 {
-						return results.first
-					} else if results.count == 0 {
-						return NSManagedObject(entity: entityDescription, insertIntoManagedObjectContext: coordinator.mainContext)
-					} else {
-						log(message("Failed to fetch unique instance of entity named " + entityName + "."))
-						return nil
-
-					}
-				}
-			} catch {
-					log(message("Your singleton fetch for entity named \(entityName) raised an exception. This is a serious error that should be resolved immediately."))
-			}
-		}
-		log(message("Failed to fetch unique instance of entity named " + entityName + "."))
-		return nil
+	private func singleton<Model: NSManagedObject>(type: Model.Type) -> Model? {
+		return _singleton(String(type)) as? Model
 	}
 }
 // MARK: - Convenience accessors -

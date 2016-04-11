@@ -25,6 +25,7 @@
 		988FF8AD1C5592BE00E81FAF /* ConvertibleType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 988FF8A01C5592BE00E81FAF /* ConvertibleType.swift */; };
 		988FF8AE1C5592BE00E81FAF /* CoreDataValueConverter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 988FF8A11C5592BE00E81FAF /* CoreDataValueConverter.swift */; };
 		988FF8AF1C5592BE00E81FAF /* ValueConverter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 988FF8A21C5592BE00E81FAF /* ValueConverter.swift */; };
+		98AC9B9F1CB6F18400DF0BB9 /* CoreDataDandy+Internal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98AC9B9E1CB6F18400DF0BB9 /* CoreDataDandy+Internal.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -48,6 +49,7 @@
 		988FF8A01C5592BE00E81FAF /* ConvertibleType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConvertibleType.swift; sourceTree = "<group>"; };
 		988FF8A11C5592BE00E81FAF /* CoreDataValueConverter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreDataValueConverter.swift; sourceTree = "<group>"; };
 		988FF8A21C5592BE00E81FAF /* ValueConverter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ValueConverter.swift; sourceTree = "<group>"; };
+		98AC9B9E1CB6F18400DF0BB9 /* CoreDataDandy+Internal.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CoreDataDandy+Internal.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -114,6 +116,7 @@
 			isa = PBXGroup;
 			children = (
 				988FF8951C5592BE00E81FAF /* CoreDataDandy.swift */,
+				98AC9B9E1CB6F18400DF0BB9 /* CoreDataDandy+Internal.swift */,
 				988FF8961C5592BE00E81FAF /* EntityMapper.swift */,
 				983AE9261C64ED99001312AE /* MappingFinalizer.swift */,
 				988FF8971C5592BE00E81FAF /* Logger.swift */,
@@ -238,6 +241,7 @@
 				988FF8AC1C5592BE00E81FAF /* NSEntityDescription+Dandy.swift in Sources */,
 				981174F51BF2318A00E664F9 /* Conclusion.swift in Sources */,
 				988FF8AB1C5592BE00E81FAF /* Dictionary+Dandy.swift in Sources */,
+				98AC9B9F1CB6F18400DF0BB9 /* CoreDataDandy+Internal.swift in Sources */,
 				988FF8A91C5592BE00E81FAF /* PropertyDescription.swift in Sources */,
 				981174F41BF2318A00E664F9 /* Conclusion+CoreDataProperties.swift in Sources */,
 				988FF8A61C5592BE00E81FAF /* Logger.swift in Sources */,

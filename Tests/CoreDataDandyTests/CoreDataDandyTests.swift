@@ -31,7 +31,7 @@ import CoreData
 class CoreDataDandyTests: XCTestCase {
 
 	override func setUp() {
-		CoreDataDandy.wake(with: "DandyModel")
+		CoreDataDandy.wake("DandyModel")
 		CoreDataValueConverter.dateFormatter.dateStyle = .LongStyle
 		CoreDataValueConverter.dateFormatter.timeStyle = .ShortStyle
 		super.setUp()
@@ -243,34 +243,34 @@ class CoreDataDandyTests: XCTestCase {
 		Conversions to undefined types should not occur
 	*/
 	func testUndefinedTypeConversion() {
-		let result: AnyObject? = CoreDataValueConverter.convert("For us, life is five minutes of introspection", toType: .UndefinedAttributeType)
+		let result: AnyObject? = CoreDataValueConverter.convert("For us, life is five minutes of introspection", to: .UndefinedAttributeType)
 		XCTAssert(result == nil, "Pass")
 	}
 	/**
 		Test non-conforming protocol type conversion
 	*/
 	func testNonConformingProtocolTypeConversion() {
-		let result: AnyObject? = CoreDataValueConverter.convert(["life", "is", "five", "minutes", "of", "introspection"], toType: .StringAttributeType)
+		let result: AnyObject? = CoreDataValueConverter.convert(["life", "is", "five", "minutes", "of", "introspection"], to: .StringAttributeType)
 		XCTAssert(result == nil, "Pass")
 	}
 	/**
 		A type convertes to the same type should undergo no changes
 	*/
 	func testSameTypeConversion() {
-		let string: AnyObject? = CoreDataValueConverter.convert("For us, life is five minutes of introspection", toType: .StringAttributeType)
+		let string: AnyObject? = CoreDataValueConverter.convert("For us, life is five minutes of introspection", to: .StringAttributeType)
 		XCTAssert(string is String, "Pass")
 
-		let number: AnyObject? = CoreDataValueConverter.convert(1, toType: .Integer64AttributeType)
+		let number: AnyObject? = CoreDataValueConverter.convert(1, to: .Integer64AttributeType)
 		XCTAssert(number is NSNumber, "Pass")
 
-		let decimal: AnyObject? = CoreDataValueConverter.convert(NSDecimalNumber(integer: 1), toType: .DecimalAttributeType)
+		let decimal: AnyObject? = CoreDataValueConverter.convert(NSDecimalNumber(integer: 1), to: .DecimalAttributeType)
 		XCTAssert(decimal is NSDecimalNumber, "Pass")
 
-		let date: AnyObject? = CoreDataValueConverter.convert(NSDate(), toType: .DateAttributeType)
+		let date: AnyObject? = CoreDataValueConverter.convert(NSDate(), to: .DateAttributeType)
 		XCTAssert(date is NSDate, "Pass")
 
 		let encodedString = "suave".dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: true)
-		let data: AnyObject? = CoreDataValueConverter.convert(encodedString!, toType: .BinaryDataAttributeType)
+		let data: AnyObject? = CoreDataValueConverter.convert(encodedString!, to: .BinaryDataAttributeType)
 		XCTAssert(data is NSData, "Pass")
 	}
 	/**
@@ -279,7 +279,7 @@ class CoreDataDandyTests: XCTestCase {
 	func testDataToStringConversion() {
 		let expectation: NSString = "testing string"
 		let input: NSData? = expectation.dataUsingEncoding(NSUTF8StringEncoding)
-		let result = CoreDataValueConverter.convert(input!, toType: .StringAttributeType) as? NSString
+		let result = CoreDataValueConverter.convert(input!, to: .StringAttributeType) as? NSString
 		XCTAssert(result == expectation, "")
 	}
 	/**
@@ -287,7 +287,7 @@ class CoreDataDandyTests: XCTestCase {
 	*/
 	func testNumberToStringConversion() {
 		let input = 123455
-		let result = CoreDataValueConverter.convert(input, toType: .StringAttributeType) as? String
+		let result = CoreDataValueConverter.convert(input, to: .StringAttributeType) as? String
 		XCTAssert(result == "123455", "")
 	}
 	/**
@@ -295,7 +295,7 @@ class CoreDataDandyTests: XCTestCase {
 	*/
 	func testNumberToDecimalConversion() {
 		let expectation = Double(7.070000171661375488)
-		let result = CoreDataValueConverter.convert(NSNumber(double: expectation), toType: .DecimalAttributeType) as? NSDecimalNumber
+		let result = CoreDataValueConverter.convert(NSNumber(double: expectation), to: .DecimalAttributeType) as? NSDecimalNumber
 		XCTAssert(result == NSDecimalNumber(double: expectation), "Pass")
 	}
 	/**
@@ -303,7 +303,7 @@ class CoreDataDandyTests: XCTestCase {
 	*/
 	func testNumberToDoubleConversion() {
 		let expectation = Double(7.07)
-		let result = CoreDataValueConverter.convert(NSNumber(double: expectation), toType: .DoubleAttributeType) as? Double
+		let result = CoreDataValueConverter.convert(NSNumber(double: expectation), to: .DoubleAttributeType) as? Double
 		XCTAssert(result == expectation, "Pass")
 	}
 	/**
@@ -311,7 +311,7 @@ class CoreDataDandyTests: XCTestCase {
 	*/
 	func testNumberToFloatConversion() {
 		let expectation = Float(7.07)
-		let result = CoreDataValueConverter.convert(NSNumber(float: expectation), toType: .FloatAttributeType) as? Float
+		let result = CoreDataValueConverter.convert(NSNumber(float: expectation), to: .FloatAttributeType) as? Float
 		XCTAssert(result == expectation, "Pass")
 	}
 	/**
@@ -320,7 +320,7 @@ class CoreDataDandyTests: XCTestCase {
 	func testNumberToDataConversion() {
 		let input = NSNumber(float: 7.07)
 		let expectation = NSNumber(float: 7.07).stringValue.dataUsingEncoding(NSUTF8StringEncoding)
-		let result = CoreDataValueConverter.convert(input, toType: .BinaryDataAttributeType) as? NSData
+		let result = CoreDataValueConverter.convert(input, to: .BinaryDataAttributeType) as? NSData
 		XCTAssert(result == expectation, "Pass")
 	}
 	/**
@@ -329,7 +329,7 @@ class CoreDataDandyTests: XCTestCase {
 	func testNumberToDateConversion() {
 		let now = NSDate()
 		let expectation = Double(now.timeIntervalSince1970)
-		let result = CoreDataValueConverter.convert(expectation, toType: .DateAttributeType) as? NSDate
+		let result = CoreDataValueConverter.convert(expectation, to: .DateAttributeType) as? NSDate
 		let resultAsDouble = Double(result!.timeIntervalSince1970)
 		XCTAssert(resultAsDouble == expectation, "")
 	}
@@ -338,19 +338,19 @@ class CoreDataDandyTests: XCTestCase {
 	*/
 	func testNumberToBooleanConversion() {
 		var input = -1
-		var result = CoreDataValueConverter.convert(input, toType: .BooleanAttributeType) as? NSNumber
+		var result = CoreDataValueConverter.convert(input, to: .BooleanAttributeType) as? NSNumber
 		XCTAssert(result?.boolValue == nil, "")
 
 		input = 1
-		result = CoreDataValueConverter.convert(input, toType: .BooleanAttributeType) as? NSNumber
+		result = CoreDataValueConverter.convert(input, to: .BooleanAttributeType) as? NSNumber
 		XCTAssert(result?.boolValue == true, "")
 
 		input = 0
-		result = CoreDataValueConverter.convert(input, toType: .BooleanAttributeType) as? NSNumber
+		result = CoreDataValueConverter.convert(input, to: .BooleanAttributeType) as? NSNumber
 		XCTAssert(result?.boolValue == false, "")
 
 		input = 99
-		result = CoreDataValueConverter.convert(input, toType: .BooleanAttributeType) as? NSNumber
+		result = CoreDataValueConverter.convert(input, to: .BooleanAttributeType) as? NSNumber
 		XCTAssert(result == true, "Pass")
 	}
 	/**
@@ -359,7 +359,7 @@ class CoreDataDandyTests: XCTestCase {
 		func testDateToStringConversion() {
 		let now = NSDate()
 		let expectation = CoreDataValueConverter.dateFormatter.stringFromDate(now)
-		let result = CoreDataValueConverter.convert(now, toType: .StringAttributeType) as? String
+		let result = CoreDataValueConverter.convert(now, to: .StringAttributeType) as? String
 		XCTAssert(result == expectation, "")
 	}
 	/**
@@ -368,7 +368,7 @@ class CoreDataDandyTests: XCTestCase {
 	func testDateToDecimalConversion() {
 		let now = NSDate()
 		let expectation = NSDecimalNumber(double: now.timeIntervalSinceDate(NSDate(timeIntervalSince1970: 0)))
-		let result = CoreDataValueConverter.convert(now, toType: .DecimalAttributeType) as! NSDecimalNumber
+		let result = CoreDataValueConverter.convert(now, to: .DecimalAttributeType) as! NSDecimalNumber
 		XCTAssert(result.floatValue - expectation.floatValue < 5, "")
 	}
 	/**
@@ -377,7 +377,7 @@ class CoreDataDandyTests: XCTestCase {
 	func testDateToDoubleConversion() {
 		let now = NSDate()
 		let expectation = NSNumber(double: now.timeIntervalSinceDate(NSDate(timeIntervalSince1970: 0)))
-		let result = CoreDataValueConverter.convert(now, toType: .DoubleAttributeType) as! NSNumber
+		let result = CoreDataValueConverter.convert(now, to: .DoubleAttributeType) as! NSNumber
 		XCTAssert(result.floatValue - expectation.floatValue < 5, "")
 	}
 	/**
@@ -386,7 +386,7 @@ class CoreDataDandyTests: XCTestCase {
 	func testDateToFloatConversion() {
 		let now = NSDate()
 		let expectation = NSNumber(float: Float(now.timeIntervalSinceDate(NSDate(timeIntervalSince1970: 0))))
-		let result = CoreDataValueConverter.convert(now, toType: .FloatAttributeType) as! NSNumber
+		let result = CoreDataValueConverter.convert(now, to: .FloatAttributeType) as! NSNumber
 		XCTAssert(result.floatValue - expectation.floatValue < 5, "")
 	}
 	/**
@@ -395,7 +395,7 @@ class CoreDataDandyTests: XCTestCase {
 	func testDateToIntConversion() {
 		let now = NSDate()
 		let expectation = NSNumber(integer: Int(now.timeIntervalSinceDate(NSDate(timeIntervalSince1970: 0))))
-		let result = CoreDataValueConverter.convert(now, toType: .Integer32AttributeType) as! NSNumber
+		let result = CoreDataValueConverter.convert(now, to: .Integer32AttributeType) as! NSNumber
 		XCTAssert(result.floatValue - expectation.floatValue < 5, "")
 	}
 	/**
@@ -405,32 +405,32 @@ class CoreDataDandyTests: XCTestCase {
 		var testString = "Yes"
 		var result: NSNumber?
 
-		result = CoreDataValueConverter.convert(testString, toType: .BooleanAttributeType) as? NSNumber
+		result = CoreDataValueConverter.convert(testString, to: .BooleanAttributeType) as? NSNumber
 		XCTAssert(result?.boolValue == true, "")
 
 		testString = "trUe"
-		result = CoreDataValueConverter.convert(testString, toType: .BooleanAttributeType) as? NSNumber
+		result = CoreDataValueConverter.convert(testString, to: .BooleanAttributeType) as? NSNumber
 		XCTAssert(result?.boolValue == true, "")
 
 		testString = "1"
-		result = CoreDataValueConverter.convert(testString, toType: .BooleanAttributeType) as? NSNumber
+		result = CoreDataValueConverter.convert(testString, to: .BooleanAttributeType) as? NSNumber
 		XCTAssert(result?.boolValue == true, "")
 
 		testString = "NO"
-		result = CoreDataValueConverter.convert(testString, toType: .BooleanAttributeType) as? NSNumber
+		result = CoreDataValueConverter.convert(testString, to: .BooleanAttributeType) as? NSNumber
 		XCTAssert(result?.boolValue == false, "")
 
 		testString = "false"
-		result = CoreDataValueConverter.convert(testString, toType: .BooleanAttributeType) as? NSNumber
+		result = CoreDataValueConverter.convert(testString, to: .BooleanAttributeType) as? NSNumber
 		XCTAssert(result?.boolValue == false, "")
 
 		testString = "0"
-		result = CoreDataValueConverter.convert(testString, toType: .BooleanAttributeType) as? NSNumber
+		result = CoreDataValueConverter.convert(testString, to: .BooleanAttributeType) as? NSNumber
 		XCTAssert(result?.boolValue == false, "")
 
 
 		testString = "undefined"
-		result = CoreDataValueConverter.convert(testString, toType: .BooleanAttributeType) as? NSNumber
+		result = CoreDataValueConverter.convert(testString, to: .BooleanAttributeType) as? NSNumber
 		XCTAssert(result == nil, "")
 	}
 	/**
@@ -438,15 +438,15 @@ class CoreDataDandyTests: XCTestCase {
 	*/
 	func testStringToIntConversion() {
 		var input = "123"
-		var result = CoreDataValueConverter.convert(input, toType: .Integer64AttributeType) as? NSNumber
+		var result = CoreDataValueConverter.convert(input, to: .Integer64AttributeType) as? NSNumber
 		XCTAssert(result?.integerValue == 123, "")
 
 		input = "456wordsdontmatter123"
-		result = CoreDataValueConverter.convert(input, toType: .Integer64AttributeType) as? NSNumber
+		result = CoreDataValueConverter.convert(input, to: .Integer64AttributeType) as? NSNumber
 		XCTAssert(result?.integerValue == 456, "")
 
 		input = "nothingHereMatters"
-		result = CoreDataValueConverter.convert(input, toType: .Integer64AttributeType) as? NSNumber
+		result = CoreDataValueConverter.convert(input, to: .Integer64AttributeType) as? NSNumber
 		XCTAssert(result?.integerValue == 0, "")
 	}
 	/**
@@ -454,7 +454,7 @@ class CoreDataDandyTests: XCTestCase {
 	*/
 	func testStringToDecimalConversion() {
 		let expectation = NSDecimalNumber(float: 7.070000171661375488)
-		let result = CoreDataValueConverter.convert("7.070000171661375488", toType: .DecimalAttributeType) as? NSDecimalNumber
+		let result = CoreDataValueConverter.convert("7.070000171661375488", to: .DecimalAttributeType) as? NSDecimalNumber
 		XCTAssert(result == expectation, "Pass")
 	}
 	/**
@@ -462,7 +462,7 @@ class CoreDataDandyTests: XCTestCase {
 	*/
 	func testStringToDoubleConversion() {
 		let expectation = Double(7.07)
-		let result = CoreDataValueConverter.convert("7.07", toType: .DoubleAttributeType) as? Double
+		let result = CoreDataValueConverter.convert("7.07", to: .DoubleAttributeType) as? Double
 		XCTAssert(result == expectation, "Pass")
 	}
 	/**
@@ -470,7 +470,7 @@ class CoreDataDandyTests: XCTestCase {
 	*/
 	func testStringToFloatConversion() {
 		let expectation = Float(7.07)
-		let result = CoreDataValueConverter.convert("7.07", toType: .FloatAttributeType) as? Float
+		let result = CoreDataValueConverter.convert("7.07", to: .FloatAttributeType) as? Float
 		XCTAssert(result == expectation, "Pass")
 	}
 	/**
@@ -479,7 +479,7 @@ class CoreDataDandyTests: XCTestCase {
 	func testStringToDataConversion() {
 		let input = "Long long Time ago"
 		let expectedResult = input.dataUsingEncoding(NSUTF8StringEncoding)!
-		let result = CoreDataValueConverter.convert(input, toType: .BinaryDataAttributeType) as? NSData
+		let result = CoreDataValueConverter.convert(input, to: .BinaryDataAttributeType) as? NSData
 		XCTAssert(result!.isEqualToData(expectedResult) == true, "")
 	}
 	/**
@@ -488,7 +488,7 @@ class CoreDataDandyTests: XCTestCase {
 	func testStringToDateConversion() {
 		let now = NSDate()
 		let nowAsString = CoreDataValueConverter.dateFormatter.stringFromDate(now)
-		let result = CoreDataValueConverter.convert(nowAsString, toType: .DateAttributeType) as? NSDate
+		let result = CoreDataValueConverter.convert(nowAsString, to: .DateAttributeType) as? NSDate
 		let resultAsString = CoreDataValueConverter.dateFormatter.stringFromDate(result!)
 		XCTAssert(resultAsString == nowAsString, "")
 	}
