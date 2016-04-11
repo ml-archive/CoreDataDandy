@@ -105,7 +105,7 @@ extension NSEntityDescription {
 	}
 	
 	class func forType<T>(type: T.Type) -> NSEntityDescription? {
-		return NSEntityDescription.entityForName(String(type), inManagedObjectContext: Dandy.coordinator.mainContext)
+		return forEntity(String(type))
 	}
 }
 

@@ -72,6 +72,7 @@ public struct ObjectFactory {
 			if var object = object {
 				object = build(object, from: json)
 				finalizeMapping(of: object, from: json)
+				return object
 			} else {
 				log(message("A unique object could not be generated for entity \(entity.name) from json \n\(json)."))
 			}
