@@ -54,7 +54,6 @@ extension CoreDataDandy {
 		}
 	}
 	
-	
 	/// Attempts to fetch an `NSManagedObject` of the specified entity name matching the primary key provided.
 	/// - If no property on the entity's `NSEntityDescription` is marked with the @primaryKey identifier or constraint,
 	/// a warning is issued and no managed object is returned.
