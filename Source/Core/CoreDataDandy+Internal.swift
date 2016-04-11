@@ -28,7 +28,7 @@
 import CoreData
 
 /// `CoreDataDandy+Internal` attempts to conceal the inherent stringiness of Core Data. Eventually, this extension
-/// should be phased out, especially when one h
+/// should be phased out.
 extension CoreDataDandy {
 	
 	// MARK: - Inserts -
@@ -63,7 +63,7 @@ extension CoreDataDandy {
 	///
 	/// - parameter entityName: The name of the requested entity.
 	/// - parameter primaryKeyValue: The value of the unique object's primary key
-	public func _insertUnique(entityName: String, primaryKeyValue: AnyObject) -> NSManagedObject? {
+	func _insertUnique(entityName: String, identifiedBy primaryKeyValue: AnyObject) -> NSManagedObject? {
 		// Return an object if one exists. Otherwise, attempt to insert one.
 		if let object = _fetchUnique(entityName, identifiedBy: primaryKeyValue) {
 			return object
@@ -76,8 +76,24 @@ extension CoreDataDandy {
 		}
 		return nil
 	}
-
-	/// A private version of `fetchUnique(_:_:) used for toggling warnings that would be of no interest
+	
+	// MARK: - Fetches -
+	/// A simple wrapper around NSFetchRequest.
+	///
+	/// - parameter entityName: The name of the fetched entity
+	/// - parameter predicate: The predicate used to filter results
+	///
+	/// - throws: If the ensuing NSManagedObjectContext's executeFetchRequest() throws, the exception will be passed.
+	///
+	/// - returns: If the fetch was successful, the fetched NSManagedObjects.
+	func _fetch(entityName: String, filterBy predicate: NSPredicate? = nil) throws -> [NSManagedObject]? {
+		let request = NSFetchRequest(entityName: entityName)
+		request.predicate = predicate
+		let results = try coordinator.mainContext.executeFetchRequest(request)
+		return results as? [NSManagedObject]
+	}
+	
+	/// An internal version of `fetchUnique(_:_:) used for toggling warnings that would be of no interest
 	/// to the user. The warning accompanying an upsert request that begins by yielding a fetch of 0 results, for instance,
 	/// is silenced.
 	///
@@ -98,39 +114,29 @@ extension CoreDataDandy {
 				do {
 					results = try _fetch(entityName, filterBy: predicate)
 				} catch {
-					log(message("Your fetch for a unique entity named \(entityName) with primary key \(primaryKeyValue) raised an exception. This is a serious error that should be resolved immediately."))
+					log(message("Your fetch for a unique entity named \(entityName) with identified by \(primaryKeyValue) raised an exception. This is a serious error that should be resolved immediately."))
 				}
 				if results?.count == 0 && emitResultCountWarnings {
-					log(message("Your fetch for a unique entity named \(entityName) with primary key \(primaryKeyValue) returned no results."))
+					log(message("Your fetch for a unique entity named \(entityName) with identified by \(primaryKeyValue) returned no results."))
 				}
 				else if results?.count > 1 && emitResultCountWarnings {
-					log(message("Your fetch for a unique entity named \(entityName) with primary key \(primaryKeyValue) returned multiple results. This is a serious error that should be resolved immediately."))
+					log(message("Your fetch for a unique entity named \(entityName) with identified by \(primaryKeyValue) returned multiple results. This is a serious error that should be resolved immediately."))
 				}
 				return results?.first
 			} else {
-				log(message("Failed to produce predicate for \(entityName) with primary key \(primaryKeyValue)."))
+				log(message("Failed to produce predicate for \(entityName) with identified by \(primaryKeyValue)."))
 			}
 		}
 		log(message("A unique NSManaged for entity named \(entityName) could not be retrieved for primaryKey \(primaryKeyValue). No object will be returned"))
 		return nil
 	}
 	
-	/// A simple wrapper around NSFetchRequest.
+	// MARK: - Singletons -
+	/// Attempts to return a predicate which may be used to fetch a unique version of an object.
 	///
-	/// - parameter entityName: The name of the fetched entity
-	/// - parameter predicate: The predicate used to filter results
+	/// - parameter entity: The name of the singleton entity
 	///
-	/// - throws: If the ensuing NSManagedObjectContext's executeFetchRequest() throws, the exception will be passed.
-	///
-	/// - returns: If the fetch was successful, the fetched NSManagedObjects.
-	func _fetch(entityName: String, filterBy predicate: NSPredicate? = nil) throws -> [NSManagedObject]? {
-		let request = NSFetchRequest(entityName: entityName)
-		request.predicate = predicate
-		let results = try coordinator.mainContext.executeFetchRequest(request)
-		return results as? [NSManagedObject]
-	}
-	
-	
+	/// - returns: The singleton for this entity if one could be found.
 	func _singleton(entityName: String) -> NSManagedObject? {
 		// Validate the entity description to ensure fetch safety
 		if let entityDescription = NSEntityDescription.entityForName(entityName, inManagedObjectContext: coordinator.mainContext) {

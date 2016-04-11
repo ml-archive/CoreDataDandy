@@ -75,10 +75,10 @@ public class CoreDataDandy {
 	}
 
 	// MARK: - Inserts -
-	/// Inserts a new managed object from the specified entity type. In general, this function should not be invoked
+	/// Inserts a new Model from the specified entity type. In general, this function should not be invoked
 	/// directly, as its incautious use is likely to lead to database leaks.
 	///
-	/// - parameter entityName: The name of the requested entity
+	/// - parameter type: The type of Model to insert
 	///
 	/// - returns: A managed object if one could be inserted for the specified Entity.
 	public func insert<Model: NSManagedObject>(type: Model.Type) -> Model? {
@@ -86,16 +86,16 @@ public class CoreDataDandy {
 	}
 
 	/// MARK: - Upserts -
-	/// This function performs upserts differently depending on whether the entity is marked as unique or not.
+	/// This function performs upserts differently depending on whether the Model is marked as unique or not.
 	///
-	/// If the entity is marked as unique (either through an @primaryKey decoration or an xcdatamode constraint), the
+	/// If the Model is marked as unique (either through an @primaryKey decoration or an xcdatamode constraint), the
 	/// primaryKeyValue is extracted and an upsert is performed through
-	/// `upsertUnique(_:, primaryKeyValue:) -> NSManagedObject?`.
+	/// `upsertUnique(_:, identifiedBy:) -> NSManagedObject?`.
 	///
-	/// Otherwise, an insert is performed and a managed object is written to from the json provided.
+	/// Otherwise, an insert is performed and a Model is written to from the json provided.
 	///
-	/// - parameter entityName: The name of the requested entity
-	/// - parameter json: A dictionary to map into the returned object's attributes and relationships
+	/// - parameter type: The type of Model to insert
+	/// - parameter json: A json object to map into the returned object's attributes and relationships
 	///
 	/// - returns: A managed object if one could be created.
 	public func upsert<Model: NSManagedObject>(type: Model.Type, from json: [String: AnyObject]) -> Model? {
@@ -107,7 +107,7 @@ public class CoreDataDandy {
 		let isUniqueEntity = entityDescription.primaryKey != nil
 		if isUniqueEntity {
 			if let primaryKeyValue = entityDescription.primaryKeyValueFromJSON(json) {
-				return upsertUnique(type, primaryKeyValue: primaryKeyValue, from: json)
+				return upsertUnique(type, identifiedBy: primaryKeyValue, from: json)
 			} else {
 				log(message("Could not retrieve primary key from json \(json)."))
 				return nil
@@ -121,10 +121,10 @@ public class CoreDataDandy {
 		return nil
 	}
 
-	/// Attempts to build an array of managed objects from a json array. Through recursion, behaves identically to
-	/// upsert(_:, _:) -> NSManagedObject?.
+	/// Attempts to build an array Models from a json array. Through recursion, behaves identically to
+	/// upsert(_:, _:) -> Model?.
 	///
-	/// - parameter entityName: The name of the requested entity
+	/// - parameter type: The type of Model to insert
 	/// - parameter json: An array to map into the returned objects' attributes and relationships
 	///
 	/// - returns: An array of managed objects if one could be created.
@@ -139,73 +139,57 @@ public class CoreDataDandy {
 	}
 
 	// MARK: - Unique objects -
-	/// Attempts to fetch an `NSManagedObject` of the specified entity name matching the primary key provided.
-	/// - If no property on the entity's `NSEntityDescription` is marked with the @primaryKey identifier or constraint,
+	/// Attempts to fetch a Model of the specified type matching the primary key provided.
+	/// - If no property on the type's `NSEntityDescription` is marked with the @primaryKey identifier or constraint,
 	/// a warning is issued and no managed object is returned.
 	/// - If an object matching the primaryKey is found, it is returned. Otherwise a new object is inserted and returned.
 	/// - If more than one object is fetched for this primaryKey, a warning is issued and one is returned.
 	///
-	/// - parameter entityName: The name of the requested entity.
+	/// - parameter type: The type of Model to insert.
 	/// - parameter primaryKeyValue: The value of the unique object's primary key
-	public func insertUnique<Model: NSManagedObject>(type: Model.Type, primaryKeyValue: AnyObject) -> Model? {
-		return _insertUnique(String(type), primaryKeyValue: primaryKeyValue) as? Model
+	public func insertUnique<Model: NSManagedObject>(type: Model.Type, identifiedBy primaryKeyValue: AnyObject) -> Model? {
+		return _insertUnique(String(type), identifiedBy: primaryKeyValue) as? Model
 	}
 
-	/// Invokes `upsertUnique(_:, primaryKeyValue:) -> NSManagedObject?`, then attempts to write values from
+	/// Invokes `upsertUnique(_:, identifiedBy:) -> Model?`, then attempts to write values from
 	/// the provided JSON into the returned object.
 	///
-	/// - parameter entityDescription: The `NSEntityDescription` of the requested entity
+	/// - parameter type: The type of the requested entity
 	/// - parameter primaryKeyValue: The value of the unique object's primary key
-	/// - parameter json: A dictionary to map into the returned object's attributes and relationships
+	/// - parameter json: A json object to map into the returned object's attributes and relationships
 	///
 	/// - returns: A managed object if one could be created.
-	private func upsertUnique<Model: NSManagedObject>(type: Model.Type, primaryKeyValue: AnyObject, from json: [String: AnyObject]) -> Model? {
-		if let object = insertUnique(type, primaryKeyValue: primaryKeyValue) {
+	private func upsertUnique<Model: NSManagedObject>(type: Model.Type, identifiedBy primaryKeyValue: AnyObject, from json: [String: AnyObject]) -> Model? {
+		if let object = insertUnique(type, identifiedBy: primaryKeyValue) {
 			ObjectFactory.build(object, from: json)
 			return object
 		} else {
-			log(message("Could not upsert managed object of type \(type), primary key \(primaryKeyValue), json \(json)."))
+			log(message("Could not upsert managed object of type \(type), identified by \(primaryKeyValue), json \(json)."))
 			return nil
 		}
 	}
 
 	// MARK: - Fetches -
-	/// Attempts to fetch a unique object of a given entity with a primary key value matching the passed in parameter.
-	/// Because this function first verifies the existence of a given `NSEntityDescription`, its fetch request
-	/// cannot throw. As such, the exception is caught and silences within its implementation to simplify the function
-	/// invocation.
-	///
-	/// - parameter entityName: The name of the fetched entity
-	/// - parameter primaryKeyValue: The value of unique object's primary key.
-	///
-	/// - returns: If the fetch was successful, the fetched NSManagedObject.
-	public func fetchUnique<Model: NSManagedObject>(type: Model.Type, identifiedBy primaryKeyValue: AnyObject) -> Model? {
-		return fetchUnique(type, identifiedBy: primaryKeyValue, emitResultCountWarnings: true)
-	}
-
-	/// A private version of `fetchUnique(_:_:) used for toggling warnings that would be of no interest
-	/// to the user. The warning accompanying an upsert request that begins by yielding a fetch of 0 results, for instance,
-	/// is silenced.
-	///
-	/// - parameter entityName: The name of the fetched entity
-	/// - parameter primaryKeyValue: The value of unique object's primary key.
-	/// - parameter emitResultCountWarnings: When true, fetch results without exactly one object emit warnings.
-	///
-	/// - returns: If the fetch was successful, the fetched NSManagedObject.
-	private func fetchUnique<Model: NSManagedObject>(type: Model.Type, identifiedBy primaryKeyValue: AnyObject, emitResultCountWarnings: Bool) -> Model? {
-		return _fetchUnique(String(type), identifiedBy: primaryKeyValue, emitResultCountWarnings: emitResultCountWarnings) as? Model
-	}
-
 	/// A wrapper around NSFetchRequest.
 	///
-	/// - parameter entityName: The name of the fetched entity
+	/// - parameter type: The type of the fetched entity
 	/// - parameter predicate: The predicate used to filter results
 	///
 	/// - throws: If the ensuing NSManagedObjectContext's executeFetchRequest() throws, the exception will be passed.
 	///
-	/// - returns: If the fetch was successful, the fetched NSManagedObjects.
+	/// - returns: If the fetch was successful, the fetched Model.
 	public func fetch<Model: NSManagedObject>(type: Model.Type, filterBy predicate: NSPredicate? = nil) throws -> [Model]? {
 		return try _fetch(String(type), filterBy: predicate) as? [Model]
+	}
+	
+	/// Attempts to fetch a unique Model with a primary key value matching the passed in parameter.
+	///
+	/// - parameter type: The type of the fetched entity
+	/// - parameter primaryKeyValue: The value of unique object's primary key
+	///
+	/// - returns: If the fetch was successful, the fetched Model.
+	public func fetchUnique<Model: NSManagedObject>(type: Model.Type, identifiedBy primaryKeyValue: AnyObject) -> Model? {
+		return _fetchUnique(String(type), identifiedBy: primaryKeyValue, emitResultCountWarnings: true) as? Model
 	}
 
 	// MARK: - Saves and Deletes -
@@ -260,7 +244,7 @@ public class CoreDataDandy {
 		}
 	}
 	
-	// MARK: - Private helpers -
+	// MARK: - Singletons -
 	/// Attempts to return a predicate which may be used to fetch a unique version of an object.
 	///
 	/// - parameter entity: The name of the singleton entity

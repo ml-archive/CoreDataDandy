@@ -122,9 +122,9 @@ class CoreDataDandyTests: XCTestCase {
 		it alone.
 	*/
 	func testUniqueObjectMaintenance() {
-		let dandy = Dandy.insertUnique(Dandy_.self, primaryKeyValue: "WILDE")
+		let dandy = Dandy.insertUnique(Dandy_.self, identifiedBy: "WILDE")
 		dandy?.setValue("An author, let's say", forKey: "bio")
-		let repeatedDandy = Dandy.insertUnique(Dandy_.self, primaryKeyValue: "WILDE")
+		let repeatedDandy = Dandy.insertUnique(Dandy_.self, identifiedBy: "WILDE")
 		let dandies = try! Dandy.fetch(Dandy_.self)?.count
 		XCTAssert(dandies == 1 && (repeatedDandy!.valueForKey("bio") as! String == "An author, let's say"), "Pass")
 	}
@@ -132,9 +132,9 @@ class CoreDataDandyTests: XCTestCase {
 		Objects should be fetchable via typical NSPredicate configured NSFetchRequests.
 	*/
 	func testPredicateFetch() {
-		let wilde = Dandy.insertUnique(Dandy_.self, primaryKeyValue: "WILDE")!
+		let wilde = Dandy.insertUnique(Dandy_.self, identifiedBy: "WILDE")!
 		wilde.setValue("An author, let's say", forKey: "bio")
-		let byron = Dandy.insertUnique(Dandy_.self, primaryKeyValue: "BYRON")!
+		let byron = Dandy.insertUnique(Dandy_.self, identifiedBy: "BYRON")!
 		byron.setValue("A poet, let's say", forKey: "bio")
 		let dandies = try! Dandy.fetch(Dandy_.self)?.count
 		let byrons = try! Dandy.fetch(Dandy_.self, filterBy: NSPredicate(format: "bio == %@", "A poet, let's say"))?.count
@@ -145,9 +145,9 @@ class CoreDataDandyTests: XCTestCase {
 		resolve correctly..
 	*/
 	func testPrimaryKeyTypeConversion() {
-		let dandy = Dandy.insertUnique(Dandy_.self, primaryKeyValue: 1)
+		let dandy = Dandy.insertUnique(Dandy_.self, identifiedBy: 1)
 		dandy?.setValue("A poet, let's say", forKey: "bio")
-		let repeatedDandy = Dandy.insertUnique(Dandy_.self, primaryKeyValue: "1")
+		let repeatedDandy = Dandy.insertUnique(Dandy_.self, identifiedBy: "1")
 		let dandies = try! Dandy.fetch(Dandy_.self)?.count
 		XCTAssert(dandies == 1 && (repeatedDandy!.valueForKey("bio") as! String == "A poet, let's say"), "Pass")
 	}
@@ -156,9 +156,9 @@ class CoreDataDandyTests: XCTestCase {
 		behavior.
 	*/
 	func testSingletonsIgnorePrimaryKey() {
-		let space = Dandy.insertUnique(Space.self, primaryKeyValue: "name")
+		let space = Dandy.insertUnique(Space.self, identifiedBy: "name")
 		space?.setValue("The Gogol Empire, let's say", forKey: "name")
-		let repeatedSpace = Dandy.insertUnique(Space.self, primaryKeyValue: "void")
+		let repeatedSpace = Dandy.insertUnique(Space.self, identifiedBy: "void")
 		let spaces = try! Dandy.fetch(Space.self)?.count
 		XCTAssert(spaces == 1 && (repeatedSpace!.valueForKey("name") as! String == "The Gogol Empire, let's say"), "Pass")
 	}
@@ -166,7 +166,7 @@ class CoreDataDandyTests: XCTestCase {
 		The convenience function for fetching objects by primary key should return a unique object that has been inserted.
 	*/
 	func testUniqueObjectFetch() {
-		let dandy = Dandy.insertUnique(Dandy_.self, primaryKeyValue: "WILDE")
+		let dandy = Dandy.insertUnique(Dandy_.self, identifiedBy: "WILDE")
 		dandy?.setValue("An author, let's say", forKey: "bio")
 		let fetchedDandy = Dandy.fetchUnique(Dandy_.self, identifiedBy: "WILDE")!
 		XCTAssert((fetchedDandy.valueForKey("bio") as! String == "An author, let's say"), "Pass")
@@ -175,14 +175,14 @@ class CoreDataDandyTests: XCTestCase {
 		If a primary key is not specified for an object, the fetch should fail and emit a warning.
 	*/
 	func testUnspecifiedPrimaryKeyValueUniqueObjectFetch() {
-		let plebian = Dandy.insertUnique(Plebian.self, primaryKeyValue: "plebianID")
+		let plebian = Dandy.insertUnique(Plebian.self, identifiedBy: "plebianID")
 		XCTAssert(plebian == nil, "Pass")
 	}
 	/**
 		A deleted object should not be represented in the database
 	*/
 	func testObjectDeletion() {
-		let space = Dandy.insertUnique(Space.self, primaryKeyValue: "name")
+		let space = Dandy.insertUnique(Space.self, identifiedBy: "name")
 		let previousSpaceCount = try! Dandy.fetch(Space.self)?.count
 		let expectation = self.expectationWithDescription("Object deletion")
 		Dandy.delete(space!) {

@@ -29,9 +29,9 @@ import CoreData
 
 public struct ObjectFactory {
 	
-	/// Returns an object of a given entity type from json. This function is primarily accessed within Dandy to
-	/// recursively produce objects when parsing nested json, and is thereby only accessed indirectly. Others, however,
-	/// may find direct access to this convenience useful.
+	/// Returns an object of a given type constructed from the provided json. This function is primarily accessed 
+	/// within Dandy to recursively produce objects when parsing nested json, and is thereby only accessed indirectly. 
+	/// Others, however, may find direct access to this convenience useful.
 	///
 	/// By default, this function will recursively parse through a json hierarchy.
 	///
@@ -40,11 +40,11 @@ public struct ObjectFactory {
 	/// Finally, as invocations of this function implicitly involve database fetches, it may bottleneck when used to
 	/// process json with thousands of objects.
 	///
-	/// - parameter entity:	The entity that will be inserted or fetched then read to from the json.
+	/// - parameter type: The type of object to make.
 	/// - parameter from: The json to map into the returned object.
 	///
-	/// - returns: An NSManagedObject if one could be inserted or fetched. The values that could be mapped from the json
-	///		to the object will be found on the returned object.
+	/// - returns: A Model of the specified type if one could be inserted or fetched. The values that could be mapped 
+	/// from the json to the object will be found on the returned object.
 	public static func make<Model: NSManagedObject>(type: Model.Type, from json: [String: AnyObject]) -> Model? {
 		if let entityDescription = NSEntityDescription.forType(type) {
 			return _make(entityDescription, from: json) as? Model
@@ -68,7 +68,7 @@ public struct ObjectFactory {
 		if	let name = entity.name,
 			let primaryKeyValue = entity.primaryKeyValueFromJSON(json) {
 			// Attempt to fetch or create unique object for primaryKey
-			let object = Dandy._insertUnique(name, primaryKeyValue: primaryKeyValue)
+			let object = Dandy._insertUnique(name, identifiedBy: primaryKeyValue)
 			if var object = object {
 				object = build(object, from: json)
 				finalizeMapping(of: object, from: json)
