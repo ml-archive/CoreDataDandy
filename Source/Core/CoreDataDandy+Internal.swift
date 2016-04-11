@@ -132,7 +132,7 @@ extension CoreDataDandy {
 	}
 	
 	// MARK: - Singletons -
-	/// Attempts to return a predicate which may be used to fetch a unique version of an object.
+	/// Attempts to return a singleton for a given entity.
 	///
 	/// - parameter entity: The name of the singleton entity
 	///

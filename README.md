@@ -20,13 +20,13 @@ Core Data Dandy is a feature-light wrapper around Core Data that simplifies comm
 
 
 ```ogdl
-github "fuzz-productions/CoreDataDandy" ~> 0.4.1
+github "fuzz-productions/CoreDataDandy" ~> 0.5.0
 ```
 
 ### CocoaPods
 
 ```ogdl
-pod 'CoreDataDandy', '0.4.1'
+pod 'CoreDataDandy', '0.5.0'
 ```
 
 ## Usage
@@ -69,19 +69,19 @@ Dandy.tearDown()
 Fetch all objects of a given type.
 
 ```swift
-Dandy.fetch("Gossip")
+Dandy.fetch(Gossip.self)
 ```
 
 Fetch an object corresponding to an entity and primaryKey value.
 
 ```swift
-Dandy.fetchUnique("Hat", primaryKeyValue: "bowler")
+Dandy.fetchUnique(Hat.self, identifiedBy: "bowler")
 ```
 
 Fetch an array of objects filtered by a predicate.
 
 ```swift
-Dandy.fetch("Gossip", filterBy: NSPredicate(format: "topic == %@", "John Keats"))
+Dandy.fetch(Gossip.self, filterBy: NSPredicate(format: "topic == %@", "John Keats"))
 ```
 
 ### Insertions and updates
@@ -89,25 +89,25 @@ Dandy.fetch("Gossip", filterBy: NSPredicate(format: "topic == %@", "John Keats")
 Insert object of a given type.
 
 ```swift
-Dandy.insert("Gossip")
+Dandy.insert(Gossip.self)
 ```
 
 Insert or fetch a unique a object from a primary key.
 
 ```swift
-Dandy.insertUnique("Dandy", primaryKeyValue: "WILDE")
+Dandy.insertUnique(Slander.self, identifiedBy: "WILDE")
 ```
 
 Upsert a unique object, or insert and update a non-unique object.
 
 ```swift
-Dandy.upsert("Gossip", from: json)
+Dandy.upsert(Gossip.self, from: json)
 ```
 
 Upsert an array of unique objects, or insert and update non-unique objects.
 
 ```swift
-Dandy.batchUpsert("Gossip", from: json)
+Dandy.batchUpsert(Gossip.self, from: json)
 ```
 
 ### Mapping finalization
@@ -157,7 +157,7 @@ CoreDataDandy supports four xcdatamodel attributes. All decorations are declared
 
 **@primaryKey**
 
-Add this decoration to the entity's userInfo to specify which property on the entity functions as its primaryKey.
+Add this decoration to the entity's userInfo to specify which property on the entity functions as its primaryKey. For iOS 9 and later, use uniqueConstraints instead.
 
 **@mapping**
 

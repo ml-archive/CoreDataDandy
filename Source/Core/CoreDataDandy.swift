@@ -245,11 +245,11 @@ public class CoreDataDandy {
 	}
 	
 	// MARK: - Singletons -
-	/// Attempts to return a predicate which may be used to fetch a unique version of an object.
+	/// Attempts to singleton of a given type.
 	///
-	/// - parameter entity: The name of the singleton entity
+	/// - parameter type: The type of the singleton
 	///
-	/// - returns: The singleton for this entity if one could be found.
+	/// - returns: The singleton for this type if one could be found.
 	private func singleton<Model: NSManagedObject>(type: Model.Type) -> Model? {
 		return _singleton(String(type)) as? Model
 	}
