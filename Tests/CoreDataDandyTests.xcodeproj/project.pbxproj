@@ -8,24 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		98213DF41C654F19004B732B /* DandyModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 98213DF21C654F19004B732B /* DandyModel.xcdatamodeld */; };
-		9838309F1CB2FE910094CD04 /* Conclusion+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9838309D1CB2FE910094CD04 /* Conclusion+CoreDataProperties.swift */; };
-		983830A01CB2FE910094CD04 /* Conclusion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9838309E1CB2FE910094CD04 /* Conclusion.swift */; };
-		983830B11CB2FEC40094CD04 /* Flattery+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 983830A11CB2FEC40094CD04 /* Flattery+CoreDataProperties.swift */; };
-		983830B21CB2FEC40094CD04 /* Flattery.swift in Sources */ = {isa = PBXBuildFile; fileRef = 983830A21CB2FEC40094CD04 /* Flattery.swift */; };
-		983830B31CB2FEC40094CD04 /* Hat+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 983830A31CB2FEC40094CD04 /* Hat+CoreDataProperties.swift */; };
-		983830B41CB2FEC40094CD04 /* Hat.swift in Sources */ = {isa = PBXBuildFile; fileRef = 983830A41CB2FEC40094CD04 /* Hat.swift */; };
-		983830B51CB2FEC40094CD04 /* Plebian+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 983830A51CB2FEC40094CD04 /* Plebian+CoreDataProperties.swift */; };
-		983830B61CB2FEC40094CD04 /* Plebian.swift in Sources */ = {isa = PBXBuildFile; fileRef = 983830A61CB2FEC40094CD04 /* Plebian.swift */; };
-		983830B71CB2FEC40094CD04 /* Gossip+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 983830A71CB2FEC40094CD04 /* Gossip+CoreDataProperties.swift */; };
-		983830B81CB2FEC40094CD04 /* Gossip.swift in Sources */ = {isa = PBXBuildFile; fileRef = 983830A81CB2FEC40094CD04 /* Gossip.swift */; };
-		983830B91CB2FEC40094CD04 /* Material+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 983830A91CB2FEC40094CD04 /* Material+CoreDataProperties.swift */; };
-		983830BA1CB2FEC40094CD04 /* Material.swift in Sources */ = {isa = PBXBuildFile; fileRef = 983830AA1CB2FEC40094CD04 /* Material.swift */; };
-		983830BB1CB2FEC40094CD04 /* Slander+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 983830AB1CB2FEC40094CD04 /* Slander+CoreDataProperties.swift */; };
-		983830BC1CB2FEC40094CD04 /* Slander.swift in Sources */ = {isa = PBXBuildFile; fileRef = 983830AC1CB2FEC40094CD04 /* Slander.swift */; };
-		983830BD1CB2FEC40094CD04 /* Space+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 983830AD1CB2FEC40094CD04 /* Space+CoreDataProperties.swift */; };
-		983830BE1CB2FEC40094CD04 /* Space.swift in Sources */ = {isa = PBXBuildFile; fileRef = 983830AE1CB2FEC40094CD04 /* Space.swift */; };
-		983830BF1CB2FEC40094CD04 /* Dandy_+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 983830AF1CB2FEC40094CD04 /* Dandy_+CoreDataProperties.swift */; };
-		983830C01CB2FEC40094CD04 /* Dandy_.swift in Sources */ = {isa = PBXBuildFile; fileRef = 983830B01CB2FEC40094CD04 /* Dandy_.swift */; };
 		983AE9271C64ED99001312AE /* MappingFinalizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 983AE9261C64ED99001312AE /* MappingFinalizer.swift */; };
 		9867478E1CBBFD6400559E35 /* Conclusion+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9867478C1CBBFD6400559E35 /* Conclusion+CoreDataProperties.swift */; };
 		9867478F1CBBFD6400559E35 /* Conclusion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9867478D1CBBFD6400559E35 /* Conclusion.swift */; };
@@ -64,24 +46,6 @@
 
 /* Begin PBXFileReference section */
 		98213DF31C654F19004B732B /* DandyModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = DandyModel.xcdatamodel; sourceTree = "<group>"; };
-		9838309D1CB2FE910094CD04 /* Conclusion+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Conclusion+CoreDataProperties.swift"; sourceTree = "<group>"; };
-		9838309E1CB2FE910094CD04 /* Conclusion.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Conclusion.swift; sourceTree = "<group>"; };
-		983830A11CB2FEC40094CD04 /* Flattery+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Flattery+CoreDataProperties.swift"; sourceTree = "<group>"; };
-		983830A21CB2FEC40094CD04 /* Flattery.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Flattery.swift; sourceTree = "<group>"; };
-		983830A31CB2FEC40094CD04 /* Hat+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Hat+CoreDataProperties.swift"; sourceTree = "<group>"; };
-		983830A41CB2FEC40094CD04 /* Hat.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Hat.swift; sourceTree = "<group>"; };
-		983830A51CB2FEC40094CD04 /* Plebian+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Plebian+CoreDataProperties.swift"; sourceTree = "<group>"; };
-		983830A61CB2FEC40094CD04 /* Plebian.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Plebian.swift; sourceTree = "<group>"; };
-		983830A71CB2FEC40094CD04 /* Gossip+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Gossip+CoreDataProperties.swift"; sourceTree = "<group>"; };
-		983830A81CB2FEC40094CD04 /* Gossip.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Gossip.swift; sourceTree = "<group>"; };
-		983830A91CB2FEC40094CD04 /* Material+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Material+CoreDataProperties.swift"; sourceTree = "<group>"; };
-		983830AA1CB2FEC40094CD04 /* Material.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Material.swift; sourceTree = "<group>"; };
-		983830AB1CB2FEC40094CD04 /* Slander+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Slander+CoreDataProperties.swift"; sourceTree = "<group>"; };
-		983830AC1CB2FEC40094CD04 /* Slander.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Slander.swift; sourceTree = "<group>"; };
-		983830AD1CB2FEC40094CD04 /* Space+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Space+CoreDataProperties.swift"; sourceTree = "<group>"; };
-		983830AE1CB2FEC40094CD04 /* Space.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Space.swift; sourceTree = "<group>"; };
-		983830AF1CB2FEC40094CD04 /* Dandy_+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Dandy_+CoreDataProperties.swift"; sourceTree = "<group>"; };
-		983830B01CB2FEC40094CD04 /* Dandy_.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Dandy_.swift; sourceTree = "<group>"; };
 		983AE9261C64ED99001312AE /* MappingFinalizer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MappingFinalizer.swift; sourceTree = "<group>"; };
 		9867478C1CBBFD6400559E35 /* Conclusion+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Conclusion+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		9867478D1CBBFD6400559E35 /* Conclusion.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Conclusion.swift; sourceTree = "<group>"; };
@@ -328,7 +292,6 @@
 				988FF8AA1C5592BE00E81FAF /* Serializer.swift in Sources */,
 				986747A11CBBFD7800559E35 /* Space.swift in Sources */,
 				988FF8A31C5592BE00E81FAF /* Constants.swift in Sources */,
-				983830B11CB2FEC40094CD04 /* Flattery+CoreDataProperties.swift in Sources */,
 				988FF8A41C5592BE00E81FAF /* CoreDataDandy.swift in Sources */,
 				988FF8A71C5592BE00E81FAF /* ObjectFactory.swift in Sources */,
 				986747AC1CBBFD7800559E35 /* Flattery+CoreDataProperties.swift in Sources */,
@@ -350,7 +313,6 @@
 				9867478F1CBBFD6400559E35 /* Conclusion.swift in Sources */,
 				988FF8A61C5592BE00E81FAF /* Logger.swift in Sources */,
 				988FF8AF1C5592BE00E81FAF /* ValueConverter.swift in Sources */,
-				983830B31CB2FEC40094CD04 /* Hat+CoreDataProperties.swift in Sources */,
 				983AE9271C64ED99001312AE /* MappingFinalizer.swift in Sources */,
 				986747A01CBBFD7800559E35 /* Space+CoreDataProperties.swift in Sources */,
 				988FF8AD1C5592BE00E81FAF /* ConvertibleType.swift in Sources */,

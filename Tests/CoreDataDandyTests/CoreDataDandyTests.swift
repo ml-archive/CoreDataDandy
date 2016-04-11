@@ -560,7 +560,7 @@ class CoreDataDandyTests: XCTestCase {
 		Entity descriptions with no specified mapping should read into mapping dictionaries with all "same name" mapping
 	*/
 	func testSameNameMap() {
-		let entity = NSEntityDescription.forManagedObject(Material.self)!
+		let entity = NSEntityDescription.forType(Material.self)!
 		let expectedMap = [
 			"name": PropertyDescription(description: entity.allAttributes!["name"]!),
 			"origin": PropertyDescription(description: entity.allAttributes!["origin"]!),
@@ -632,7 +632,7 @@ class CoreDataDandyTests: XCTestCase {
 		The first access to an entity's map should result in that map's caching
 	*/
 	func testMapCaching() {
-		if let entityDescription = NSEntityDescription.forManagedObject(Material.self) {
+		if let entityDescription = NSEntityDescription.forType(Material.self) {
 			EntityMapper.map(entityDescription)
 			//let entityCacheMap = EntityMapper.cachedEntityMap[Material.self]!
 			//XCTAssert(entityCacheMap.count > 0, "")
@@ -642,7 +642,7 @@ class CoreDataDandyTests: XCTestCase {
 		When clean up is called, no cached maps should remain
 	*/
 	func testMapCacheCleanUp() {
-		if let entityDescription = NSEntityDescription.forManagedObject(Material.self) {
+		if let entityDescription = NSEntityDescription.forType(Material.self) {
 			EntityMapper.map(entityDescription)
 			let initialCacheCount = EntityMapper.cachedEntityMap.count
 			EntityMapper.clearCache()
@@ -655,7 +655,7 @@ class CoreDataDandyTests: XCTestCase {
 	*/
 	func testPerformanceOfNewMapCreation() {
 		self.measureBlock {
-			let entityDescription = NSEntityDescription.forManagedObject(Material.self)
+			let entityDescription = NSEntityDescription.forType(Material.self)
 			EntityMapper.map(entityDescription!)
 		}
 	}
@@ -663,7 +663,7 @@ class CoreDataDandyTests: XCTestCase {
 		The fetching of a cached map should be performant, and more performant than the creation of a new map
 	*/
 	func testPerformanceOfCachedMapRetrieval() {
-		let entityDescription = NSEntityDescription.forManagedObject(Material.self)!
+		let entityDescription = NSEntityDescription.forType(Material.self)!
 		EntityMapper.map(entityDescription)
 		self.measureBlock {
 			EntityMapper.map(entityDescription)
