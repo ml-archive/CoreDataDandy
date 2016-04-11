@@ -497,7 +497,7 @@ class CoreDataDandyTests: XCTestCase {
 
 	// MARK: - Mapping -
 	func testEntityDescriptionFromString() {
-		let expected = NSEntityDescription.entityForName("Dandy", inManagedObjectContext: Dandy.coordinator.mainContext)
+		let expected = NSEntityDescription.entityForName("Dandy_", inManagedObjectContext: Dandy.coordinator.mainContext)
 		let result = NSEntityDescription.forType(Dandy_.self)!
 		XCTAssert(expected == result, "Pass")
 	}
