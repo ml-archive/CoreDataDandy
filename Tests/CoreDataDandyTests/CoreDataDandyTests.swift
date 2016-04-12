@@ -696,13 +696,13 @@ class CoreDataDandyTests: XCTestCase {
 			]
 		]
 		ObjectFactory.build(gossip, from: json)
-		// TODO: FIX
-//		let byron = gossip.valueForKey("purveyor") as! NSManagedObject
-//		XCTAssert(gossip.valueForKey("details") as! String == "At Bo Peep, unusually cool towards Isabella Brown." &&
-//			gossip.valueForKey("topic") as! String ==  "John Keats" &&
-//			byron.valueForKey("dandyID") as! String ==  "1" &&
-//			byron.valueForKey("name") as! String ==  "Lord Byron",
-//			"Pass")
+
+		let byron = gossip.valueForKey("purveyor") as! NSManagedObject
+		XCTAssert(gossip.valueForKey("details") as! String == "At Bo Peep, unusually cool towards Isabella Brown." &&
+			gossip.valueForKey("topic") as! String ==  "John Keats" &&
+			byron.valueForKey("dandyID") as! String ==  "1" &&
+			byron.valueForKey("name") as! String ==  "Lord Byron",
+			"Pass")
 	}
 	/**
 		Values should be recursively mapped from nested json objects.
@@ -726,19 +726,18 @@ class CoreDataDandyTests: XCTestCase {
 			]
 		]
 		ObjectFactory.build(gossip, from: json)
-		// TODO: FIX
-//		let byron = gossip.valueForKey("purveyor") as! NSManagedObject
-//		let bowler = byron.valueForKey("hats")!.anyObject() as! NSManagedObject
-//		let felt = bowler.valueForKey("primaryMaterial") as! NSManagedObject
-//		XCTAssert(gossip.valueForKey("details") as! String == "At Bo Peep, unusually cool towards Isabella Brown." &&
-//			gossip.valueForKey("topic") as! String ==  "John Keats" &&
-//			byron.valueForKey("dandyID") as! String ==  "1" &&
-//			byron.valueForKey("name") as! String ==  "Lord Byron" &&
-//			bowler.valueForKey("name") as! String ==  "bowler" &&
-//			bowler.valueForKey("styleDescription") as! String ==  "billycock" &&
-//			felt.valueForKey("name") as! String ==  "felt" &&
-//			felt.valueForKey("origin") as! String ==  "Rome",
-//			"Pass")
+		let byron = gossip.valueForKey("purveyor") as! NSManagedObject
+		let bowler = byron.valueForKey("hats")!.anyObject() as! NSManagedObject
+		let felt = bowler.valueForKey("primaryMaterial") as! NSManagedObject
+		XCTAssert(gossip.valueForKey("details") as! String == "At Bo Peep, unusually cool towards Isabella Brown." &&
+			gossip.valueForKey("topic") as! String ==  "John Keats" &&
+			byron.valueForKey("dandyID") as! String ==  "1" &&
+			byron.valueForKey("name") as! String ==  "Lord Byron" &&
+			bowler.valueForKey("name") as! String ==  "bowler" &&
+			bowler.valueForKey("styleDescription") as! String ==  "billycock" &&
+			felt.valueForKey("name") as! String ==  "felt" &&
+			felt.valueForKey("origin") as! String ==  "Rome",
+			"Pass")
 	}
 	/**
 		@mapping values that contain a keypath should allow access to json values via a keypath
@@ -755,12 +754,11 @@ class CoreDataDandyTests: XCTestCase {
 			]
 		] as [String: AnyObject]
 		ObjectFactory.build(dandy, from: json)
-		// TODO: FIX
-//		let balzac = dandy.valueForKey("predecessor") as! NSManagedObject
-//		XCTAssert(balzac.valueForKey("dandyID") as! String == "BALZ" &&
-//			balzac.valueForKey("name") as! String ==  "Honoré de Balzac" &&
-//			(balzac.valueForKey("successor") as! NSManagedObject).valueForKey("dandyID") as! String ==  dandy.valueForKey("dandyID") as! String,
-//			"Pass")
+		let balzac = dandy.valueForKey("predecessor") as! NSManagedObject
+		XCTAssert(balzac.valueForKey("dandyID") as! String == "BALZ" &&
+			balzac.valueForKey("name") as! String ==  "Honoré de Balzac" &&
+			(balzac.valueForKey("successor") as! NSManagedObject).valueForKey("dandyID") as! String ==  dandy.valueForKey("dandyID") as! String,
+			"Pass")
 	}
 	/**
 		Property values on an object should not be overwritten if no new values are specified.
