@@ -64,20 +64,30 @@ public struct ObjectFactory {
 	/// - returns: An NSManagedObject if one could be inserted or fetched. The values that could be mapped from the json
 	///		to the object will be found on the returned object.
 	static func _make(entity: NSEntityDescription, from json: [String: AnyObject]) -> NSManagedObject? {
-		// Find primary key
-		if	let name = entity.name,
-			let primaryKeyValue = entity.primaryKeyValueFromJSON(json) {
-			// Attempt to fetch or create unique object for primaryKey
-			let object = Dandy._insertUnique(name, identifiedBy: primaryKeyValue)
-			if var object = object {
-				object = build(object, from: json)
-				finalizeMapping(of: object, from: json)
-				return object
-			} else {
-				log(message("A unique object could not be generated for entity \(entity.name) from json \n\(json)."))
-			}
+		guard let name = entity.name else {
+			log(message("An object cannot be made from nameless entities."))
+			return nil
 		}
-		log(message("A unique object could not be generated for entity \(entity.name) from json \n\(json)."))
+		
+		var object: NSManagedObject? = nil
+		
+		if entity.isUnique {
+			// Attempt to fetch or create unique object for primaryKey
+			if let primaryKeyValue = entity.primaryKeyValueFromJSON(json) {
+				object = Dandy._insertUnique(name, identifiedBy: primaryKeyValue)
+			}
+		} else {
+			// The object is not unique. Simply insert it.
+			object = Dandy._insert(name)
+		}
+		
+		if var object = object {
+			object = build(object, from: json)
+			finalizeMapping(of: object, from: json)
+			return object
+		}
+		
+		log(message("An object could not be made for entity \(entity.name) from json \n\(json)."))
 		return nil
 	}
 	

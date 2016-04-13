@@ -99,14 +99,13 @@ public class CoreDataDandy {
 	///
 	/// - returns: A managed object if one could be created.
 	public func upsert<Model: NSManagedObject>(type: Model.Type, from json: [String: AnyObject]) -> Model? {
-		guard let entityDescription = NSEntityDescription.forType(type) else {
+		guard let entity = NSEntityDescription.forType(type) else {
 			log(message("Could not retrieve NSEntityDescription for type \(type)"))
 			return nil
 		}
 
-		let isUniqueEntity = entityDescription.primaryKey != nil
-		if isUniqueEntity {
-			if let primaryKeyValue = entityDescription.primaryKeyValueFromJSON(json) {
+		if entity.isUnique {
+			if let primaryKeyValue = entity.primaryKeyValueFromJSON(json) {
 				return upsertUnique(type, identifiedBy: primaryKeyValue, from: json)
 			} else {
 				log(message("Could not retrieve primary key from json \(json)."))

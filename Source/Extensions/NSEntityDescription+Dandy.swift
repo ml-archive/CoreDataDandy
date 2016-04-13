@@ -127,6 +127,16 @@ extension NSEntityDescription {
 			return nil
 		}
 	}
+	
+	/// Returns whether the entity is unique or not.
+	///
+	/// - returns: If the entity has either one unique constraint or an identified primaryKey attribute, true.
+	///	Otherwise, false.
+	var isUnique: Bool {
+		get {
+			return primaryKey != nil
+		}
+	}
 
 	/// Extracts the value of a primary key from the passed in json if one can be extracted. Takes alternate mappings
 	/// for the primaryKey into account.

@@ -496,12 +496,34 @@ class CoreDataDandyTests: XCTestCase {
 	}
 
 	// MARK: - Mapping -
+	/**
+		NSEntityDescriptions should be retrievable by name.
+	*/
 	func testEntityDescriptionFromString() {
+		let expected = NSEntityDescription.entityForName("Dandy_", inManagedObjectContext: Dandy.coordinator.mainContext)
+		let result = NSEntityDescription.forEntity("Dandy_")!
+		XCTAssert(expected == result, "Pass")
+	}
+	/**
+		NSEntityDescriptions should be retrievable their model's underlying type.
+	*/
+	func testEntityDescriptionFromType() {
 		let expected = NSEntityDescription.entityForName("Dandy_", inManagedObjectContext: Dandy.coordinator.mainContext)
 		let result = NSEntityDescription.forType(Dandy_.self)!
 		XCTAssert(expected == result, "Pass")
 	}
-	
+	/**
+		NSEntityDescriptions should correctly report whether they represent unique models or not.
+	*/
+	func testUniquenessIdentification() {
+		let dandy = NSEntityDescription.forType(Dandy_.self)!
+		let plebian = NSEntityDescription.forType(Plebian.self)!
+		XCTAssert(dandy.isUnique == true && plebian.isUnique == false,
+		          "Failed to correctly identify whether an NSEntityDescription describes a unique model.")
+	}
+	/**
+		NSEntityDescriptions should correctly report the property that makes an object unique.
+	*/
 	func testPrimaryKeyIdentification() {
 		let expected = "dandyID"
 		let dandy = NSEntityDescription.forType(Dandy_.self)!
@@ -669,7 +691,6 @@ class CoreDataDandyTests: XCTestCase {
 			EntityMapper.map(entityDescription)
 		}
 	}
-
 	// MARK: - Object building -
 	/**
 		Values should be mapped from json to an object's attributes.
@@ -796,6 +817,14 @@ class CoreDataDandyTests: XCTestCase {
 		]
 		ObjectFactory.make(PropertyDescription(description: dandy.entity.allRelationships!["hats"]!), to: dandy, from: json)
 		XCTAssert((dandy.valueForKey("hats") as! NSSet).count == 0, "Pass")
+	}
+	/** 
+		Uniqueness should play no role in whether an object can be made or not.
+	*/
+	func testNonUniqueObjectMaking() {
+		let json = ["name": "Passerby"]
+		let plebian = ObjectFactory.make(Plebian.self, from: json)
+		XCTAssert(plebian != nil, "Test failed: a non-unique object could not be made.")
 	}
 	/**
 		If a json array is passed when attempting to build a toOne relationship, it should be
