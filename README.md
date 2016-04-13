@@ -16,16 +16,24 @@ Core Data Dandy is a feature-light wrapper around Core Data that simplifies comm
 
 ## Installation
 
+### SPM
+
+```
+dependencies: [
+ .Package(url: "https://github.com/fuzz-productions/CoreDataDandy.git", 
+ 		  versions: Version(0,5,1)..<Version(0,5,2))
+]
+```
+
 ### Carthage
 
-
-```ogdl
+```
 github "fuzz-productions/CoreDataDandy" ~> 0.5.1
 ```
 
 ### CocoaPods
 
-```ogdl
+```
 pod 'CoreDataDandy', '0.5.1'
 ```
 
