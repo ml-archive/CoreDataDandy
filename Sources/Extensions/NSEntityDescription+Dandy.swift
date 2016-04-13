@@ -50,21 +50,6 @@ extension NSEntityDescription {
 		}
 	}
 
-	/// Returns a single unique constraint. Core Data Dandy does not support the use of multiple unique constraints.
-	/// The constraint returned is prioritized over any marked by the @primaryKey decorator.
-	var uniqueConstraint: String? {
-		get {
-			if #available(iOS 9.0, *) {
-				if let constraint = uniquenessConstraints.first?.first?.name {
-					return constraint
-				} else if let superEntity = superentity {
-					return superEntity.uniqueConstraint
-				}
-			}
-			return nil
-		}
-	}
-
 	/// Recursively collects arbitrary values from potential superentities. This function contains the boilerplate
 	/// required for collecting userInfo, attributesByName, and relationshipsByName.
 	///
@@ -98,6 +83,7 @@ extension NSEntityDescription {
 	}
 }
 
+
 // MARK: - NSEntityDescription+Construction -
 extension NSEntityDescription {
 	class func forEntity(name: String) -> NSEntityDescription? {
@@ -109,6 +95,23 @@ extension NSEntityDescription {
 	}
 }
 
+// MARK: - NSEntityDescription+UniqueConstraint -
+@available(iOS 9.0, *) extension NSEntityDescription {
+	/// Returns a single unique constraint. Core Data Dandy does not support the use of multiple unique constraints.
+	/// The constraint returned is prioritized over any marked by the @primaryKey decorator.
+	var uniqueConstraint: String? {
+		get {
+			if let constraint = uniquenessConstraints.first?.first?.name {
+				return constraint
+			} else if let superEntity = superentity {
+				return superEntity.uniqueConstraint
+			}
+			return nil
+		}
+	}
+
+}
+
 // MARK: - NSEntityDescription+PrimaryKey -
 extension NSEntityDescription {
 	/// Returns the primary key of of the `NSEntityDescription`, a value used to ensure a unique record
@@ -118,8 +121,10 @@ extension NSEntityDescription {
 	///	Otherwise, nil.
 	var primaryKey: String? {
 		get {
-			if let uniqueConstraint = uniqueConstraint {
-				return uniqueConstraint
+			if #available(iOS 9.0, *) {
+				if let uniqueConstraint = uniqueConstraint {
+					return uniqueConstraint
+				}
 			}
 			if let userInfo = allUserInfo {
 				return userInfo[PRIMARY_KEY] as? String
