@@ -8,7 +8,21 @@
 
 /* Begin PBXBuildFile section */
 		98213DF41C654F19004B732B /* DandyModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 98213DF21C654F19004B732B /* DandyModel.xcdatamodeld */; };
-		983AE9271C64ED99001312AE /* MappingFinalizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 983AE9261C64ED99001312AE /* MappingFinalizer.swift */; };
+		9836F9021CBEFE2300AD92DF /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9836F8F01CBEFE2300AD92DF /* Constants.swift */; };
+		9836F9031CBEFE2300AD92DF /* CoreDataDandy+Internal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9836F8F21CBEFE2300AD92DF /* CoreDataDandy+Internal.swift */; };
+		9836F9041CBEFE2300AD92DF /* CoreDataDandy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9836F8F31CBEFE2300AD92DF /* CoreDataDandy.swift */; };
+		9836F9051CBEFE2300AD92DF /* EntityMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9836F8F41CBEFE2300AD92DF /* EntityMapper.swift */; };
+		9836F9061CBEFE2300AD92DF /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9836F8F51CBEFE2300AD92DF /* Logger.swift */; };
+		9836F9071CBEFE2300AD92DF /* MappingFinalizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9836F8F61CBEFE2300AD92DF /* MappingFinalizer.swift */; };
+		9836F9081CBEFE2300AD92DF /* ObjectFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9836F8F71CBEFE2300AD92DF /* ObjectFactory.swift */; };
+		9836F9091CBEFE2300AD92DF /* PersistentStackCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9836F8F81CBEFE2300AD92DF /* PersistentStackCoordinator.swift */; };
+		9836F90A1CBEFE2300AD92DF /* PropertyDescription.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9836F8F91CBEFE2300AD92DF /* PropertyDescription.swift */; };
+		9836F90B1CBEFE2300AD92DF /* Serializer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9836F8FA1CBEFE2300AD92DF /* Serializer.swift */; };
+		9836F90C1CBEFE2300AD92DF /* Dictionary+Dandy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9836F8FC1CBEFE2300AD92DF /* Dictionary+Dandy.swift */; };
+		9836F90D1CBEFE2300AD92DF /* NSEntityDescription+Dandy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9836F8FD1CBEFE2300AD92DF /* NSEntityDescription+Dandy.swift */; };
+		9836F90E1CBEFE2300AD92DF /* ConvertibleType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9836F8FF1CBEFE2300AD92DF /* ConvertibleType.swift */; };
+		9836F90F1CBEFE2300AD92DF /* CoreDataValueConverter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9836F9001CBEFE2300AD92DF /* CoreDataValueConverter.swift */; };
+		9836F9101CBEFE2300AD92DF /* ValueConverter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9836F9011CBEFE2300AD92DF /* ValueConverter.swift */; };
 		9867478E1CBBFD6400559E35 /* Conclusion+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9867478C1CBBFD6400559E35 /* Conclusion+CoreDataProperties.swift */; };
 		9867478F1CBBFD6400559E35 /* Conclusion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9867478D1CBBFD6400559E35 /* Conclusion.swift */; };
 		986747A01CBBFD7800559E35 /* Space+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 986747901CBBFD7800559E35 /* Space+CoreDataProperties.swift */; };
@@ -28,25 +42,25 @@
 		986747AE1CBBFD7800559E35 /* Material+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9867479E1CBBFD7800559E35 /* Material+CoreDataProperties.swift */; };
 		986747AF1CBBFD7800559E35 /* Material.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9867479F1CBBFD7800559E35 /* Material.swift */; };
 		988F4A6A1B3632EE00E71046 /* CoreDataDandyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 988F4A691B3632EE00E71046 /* CoreDataDandyTests.swift */; };
-		988FF8A31C5592BE00E81FAF /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 988FF8931C5592BE00E81FAF /* Constants.swift */; };
-		988FF8A41C5592BE00E81FAF /* CoreDataDandy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 988FF8951C5592BE00E81FAF /* CoreDataDandy.swift */; };
-		988FF8A51C5592BE00E81FAF /* EntityMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 988FF8961C5592BE00E81FAF /* EntityMapper.swift */; };
-		988FF8A61C5592BE00E81FAF /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 988FF8971C5592BE00E81FAF /* Logger.swift */; };
-		988FF8A71C5592BE00E81FAF /* ObjectFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 988FF8981C5592BE00E81FAF /* ObjectFactory.swift */; };
-		988FF8A81C5592BE00E81FAF /* PersistentStackCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 988FF8991C5592BE00E81FAF /* PersistentStackCoordinator.swift */; };
-		988FF8A91C5592BE00E81FAF /* PropertyDescription.swift in Sources */ = {isa = PBXBuildFile; fileRef = 988FF89A1C5592BE00E81FAF /* PropertyDescription.swift */; };
-		988FF8AA1C5592BE00E81FAF /* Serializer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 988FF89B1C5592BE00E81FAF /* Serializer.swift */; };
-		988FF8AB1C5592BE00E81FAF /* Dictionary+Dandy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 988FF89D1C5592BE00E81FAF /* Dictionary+Dandy.swift */; };
-		988FF8AC1C5592BE00E81FAF /* NSEntityDescription+Dandy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 988FF89E1C5592BE00E81FAF /* NSEntityDescription+Dandy.swift */; };
-		988FF8AD1C5592BE00E81FAF /* ConvertibleType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 988FF8A01C5592BE00E81FAF /* ConvertibleType.swift */; };
-		988FF8AE1C5592BE00E81FAF /* CoreDataValueConverter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 988FF8A11C5592BE00E81FAF /* CoreDataValueConverter.swift */; };
-		988FF8AF1C5592BE00E81FAF /* ValueConverter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 988FF8A21C5592BE00E81FAF /* ValueConverter.swift */; };
-		98AC9B9F1CB6F18400DF0BB9 /* CoreDataDandy+Internal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98AC9B9E1CB6F18400DF0BB9 /* CoreDataDandy+Internal.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		98213DF31C654F19004B732B /* DandyModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = DandyModel.xcdatamodel; sourceTree = "<group>"; };
-		983AE9261C64ED99001312AE /* MappingFinalizer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MappingFinalizer.swift; sourceTree = "<group>"; };
+		9836F8F01CBEFE2300AD92DF /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
+		9836F8F21CBEFE2300AD92DF /* CoreDataDandy+Internal.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CoreDataDandy+Internal.swift"; sourceTree = "<group>"; };
+		9836F8F31CBEFE2300AD92DF /* CoreDataDandy.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreDataDandy.swift; sourceTree = "<group>"; };
+		9836F8F41CBEFE2300AD92DF /* EntityMapper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EntityMapper.swift; sourceTree = "<group>"; };
+		9836F8F51CBEFE2300AD92DF /* Logger.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Logger.swift; sourceTree = "<group>"; };
+		9836F8F61CBEFE2300AD92DF /* MappingFinalizer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MappingFinalizer.swift; sourceTree = "<group>"; };
+		9836F8F71CBEFE2300AD92DF /* ObjectFactory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ObjectFactory.swift; sourceTree = "<group>"; };
+		9836F8F81CBEFE2300AD92DF /* PersistentStackCoordinator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PersistentStackCoordinator.swift; sourceTree = "<group>"; };
+		9836F8F91CBEFE2300AD92DF /* PropertyDescription.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PropertyDescription.swift; sourceTree = "<group>"; };
+		9836F8FA1CBEFE2300AD92DF /* Serializer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Serializer.swift; sourceTree = "<group>"; };
+		9836F8FC1CBEFE2300AD92DF /* Dictionary+Dandy.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Dictionary+Dandy.swift"; sourceTree = "<group>"; };
+		9836F8FD1CBEFE2300AD92DF /* NSEntityDescription+Dandy.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSEntityDescription+Dandy.swift"; sourceTree = "<group>"; };
+		9836F8FF1CBEFE2300AD92DF /* ConvertibleType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConvertibleType.swift; sourceTree = "<group>"; };
+		9836F9001CBEFE2300AD92DF /* CoreDataValueConverter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreDataValueConverter.swift; sourceTree = "<group>"; };
+		9836F9011CBEFE2300AD92DF /* ValueConverter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ValueConverter.swift; sourceTree = "<group>"; };
 		9867478C1CBBFD6400559E35 /* Conclusion+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Conclusion+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		9867478D1CBBFD6400559E35 /* Conclusion.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Conclusion.swift; sourceTree = "<group>"; };
 		986747901CBBFD7800559E35 /* Space+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Space+CoreDataProperties.swift"; sourceTree = "<group>"; };
@@ -68,20 +82,6 @@
 		988F4A641B3632EE00E71046 /* CoreDataDandyTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CoreDataDandyTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		988F4A681B3632EE00E71046 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		988F4A691B3632EE00E71046 /* CoreDataDandyTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataDandyTests.swift; sourceTree = "<group>"; };
-		988FF8931C5592BE00E81FAF /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
-		988FF8951C5592BE00E81FAF /* CoreDataDandy.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreDataDandy.swift; sourceTree = "<group>"; };
-		988FF8961C5592BE00E81FAF /* EntityMapper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EntityMapper.swift; sourceTree = "<group>"; };
-		988FF8971C5592BE00E81FAF /* Logger.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Logger.swift; sourceTree = "<group>"; };
-		988FF8981C5592BE00E81FAF /* ObjectFactory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ObjectFactory.swift; sourceTree = "<group>"; };
-		988FF8991C5592BE00E81FAF /* PersistentStackCoordinator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PersistentStackCoordinator.swift; sourceTree = "<group>"; };
-		988FF89A1C5592BE00E81FAF /* PropertyDescription.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PropertyDescription.swift; sourceTree = "<group>"; };
-		988FF89B1C5592BE00E81FAF /* Serializer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Serializer.swift; sourceTree = "<group>"; };
-		988FF89D1C5592BE00E81FAF /* Dictionary+Dandy.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Dictionary+Dandy.swift"; sourceTree = "<group>"; };
-		988FF89E1C5592BE00E81FAF /* NSEntityDescription+Dandy.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSEntityDescription+Dandy.swift"; sourceTree = "<group>"; };
-		988FF8A01C5592BE00E81FAF /* ConvertibleType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConvertibleType.swift; sourceTree = "<group>"; };
-		988FF8A11C5592BE00E81FAF /* CoreDataValueConverter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreDataValueConverter.swift; sourceTree = "<group>"; };
-		988FF8A21C5592BE00E81FAF /* ValueConverter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ValueConverter.swift; sourceTree = "<group>"; };
-		98AC9B9E1CB6F18400DF0BB9 /* CoreDataDandy+Internal.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CoreDataDandy+Internal.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -95,6 +95,53 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		9836F8EF1CBEFE2300AD92DF /* CoreDataDandy */ = {
+			isa = PBXGroup;
+			children = (
+				9836F8F01CBEFE2300AD92DF /* Constants.swift */,
+				9836F8F11CBEFE2300AD92DF /* Core */,
+				9836F8FB1CBEFE2300AD92DF /* Extensions */,
+				9836F8FE1CBEFE2300AD92DF /* Value Conversion */,
+			);
+			name = CoreDataDandy;
+			path = ../Sources;
+			sourceTree = "<group>";
+		};
+		9836F8F11CBEFE2300AD92DF /* Core */ = {
+			isa = PBXGroup;
+			children = (
+				9836F8F21CBEFE2300AD92DF /* CoreDataDandy+Internal.swift */,
+				9836F8F31CBEFE2300AD92DF /* CoreDataDandy.swift */,
+				9836F8F41CBEFE2300AD92DF /* EntityMapper.swift */,
+				9836F8F51CBEFE2300AD92DF /* Logger.swift */,
+				9836F8F61CBEFE2300AD92DF /* MappingFinalizer.swift */,
+				9836F8F71CBEFE2300AD92DF /* ObjectFactory.swift */,
+				9836F8F81CBEFE2300AD92DF /* PersistentStackCoordinator.swift */,
+				9836F8F91CBEFE2300AD92DF /* PropertyDescription.swift */,
+				9836F8FA1CBEFE2300AD92DF /* Serializer.swift */,
+			);
+			path = Core;
+			sourceTree = "<group>";
+		};
+		9836F8FB1CBEFE2300AD92DF /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				9836F8FC1CBEFE2300AD92DF /* Dictionary+Dandy.swift */,
+				9836F8FD1CBEFE2300AD92DF /* NSEntityDescription+Dandy.swift */,
+			);
+			path = Extensions;
+			sourceTree = "<group>";
+		};
+		9836F8FE1CBEFE2300AD92DF /* Value Conversion */ = {
+			isa = PBXGroup;
+			children = (
+				9836F8FF1CBEFE2300AD92DF /* ConvertibleType.swift */,
+				9836F9001CBEFE2300AD92DF /* CoreDataValueConverter.swift */,
+				9836F9011CBEFE2300AD92DF /* ValueConverter.swift */,
+			);
+			path = "Value Conversion";
+			sourceTree = "<group>";
+		};
 		9867478B1CBBFD6400559E35 /* Models */ = {
 			isa = PBXGroup;
 			children = (
@@ -123,7 +170,7 @@
 		988F4A591B3632DC00E71046 = {
 			isa = PBXGroup;
 			children = (
-				988FF8921C5592BE00E81FAF /* CoreDataDandy */,
+				9836F8EF1CBEFE2300AD92DF /* CoreDataDandy */,
 				988F4A661B3632EE00E71046 /* CoreDataDandyTests */,
 				988F4A651B3632EE00E71046 /* Products */,
 			);
@@ -154,53 +201,6 @@
 				988F4A681B3632EE00E71046 /* Info.plist */,
 			);
 			name = "Supporting Files";
-			sourceTree = "<group>";
-		};
-		988FF8921C5592BE00E81FAF /* CoreDataDandy */ = {
-			isa = PBXGroup;
-			children = (
-				988FF8931C5592BE00E81FAF /* Constants.swift */,
-				988FF8941C5592BE00E81FAF /* Core */,
-				988FF89C1C5592BE00E81FAF /* Extensions */,
-				988FF89F1C5592BE00E81FAF /* Value Conversion */,
-			);
-			name = CoreDataDandy;
-			path = ../Source;
-			sourceTree = "<group>";
-		};
-		988FF8941C5592BE00E81FAF /* Core */ = {
-			isa = PBXGroup;
-			children = (
-				988FF8951C5592BE00E81FAF /* CoreDataDandy.swift */,
-				98AC9B9E1CB6F18400DF0BB9 /* CoreDataDandy+Internal.swift */,
-				988FF8961C5592BE00E81FAF /* EntityMapper.swift */,
-				983AE9261C64ED99001312AE /* MappingFinalizer.swift */,
-				988FF8971C5592BE00E81FAF /* Logger.swift */,
-				988FF8981C5592BE00E81FAF /* ObjectFactory.swift */,
-				988FF8991C5592BE00E81FAF /* PersistentStackCoordinator.swift */,
-				988FF89A1C5592BE00E81FAF /* PropertyDescription.swift */,
-				988FF89B1C5592BE00E81FAF /* Serializer.swift */,
-			);
-			path = Core;
-			sourceTree = "<group>";
-		};
-		988FF89C1C5592BE00E81FAF /* Extensions */ = {
-			isa = PBXGroup;
-			children = (
-				988FF89D1C5592BE00E81FAF /* Dictionary+Dandy.swift */,
-				988FF89E1C5592BE00E81FAF /* NSEntityDescription+Dandy.swift */,
-			);
-			path = Extensions;
-			sourceTree = "<group>";
-		};
-		988FF89F1C5592BE00E81FAF /* Value Conversion */ = {
-			isa = PBXGroup;
-			children = (
-				988FF8A11C5592BE00E81FAF /* CoreDataValueConverter.swift */,
-				988FF8A01C5592BE00E81FAF /* ConvertibleType.swift */,
-				988FF8A21C5592BE00E81FAF /* ValueConverter.swift */,
-			);
-			path = "Value Conversion";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -288,40 +288,40 @@
 			buildActionMask = 2147483647;
 			files = (
 				986747AF1CBBFD7800559E35 /* Material.swift in Sources */,
-				988FF8A51C5592BE00E81FAF /* EntityMapper.swift in Sources */,
-				988FF8AA1C5592BE00E81FAF /* Serializer.swift in Sources */,
 				986747A11CBBFD7800559E35 /* Space.swift in Sources */,
-				988FF8A31C5592BE00E81FAF /* Constants.swift in Sources */,
-				988FF8A41C5592BE00E81FAF /* CoreDataDandy.swift in Sources */,
-				988FF8A71C5592BE00E81FAF /* ObjectFactory.swift in Sources */,
 				986747AC1CBBFD7800559E35 /* Flattery+CoreDataProperties.swift in Sources */,
+				9836F90F1CBEFE2300AD92DF /* CoreDataValueConverter.swift in Sources */,
+				9836F90A1CBEFE2300AD92DF /* PropertyDescription.swift in Sources */,
+				9836F90C1CBEFE2300AD92DF /* Dictionary+Dandy.swift in Sources */,
 				986747AA1CBBFD7800559E35 /* Dandy_+CoreDataProperties.swift in Sources */,
+				9836F9081CBEFE2300AD92DF /* ObjectFactory.swift in Sources */,
 				988F4A6A1B3632EE00E71046 /* CoreDataDandyTests.swift in Sources */,
 				986747A31CBBFD7800559E35 /* Hat.swift in Sources */,
 				986747A91CBBFD7800559E35 /* Plebian.swift in Sources */,
+				9836F9051CBEFE2300AD92DF /* EntityMapper.swift in Sources */,
 				9867478E1CBBFD6400559E35 /* Conclusion+CoreDataProperties.swift in Sources */,
-				988FF8A81C5592BE00E81FAF /* PersistentStackCoordinator.swift in Sources */,
+				9836F9071CBEFE2300AD92DF /* MappingFinalizer.swift in Sources */,
 				986747A61CBBFD7800559E35 /* Gossip+CoreDataProperties.swift in Sources */,
-				988FF8AC1C5592BE00E81FAF /* NSEntityDescription+Dandy.swift in Sources */,
-				988FF8AB1C5592BE00E81FAF /* Dictionary+Dandy.swift in Sources */,
-				98AC9B9F1CB6F18400DF0BB9 /* CoreDataDandy+Internal.swift in Sources */,
-				988FF8A91C5592BE00E81FAF /* PropertyDescription.swift in Sources */,
 				986747A71CBBFD7800559E35 /* Gossip.swift in Sources */,
 				986747A51CBBFD7800559E35 /* Slander.swift in Sources */,
+				9836F9021CBEFE2300AD92DF /* Constants.swift in Sources */,
 				986747A41CBBFD7800559E35 /* Slander+CoreDataProperties.swift in Sources */,
 				986747A21CBBFD7800559E35 /* Hat+CoreDataProperties.swift in Sources */,
+				9836F9041CBEFE2300AD92DF /* CoreDataDandy.swift in Sources */,
+				9836F90B1CBEFE2300AD92DF /* Serializer.swift in Sources */,
 				9867478F1CBBFD6400559E35 /* Conclusion.swift in Sources */,
-				988FF8A61C5592BE00E81FAF /* Logger.swift in Sources */,
-				988FF8AF1C5592BE00E81FAF /* ValueConverter.swift in Sources */,
-				983AE9271C64ED99001312AE /* MappingFinalizer.swift in Sources */,
 				986747A01CBBFD7800559E35 /* Space+CoreDataProperties.swift in Sources */,
-				988FF8AD1C5592BE00E81FAF /* ConvertibleType.swift in Sources */,
+				9836F9101CBEFE2300AD92DF /* ValueConverter.swift in Sources */,
+				9836F90D1CBEFE2300AD92DF /* NSEntityDescription+Dandy.swift in Sources */,
+				9836F9091CBEFE2300AD92DF /* PersistentStackCoordinator.swift in Sources */,
 				986747AB1CBBFD7800559E35 /* Dandy_.swift in Sources */,
 				98213DF41C654F19004B732B /* DandyModel.xcdatamodeld in Sources */,
+				9836F9061CBEFE2300AD92DF /* Logger.swift in Sources */,
 				986747A81CBBFD7800559E35 /* Plebian+CoreDataProperties.swift in Sources */,
-				988FF8AE1C5592BE00E81FAF /* CoreDataValueConverter.swift in Sources */,
 				986747AE1CBBFD7800559E35 /* Material+CoreDataProperties.swift in Sources */,
+				9836F9031CBEFE2300AD92DF /* CoreDataDandy+Internal.swift in Sources */,
 				986747AD1CBBFD7800559E35 /* Flattery.swift in Sources */,
+				9836F90E1CBEFE2300AD92DF /* ConvertibleType.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
