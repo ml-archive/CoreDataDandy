@@ -41,6 +41,7 @@
 		986747AD1CBBFD7800559E35 /* Flattery.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9867479D1CBBFD7800559E35 /* Flattery.swift */; };
 		986747AE1CBBFD7800559E35 /* Material+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9867479E1CBBFD7800559E35 /* Material+CoreDataProperties.swift */; };
 		986747AF1CBBFD7800559E35 /* Material.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9867479F1CBBFD7800559E35 /* Material.swift */; };
+		986BAF9F1CD2C3BB00F309C0 /* NSFileManager+Directory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 986BAF9E1CD2C3BB00F309C0 /* NSFileManager+Directory.swift */; };
 		988F4A6A1B3632EE00E71046 /* CoreDataDandyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 988F4A691B3632EE00E71046 /* CoreDataDandyTests.swift */; };
 /* End PBXBuildFile section */
 
@@ -79,6 +80,7 @@
 		9867479D1CBBFD7800559E35 /* Flattery.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Flattery.swift; sourceTree = "<group>"; };
 		9867479E1CBBFD7800559E35 /* Material+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Material+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		9867479F1CBBFD7800559E35 /* Material.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Material.swift; sourceTree = "<group>"; };
+		986BAF9E1CD2C3BB00F309C0 /* NSFileManager+Directory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSFileManager+Directory.swift"; sourceTree = "<group>"; };
 		988F4A641B3632EE00E71046 /* CoreDataDandyTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CoreDataDandyTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		988F4A681B3632EE00E71046 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		988F4A691B3632EE00E71046 /* CoreDataDandyTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataDandyTests.swift; sourceTree = "<group>"; };
@@ -128,6 +130,7 @@
 			children = (
 				9836F8FC1CBEFE2300AD92DF /* Dictionary+Dandy.swift */,
 				9836F8FD1CBEFE2300AD92DF /* NSEntityDescription+Dandy.swift */,
+				986BAF9E1CD2C3BB00F309C0 /* NSFileManager+Directory.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -303,6 +306,7 @@
 				9836F9071CBEFE2300AD92DF /* MappingFinalizer.swift in Sources */,
 				986747A61CBBFD7800559E35 /* Gossip+CoreDataProperties.swift in Sources */,
 				986747A71CBBFD7800559E35 /* Gossip.swift in Sources */,
+				986BAF9F1CD2C3BB00F309C0 /* NSFileManager+Directory.swift in Sources */,
 				986747A51CBBFD7800559E35 /* Slander.swift in Sources */,
 				9836F9021CBEFE2300AD92DF /* Constants.swift in Sources */,
 				986747A41CBBFD7800559E35 /* Slander+CoreDataProperties.swift in Sources */,
