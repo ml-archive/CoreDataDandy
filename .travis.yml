@@ -1,4 +1,4 @@
-language: 
+language: swift
 osx_image: xcode7.3
 env:
   global:
@@ -6,6 +6,9 @@ env:
     - SCHEME=CoreDataDandyTests
     - DESTINATION='platform=iOS Simulator,name=iPhone 6s,OS=9.3'
     - IOS_SDK=iphonesimulator
+before_install:
+  - brew update
+  - brew outdated xctool || brew upgrade xctool
 script: 
   - xcodebuild -project PROJECT -scheme SCHEME -destination DESTINATION -sdk IOS_SDK
   - xctool test -project PROJECT -scheme SCHEME -destination DESTINATION -sdk IOS_SDK
