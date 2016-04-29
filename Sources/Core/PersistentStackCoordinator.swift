@@ -128,7 +128,7 @@ extension NSPersistentStoreCoordinator {
 			do {
 				try removePersistentStore(store)
 			} catch {
-				log(message("Failure to remove persistent store"))
+				log(format("Failure to remove persistent store"))
 			}
 		}
 		do {
@@ -142,11 +142,11 @@ extension NSPersistentStoreCoordinator {
 			dict[NSLocalizedFailureReasonErrorKey] = "There was an error creating or loading the application's saved data."
 			dict[NSUnderlyingErrorKey] = error as NSError
 			let error = NSError(domain: DandyErrorDomain, code: 9999, userInfo: dict)
-			log(message("Failure to add persistent store", with: error))
+			log(format("Failure to add persistent store", with: error))
 			do {
 				try NSFileManager.defaultManager().removeItemAtURL(PersistentStackCoordinator.persistentStoreURL)
 			} catch {
-				log(message("Failure to remove cached sqlite file"))
+				log(format("Failure to remove cached sqlite file"))
 			}
 			EntityMapper.clearCache()
 			#if !TEST

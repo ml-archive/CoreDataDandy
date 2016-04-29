@@ -73,7 +73,7 @@ final class PropertyDescription: NSObject {
 			self.init(relationshipDescription: description)
 		} else {
 			self.init()
-			log(message("Unknown property type for description: \(description)"))
+			log(format("Unknown property type for description: \(description)"))
 		}
 	}
 

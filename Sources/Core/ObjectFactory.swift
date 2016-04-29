@@ -49,7 +49,7 @@ public struct ObjectFactory {
 		if let entityDescription = NSEntityDescription.forType(type) {
 			return _make(entityDescription, from: json) as? Model
 		}
-		log(message("An entityDescription was not found for type \(type) from json \n\(json)."))
+		log(format("An entityDescription was not found for type \(type) from json \n\(json)."))
 		return nil
 	}
 	
@@ -65,7 +65,7 @@ public struct ObjectFactory {
 	///		to the object will be found on the returned object.
 	static func _make(entity: NSEntityDescription, from json: [String: AnyObject]) -> NSManagedObject? {
 		guard let name = entity.name else {
-			log(message("An object cannot be made from nameless entities."))
+			log(format("An object cannot be made from nameless entities."))
 			return nil
 		}
 		
@@ -87,7 +87,7 @@ public struct ObjectFactory {
 			return object
 		}
 		
-		log(message("An object could not be made for entity \(entity.name) from json \n\(json)."))
+		log(format("An object could not be made for entity \(entity.name) from json \n\(json)."))
 		return nil
 	}
 	
@@ -135,7 +135,7 @@ public struct ObjectFactory {
 				if let relation = _make(relatedEntity, from: json) {
 					object.setValue(relation, forKey: relationship.name)
 				} else {
-					log(message("A relationship named \(relationship.name) could not be established for object \(object) from json \n\(json)."))
+					log(format("A relationship named \(relationship.name) could not be established for object \(object) from json \n\(json)."))
 				}
 				return object
 			} else if let json = json as? [[String: AnyObject]] where relationship.toMany {
@@ -145,14 +145,14 @@ public struct ObjectFactory {
 					if let relation = _make(relatedEntity, from: child) {
 						relations.append(relation)
 					} else {
-						log(message("A relationship named \(relationship.name) could not be established for object \(object) from json \n\(child)."))
+						log(format("A relationship named \(relationship.name) could not be established for object \(object) from json \n\(child)."))
 					}
 				}
 				object.setValue(relationship.ordered ? NSOrderedSet(array: relations): NSSet(array: relations), forKey: relationship.name)
 				return object
 			}
 		}
-		log(message("A relationship named \(relationship.name) could not be established for object \(object) from json \n\(json)."))
+		log(format("A relationship named \(relationship.name) could not be established for object \(object) from json \n\(json)."))
 		return object
 	}
 	

@@ -98,7 +98,7 @@ public struct Serializer {
 			}
 		}
 		if json.count == 0 {
-			log(message("Failed to serialize object \(object) including relationships \(relationships)"))
+			log(format("Failed to serialize object \(object) including relationships \(relationships)"))
 			return nil
 		}
 		return json

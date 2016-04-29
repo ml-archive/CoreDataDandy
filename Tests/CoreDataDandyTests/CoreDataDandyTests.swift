@@ -1043,7 +1043,7 @@ class CoreDataDandyTests: XCTestCase {
 	/// Dandy should format log messages consistently.
 	func testMessageFormatting() {
 		let warning = "Failed to serialize object Dandy including relationships hats"
-		let log = message(warning)
+		let log = format(warning)
 		XCTAssert(log == "(CoreDataDandy) warning: " + warning, "Pass")
 	}
 	
@@ -1051,7 +1051,7 @@ class CoreDataDandyTests: XCTestCase {
 	func testWarningErrorEmission() {
 		let error = NSError(domain: "DANDY_FETCH_ERROR", code: 1, userInfo: nil)
 		let warning = "Failed to serialize object Dandy including relationships hats"
-		let log = message(warning, with: error)
+		let log = format(warning, with: error)
 		XCTAssert(log == "(CoreDataDandy) warning: " + warning + " Error:\n" + error.description, "Pass")
 	}
 }

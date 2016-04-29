@@ -35,7 +35,7 @@ func log(@autoclosure message: () -> String, filename: String = #file, function:
 #endif
 }
 
-func message(message: String, with error: NSError? = nil) -> String {
+func format(message: String, with error: NSError? = nil) -> String {
 #if DEBUG
 	var errorDescription = ""
 	if let error = error {

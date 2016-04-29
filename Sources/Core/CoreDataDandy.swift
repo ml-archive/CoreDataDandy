@@ -64,9 +64,9 @@ public class CoreDataDandy {
 		coordinator.resetManageObjectContext()
 
 		do {
-			try NSFileManager.defaultManager().removeItemAtURL(PersistentStackCoordinator.persistentStoreURL)
+			try NSFileManager.defaultManager().removeItemAtURL(PersistentStackCoordinator.persistentStorePath)
 		} catch {
-			log(message("Failed to delete persistent store"))
+			log(format("Failed to delete persistent store"))
 		}
 
 		coordinator.resetPersistentStore()
@@ -100,7 +100,7 @@ public class CoreDataDandy {
 	/// - returns: A managed object if one could be created.
 	public func upsert<Model: NSManagedObject>(type: Model.Type, from json: [String: AnyObject]) -> Model? {
 		guard let entity = NSEntityDescription.forType(type) else {
-			log(message("Could not retrieve NSEntityDescription for type \(type)"))
+			log(format("Could not retrieve NSEntityDescription for type \(type)"))
 			return nil
 		}
 
@@ -108,7 +108,7 @@ public class CoreDataDandy {
 			if let primaryKeyValue = entity.primaryKeyValueFromJSON(json) {
 				return upsertUnique(type, identifiedBy: primaryKeyValue, from: json)
 			} else {
-				log(message("Could not retrieve primary key from json \(json)."))
+				log(format("Could not retrieve primary key from json \(json)."))
 				return nil
 			}
 		}
@@ -163,7 +163,7 @@ public class CoreDataDandy {
 			ObjectFactory.build(object, from: json)
 			return object
 		} else {
-			log(message("Could not upsert managed object of type \(type), identified by \(primaryKeyValue), json \(json)."))
+			log(format("Could not upsert managed object of type \(type), identified by \(primaryKeyValue), json \(json)."))
 			return nil
 		}
 	}
@@ -212,7 +212,7 @@ public class CoreDataDandy {
 			do {
 				try self.coordinator.mainContext.save()
 			} catch {
-				log(message( "Failed to save main context."))
+				log(format( "Failed to save main context."))
 				completion?(error: error as NSError)
 				return
 			}
@@ -223,7 +223,7 @@ public class CoreDataDandy {
 					completion?(error: nil)
 				}
 				catch {
-					log(message( "Failed to save private context."))
+					log(format( "Failed to save private context."))
 					completion?(error: error as NSError)
 				}
 				})

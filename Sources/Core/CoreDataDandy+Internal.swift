@@ -49,7 +49,7 @@ extension CoreDataDandy {
 			// Otherwise, insert a new managed object
 			return NSManagedObject(entity: entityDescription, insertIntoManagedObjectContext: coordinator.mainContext)
 		} else {
-			log(message("NSEntityDescriptionNotFound for entity named " + entityName + ". No object will be returned"))
+			log(format("NSEntityDescriptionNotFound for entity named " + entityName + ". No object will be returned"))
 			return nil
 		}
 	}
@@ -113,20 +113,20 @@ extension CoreDataDandy {
 				do {
 					results = try _fetch(entityName, filterBy: predicate)
 				} catch {
-					log(message("Your fetch for a unique entity named \(entityName) with identified by \(primaryKeyValue) raised an exception. This is a serious error that should be resolved immediately."))
+					log(format("Your fetch for a unique entity named \(entityName) with identified by \(primaryKeyValue) raised an exception. This is a serious error that should be resolved immediately."))
 				}
 				if results?.count == 0 && emitResultCountWarnings {
-					log(message("Your fetch for a unique entity named \(entityName) with identified by \(primaryKeyValue) returned no results."))
+					log(format("Your fetch for a unique entity named \(entityName) with identified by \(primaryKeyValue) returned no results."))
 				}
 				else if results?.count > 1 && emitResultCountWarnings {
-					log(message("Your fetch for a unique entity named \(entityName) with identified by \(primaryKeyValue) returned multiple results. This is a serious error that should be resolved immediately."))
+					log(format("Your fetch for a unique entity named \(entityName) with identified by \(primaryKeyValue) returned multiple results. This is a serious error that should be resolved immediately."))
 				}
 				return results?.first
 			} else {
-				log(message("Failed to produce predicate for \(entityName) with identified by \(primaryKeyValue)."))
+				log(format("Failed to produce predicate for \(entityName) with identified by \(primaryKeyValue)."))
 			}
 		}
-		log(message("A unique NSManaged for entity named \(entityName) could not be retrieved for primaryKey \(primaryKeyValue). No object will be returned"))
+		log(format("A unique NSManaged for entity named \(entityName) could not be retrieved for primaryKey \(primaryKeyValue). No object will be returned"))
 		return nil
 	}
 	
@@ -146,16 +146,16 @@ extension CoreDataDandy {
 					} else if results.count == 0 {
 						return NSManagedObject(entity: entityDescription, insertIntoManagedObjectContext: coordinator.mainContext)
 					} else {
-						log(message("Failed to fetch unique instance of entity named " + entityName + "."))
+						log(format("Failed to fetch unique instance of entity named " + entityName + "."))
 						return nil
 						
 					}
 				}
 			} catch {
-				log(message("Your singleton fetch for entity named \(entityName) raised an exception. This is a serious error that should be resolved immediately."))
+				log(format("Your singleton fetch for entity named \(entityName) raised an exception. This is a serious error that should be resolved immediately."))
 			}
 		}
-		log(message("Failed to fetch unique instance of entity named " + entityName + "."))
+		log(format("Failed to fetch unique instance of entity named " + entityName + "."))
 		return nil
 	}
 }
