@@ -919,7 +919,7 @@ class CoreDataDandyTests: XCTestCase {
 				]
 		]
 		let result = Serializer.serialize(hat, including:["primaryMaterial"])!
-		XCTAssert(result == expected, "Pass")
+		XCTAssert(equivalent(result, expected), "Pass")
 	}
 	
 	/// An array of NSManagedObject should be serializable into json.
@@ -972,7 +972,7 @@ class CoreDataDandyTests: XCTestCase {
 		]
 		var result = Serializer.serialize(byron, including:["hats"])!
 		result["hats"] = (result["hats"] as! NSArray).sortedArrayUsingDescriptors([NSSortDescriptor(key: "name", ascending: true)])
-		XCTAssert(result == expected, "Pass")
+		XCTAssert(equivalent(result, expected), "Pass")
 	}
 	
 	/// An object's attributes and relationship tree should be serializaable into json.
@@ -1087,30 +1087,27 @@ class CoreDataDandyTests: XCTestCase {
 		let log = format(warning, with: error)
 		XCTAssert(log == "(CoreDataDandy) warning: " + warning + " Error:\n" + error.description, "Pass")
 	}
-}
-
-/// For testing purposes only, a json comparator.
-func ==(lhs: [String: AnyObject], rhs: [String: AnyObject]) -> Bool {
-	// Dictionaries of unequal counts are not equal
-	if lhs.count != rhs.count { return false }
-	// Dictionaries that are equal must share all keys and paired values
-	for (key, lhValue) in lhs {
-		if let rhValue = rhs[key] {
-			switch (lhValue, rhValue) {
-			case let (l, r) where lhValue is String && rhValue is String:
-				if (l as! String) != (r as! String) { return false }
-			case let (l, r) where lhValue is [String: String] && rhValue is [String: String]:
-				if (l as! [String: String]) != (r as! [String: String]) { return false }
-			case let (l, r) where lhValue is [[String: String]] && rhValue is [[String: String]]:
-				if (l as! [[String: String]]) != (r as! [[String: String]]) { return false }
-			case let (l, r) where lhValue is [String: AnyObject] && rhValue is [String: AnyObject]:
-				return (l as! [String: AnyObject]) == (r as! [String: AnyObject])
-			default:
+	/// For testing purposes only, a json comparator.
+	func equivalent(lhs: [String: AnyObject], _ rhs: [String: AnyObject]) -> Bool {
+		// Dictionaries of unequal counts are not equal
+		if lhs.count != rhs.count { return false }
+		// Dictionaries that are equal must share all keys and paired values
+		for (key, lhValue) in lhs {
+			if let rhValue = rhs[key] {
+				switch (lhValue, rhValue) {
+				case let (l, r) where lhValue is String && rhValue is String:
+					if (l as! String) != (r as! String) { return false }
+				case let (l, r) where lhValue is [String: String] && rhValue is [String: String]:
+					if (l as! [String: String]) != (r as! [String: String]) { return false }
+				case let (l, r) where lhValue is [[String: String]] && rhValue is [[String: String]]:
+					if (l as! [[String: String]]) != (r as! [[String: String]]) { return false }
+				default:
+					return false
+				}
+			} else {
 				return false
 			}
-		} else {
-			return false
 		}
+		return true
 	}
-	return true
 }
