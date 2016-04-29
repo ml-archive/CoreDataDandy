@@ -4,7 +4,7 @@ env:
   global:
     - PROJECT=Tests/CoreDataDandyTests.xcodeproj
     - SCHEME=CoreDataDandyTests
-    - DESTINATION='platform=iOS Simulator,name=iPhone 6s,OS=9.3'
+    - DESTINATION="platform=iOS Simulator,name=iPhone 6s,OS=9.3"
     - IOS_SDK=iphonesimulator
 before_install:
   - brew update
