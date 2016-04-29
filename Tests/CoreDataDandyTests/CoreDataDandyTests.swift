@@ -883,7 +883,7 @@ class CoreDataDandyTests: XCTestCase {
 	func testNestedRelationshipSerializationExclusion() {
 		let relationships = ["hats", "gossip", "predecessor"]
 		let result = Serializer.nestedSerializationTargets(for: "hats", including: relationships)
-		XCTAssert(result == nil, "Pass")
+		XCTAssert(result == nil, "\(result) should have been nil: no nested keypaths were included in \(relationships).")
 	}
 	
 	/// Nested relationships targeted for serialization should be correctly mapped to a helper array.
@@ -1103,6 +1103,8 @@ func ==(lhs: [String: AnyObject], rhs: [String: AnyObject]) -> Bool {
 				if (l as! [String: String]) != (r as! [String: String]) { return false }
 			case let (l, r) where lhValue is [[String: String]] && rhValue is [[String: String]]:
 				if (l as! [[String: String]]) != (r as! [[String: String]]) { return false }
+			case let (l, r) where lhValue is [String: AnyObject] && rhValue is [String: AnyObject]:
+				return (l as! [String: AnyObject]) == (r as! [String: AnyObject])
 			default:
 				return false
 			}
