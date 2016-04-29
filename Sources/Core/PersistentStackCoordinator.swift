@@ -89,17 +89,10 @@ public class PersistentStackCoordinator {
 	}()
 
 	// MARK: - Convenience accessors -
-	/// - returns: The path to the Documents directory of a given device. This is where the sqlite file will be saved, and is a
-	/// useful value for debugging purposes.
-	static var applicationDocumentsDirectory: NSURL = {
-		let urls = NSFileManager.defaultManager().URLsForDirectory(.DocumentDirectory, inDomains: .UserDomainMask)
-		return urls[urls.count - 1]
-		}()
-
 	/// - returns: The path to the sqlite file that stores the application's data.
 	static var persistentStoreURL: NSURL = {
-		return applicationDocumentsDirectory.URLByAppendingPathComponent("Model.sqlite")
-		}()
+		return NSFileManager.documentDirectoryURL.URLByAppendingPathComponent("Model.sqlite")
+	}()
 
 	// MARK: - Stack clearing -
 	/// Clear the managed object contexts.
@@ -132,10 +125,18 @@ extension NSPersistentStoreCoordinator {
 			}
 		}
 		do {
+			let document = NSFileManager.documentDirectoryURL
+			if !NSFileManager.directoryExists(at: document) {
+				// In the event a Document directory does not exist, create one.
+				// Otherwise, the persistent store will not be added.
+				try NSFileManager.createDirectory(at: document)
+			}
+			
 			let options = [NSMigratePersistentStoresAutomaticallyOption: NSNumber(bool: true), NSInferMappingModelAutomaticallyOption: NSNumber(bool: true)]
 			try addPersistentStoreWithType(NSSQLiteStoreType, configuration: nil,
 				URL: PersistentStackCoordinator.persistentStoreURL,
 				options: options)
+			
 		} catch {
 			var dict = [String: AnyObject]()
 			dict[NSLocalizedDescriptionKey] = "Failed to initialize the application's saved data"
@@ -149,9 +150,6 @@ extension NSPersistentStoreCoordinator {
 				log(format("Failure to remove cached sqlite file"))
 			}
 			EntityMapper.clearCache()
-			#if !TEST
-				abort()
-			#endif
 		}
 	}
 }

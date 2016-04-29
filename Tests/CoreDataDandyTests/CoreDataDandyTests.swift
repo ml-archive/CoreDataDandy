@@ -58,14 +58,14 @@ class CoreDataDandyTests: XCTestCase {
 	func testSave() {
 		let expectation = self.expectationWithDescription("save")
 		do {
-			let unsavedData = try NSFileManager.defaultManager().attributesOfItemAtPath(PersistentStackCoordinator.persistentStorePath.path!)["NSFileSize"] as! Int
+			let unsavedData = try NSFileManager.defaultManager().attributesOfItemAtPath(PersistentStackCoordinator.persistentStoreURL.path!)["NSFileSize"] as! Int
 			for i in 0...100000 {
 				let dandy = Dandy.insert(Dandy_.self)
 				dandy?.setValue("\(i)", forKey: "dandyID")
 			}
 			Dandy.save({ (error) in
 				do {
-					let savedData = try NSFileManager.defaultManager().attributesOfItemAtPath(PersistentStackCoordinator.persistentStorePath.path!)["NSFileSize"] as! Int
+					let savedData = try NSFileManager.defaultManager().attributesOfItemAtPath(PersistentStackCoordinator.persistentStoreURL.path!)["NSFileSize"] as! Int
 					XCTAssert(savedData > unsavedData, "Pass")
 					expectation.fulfill()
 				} catch {

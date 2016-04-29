@@ -64,7 +64,7 @@ public class CoreDataDandy {
 		coordinator.resetManageObjectContext()
 
 		do {
-			try NSFileManager.defaultManager().removeItemAtURL(PersistentStackCoordinator.persistentStorePath)
+			try NSFileManager.defaultManager().removeItemAtURL(PersistentStackCoordinator.persistentStoreURL)
 		} catch {
 			log(format("Failed to delete persistent store"))
 		}
