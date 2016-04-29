@@ -1038,6 +1038,39 @@ class CoreDataDandyTests: XCTestCase {
 		XCTAssert(value == hats, "Pass")
 	}
 	
+	/// Directories that exist should be reported as existing.
+	func testDirectoryExistenceEvaluation() {
+		let applications = NSFileManager.defaultManager().URLsForDirectory(.ApplicationDirectory, inDomains: .UserDomainMask).last!
+		var components = applications.pathComponents!
+		components.removeLast()
+		let root = NSURL(string: NSString.pathWithComponents(components))!
+		XCTAssert(NSFileManager.directoryExists(at: root) == true, "Incorrectly evaluated existence of Application directory")
+	}
+	
+	/// Directories that do not exists should be reported as non-existent.
+	func testDirectoryInexistenceEvaluation() {
+		let url = NSURL(string: "file://lord-byron/diary/screeds/creditors")!
+		XCTAssert(NSFileManager.directoryExists(at: url) == false, "Incorrectly evaluated existence of nonsense directory")
+	}
+	
+	/// One should be able to create directories.
+	func testDirectoryCreation() {
+		let applications = NSFileManager.defaultManager().URLsForDirectory(.ApplicationDirectory, inDomains: .UserDomainMask).last!
+		var components = applications.pathComponents!
+		components.removeLast()
+		let root = NSURL(string: "file://" + NSString.pathWithComponents(components))!
+		
+		let directory = root.URLByAppendingPathComponent("lord-byron", isDirectory: true)
+		
+		if NSFileManager.directoryExists(at: directory) {
+			// Clean up previous executions of the test if trace of them remains.
+			try! NSFileManager.defaultManager().removeItemAtURL(directory)
+		}
+
+		try! NSFileManager.createDirectory(at: directory)
+		XCTAssert(NSFileManager.directoryExists(at: directory) == true, "Failed to create directory")
+	}
+	
 	// MARK: - Warning emission tests -
 	
 	/// Dandy should format log messages consistently.
