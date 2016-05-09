@@ -101,8 +101,8 @@ extension NSEntityDescription {
 	/// The constraint returned is prioritized over any marked by the @primaryKey decorator.
 	var uniqueConstraint: String? {
 		get {
-			if let constraint = uniquenessConstraints.first?.first?.name {
-				return constraint
+			if let attribute = uniquenessConstraints.first?.first as? NSAttributeDescription {
+				return attribute.name
 			} else if let superEntity = superentity {
 				return superEntity.uniqueConstraint
 			}
