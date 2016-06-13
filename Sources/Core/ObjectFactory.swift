@@ -29,8 +29,8 @@ import CoreData
 
 public struct ObjectFactory {
 	
-	/// Returns an object of a given type constructed from the provided json. This function is primarily accessed 
-	/// within Dandy to recursively produce objects when parsing nested json, and is thereby only accessed indirectly. 
+	/// Returns an object of a given type constructed from the provided json. This function is primarily accessed
+	/// within Dandy to recursively produce objects when parsing nested json, and is thereby only accessed indirectly.
 	/// Others, however, may find direct access to this convenience useful.
 	///
 	/// By default, this function will recursively parse through a json hierarchy.
@@ -43,7 +43,7 @@ public struct ObjectFactory {
 	/// - parameter type: The type of object to make.
 	/// - parameter from: The json to map into the returned object.
 	///
-	/// - returns: A Model of the specified type if one could be inserted or fetched. The values that could be mapped 
+	/// - returns: A Model of the specified type if one could be inserted or fetched. The values that could be mapped
 	/// from the json to the object will be found on the returned object.
 	public static func make<Model: NSManagedObject>(type: Model.Type, from json: [String: AnyObject]) -> Model? {
 		if let entityDescription = NSEntityDescription.forType(type) {
@@ -98,15 +98,18 @@ public struct ObjectFactory {
 	/// - parameter json: The json to map into the returned object.
 	///
 	/// - returns: The object passed in with newly mapped values where mapping was possible.
-	public static func build<Model: NSManagedObject>(object: Model, from json: [String: AnyObject]) -> Model {
+	public static func build<Model: NSManagedObject>(object: Model, from json: [String: AnyObject?]) -> Model {
 		if let map = EntityMapper.map(object.entity) {
 			// Begin mapping values from json to object properties
 			for (key, description) in map {
 				if let value: AnyObject = valueAt(key, of: json) {
-					if description.type == .Attribute,
+					if value.isKindOfClass(NSNull.self) {
+						// The key appeared in the json, but its value was nil. Assume the nil is meaningful.
+						(object as NSManagedObject).setValue(nil, forKey: description.name)
+					} else if description.type == .Attribute,
 						let type = description.attributeType {
-							// A valid mapping was found for an attribute of a known type
-							(object as NSManagedObject).setValue(CoreDataValueConverter.convert(value, to: type), forKey: description.name)
+						// A valid mapping was found for an attribute of a known type
+						(object as NSManagedObject).setValue(CoreDataValueConverter.convert(value, to: type), forKey: description.name)
 					} else if description.type == .Relationship {
 						// A valid mapping was found for a relationship of a known type
 						make(description, to: object, from: value)
@@ -135,8 +138,12 @@ public struct ObjectFactory {
 				if let relation = _make(relatedEntity, from: json) {
 					object.setValue(relation, forKey: relationship.name)
 				} else {
-					log(format("A relationship named \(relationship.name) could not be established for object \(object) from json \n\(json)."))
+					// The json could not be converted to a relation. Nil out the relationship.
+					log(format("A relationship named \(relationship.name) could not be established for \(object) from json \n\(json).\n\(relationship.name) will be nilled out if it is an optional relationship."))
+					
+					object.nilIfOptional(relationship)
 				}
+				
 				return object
 			} else if let json = json as? [[String: AnyObject]] where relationship.toMany {
 				// An array was passed for a toMany relationship
@@ -148,11 +155,20 @@ public struct ObjectFactory {
 						log(format("A relationship named \(relationship.name) could not be established for object \(object) from json \n\(child)."))
 					}
 				}
-				object.setValue(relationship.ordered ? NSOrderedSet(array: relations): NSSet(array: relations), forKey: relationship.name)
+				
+				object.setValue(relationship.ordered ? NSOrderedSet(array: relations)
+													 : NSSet(array: relations),
+				                forKey: relationship.name)
+				
 				return object
 			}
 		}
-		log(format("A relationship named \(relationship.name) could not be established for object \(object) from json \n\(json)."))
+		
+		// The value provided is of the wrong type or nil. Warn the user and nil out the relationship.
+		log(format("A relationship named \(relationship.name) could not be established for object \(object) from json \n\(json).\n\(relationship.name) will be nilled out if it is an optional relationship."))
+		
+		object.nilIfOptional(relationship)
+		
 		return object
 	}
 	
@@ -165,6 +181,18 @@ public struct ObjectFactory {
 	private static func finalizeMapping(of object: NSManagedObject, from json: [String: AnyObject]) {
 		if let object = object as? MappingFinalizer {
 			object.finalizeMapping(of: json)
+		}
+	}
+}
+
+// MARK: - NSManagedObject+Null -
+private extension NSManagedObject {
+	/// If a relationship is optional, set it to nil.
+	///
+	/// - parameter relationship: The relationship to nil if optional.
+	private func nilIfOptional(relationship: PropertyDescription) {
+		if relationship.optional {
+			setValue(nil, forKey: relationship.name)
 		}
 	}
 }

@@ -44,24 +44,27 @@ enum PropertyType: Int {
 final class PropertyDescription: NSObject {
 	/// The name of of the property.
 	var name = String()
-
+	
 	/// The property type: .Unknown, .Attribute, or .Relationship.
 	var type = PropertyType.Unknown
-
+	
 	/// The type of an attribute.
 	var attributeType: NSAttributeType?
-
+	
+	/// A boolean indicating whether the property is optional or not.
+	var optional = true
+	
 	/// The entity description of a relationship.
 	var destinationEntity: NSEntityDescription?
-
+	
 	/// A boolean describing if a relationship is ordered or not. By default, false.
 	var ordered = false
-
+	
 	/// A boolean describing if a relationship is toMany or not. By default, false.
 	var toMany = false
-
+	
 	override init() { super.init() }
-
+	
 	/// An initializer that builds a `PropertyDescription` from either an `NSAttributeDescription` or an
 	/// `NSRelationshipDescription`.
 	///
@@ -76,15 +79,16 @@ final class PropertyDescription: NSObject {
 			log(format("Unknown property type for description: \(description)"))
 		}
 	}
-
+	
 	/// An initializer that builds a `PropertyDescription` by extracting relevant values from an `NSAttributeDescription`.
 	private init(attributeDescription: NSAttributeDescription) {
 		name = attributeDescription.name
 		type = PropertyType.Attribute
 		attributeType = attributeDescription.attributeType
+		optional = attributeDescription.optional
 		super.init()
 	}
-
+	
 	/// An initializer that builds a `PropertyDescription` by extracting relevant values from an `NSRelationshipDescription`.
 	private init(relationshipDescription: NSRelationshipDescription) {
 		name = relationshipDescription.name
@@ -92,6 +96,7 @@ final class PropertyDescription: NSObject {
 		destinationEntity = relationshipDescription.destinationEntity
 		ordered = relationshipDescription.ordered
 		toMany = relationshipDescription.toMany
+		optional = relationshipDescription.optional
 		super.init()
 	}
 }
@@ -108,7 +113,7 @@ extension PropertyDescription : NSCoding {
 		ordered = aDecoder.decodeBoolForKey("ordered")
 		toMany = aDecoder.decodeBoolForKey("toMany")
 	}
-
+	
 	@objc func encodeWithCoder(aCoder: NSCoder) {
 		aCoder.encodeObject(name, forKey:"name")
 		aCoder.encodeInteger(type.rawValue, forKey:"type")
@@ -121,7 +126,7 @@ extension PropertyDescription : NSCoding {
 		aCoder.encodeBool(ordered, forKey: "ordered")
 		aCoder.encodeBool(toMany, forKey: "toMany")
 	}
-
+	
 	override var hashValue: Int {
 		get {
 			return "\(name)_\(type)_\(attributeType)_\(destinationEntity)_\(ordered)_\(toMany)".hashValue
@@ -133,7 +138,7 @@ extension PropertyDescription : NSCoding {
 extension PropertyDescription {
 	/// Compares the hashValue of two `PropertyDescription` objects. `PropertyDescription` objects are never considered
 	/// equal to other types.
-	 override func isEqual(object: AnyObject?) -> Bool {
+	override func isEqual(object: AnyObject?) -> Bool {
 		if let object = object as? PropertyDescription {
 			return hashValue == object.hashValue
 		} else {

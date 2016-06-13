@@ -134,7 +134,7 @@ public class CoreDataDandy {
 				models.append(model)
 			}
 		}
-		return (models.count > 0) ? models: nil
+		return models.isEmpty ? nil : models
 	}
 
 	// MARK: - Unique objects -

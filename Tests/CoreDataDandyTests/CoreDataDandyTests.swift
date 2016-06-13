@@ -634,7 +634,7 @@ class CoreDataDandyTests: XCTestCase {
 	/// Values should be mapped from json to an object's attributes.
 	func testAttributeBuilding() {
 		let space = Dandy.insert(Space.self)!
-		let json = ["name": "nebulous", "state": "moderately cool"]
+		let json: [String: AnyObject?] = ["name": "nebulous", "state": "moderately cool"]
 		ObjectFactory.build(space, from: json)
 		XCTAssert(space.valueForKey("name") as! String == "nebulous" &&
 			space.valueForKey("spaceState") as! String ==  "moderately cool",
@@ -720,7 +720,7 @@ class CoreDataDandyTests: XCTestCase {
 	func testIgnoreUnkeyedAttributesWhenBuilding() {
 		let space = Dandy.insert(Space.self)!
 		space.setValue("exceptionally relaxed", forKey: "spaceState")
-		let json = ["name": "nebulous"]
+		let json: [String: AnyObject?] = ["name": "nebulous"]
 		ObjectFactory.build(space, from: json)
 		XCTAssert(space.valueForKey("spaceState") as! String == "exceptionally relaxed", "Pass")
 	}
@@ -729,7 +729,7 @@ class CoreDataDandyTests: XCTestCase {
 	func testOverwritesKeyedAttributesWhenBuilding() {
 		let space = Dandy.insert(Space.self)!
 		space.setValue("exceptionally relaxed", forKey: "spaceState")
-		let json = ["state": "significant excitement"]
+		let json: [String: AnyObject?] = ["state": "significant excitement"]
 		ObjectFactory.build(space, from: json)
 		XCTAssert(space.valueForKey("spaceState") as! String == "significant excitement", "Pass")
 	}
@@ -793,6 +793,68 @@ class CoreDataDandyTests: XCTestCase {
 		]
 		ObjectFactory.make(PropertyDescription(description: hat.entity.allRelationships!["dandies"]!), to: hat, from: json)
 		XCTAssert(hat.valueForKey("dandies") is NSOrderedSet && (hat.valueForKey("dandies") as! NSOrderedSet).count == 3, "Pass")
+	}
+	
+	/// Nil or inconvertible json values should lead to nilled out relationships.
+	func testRelationshipNilling() {
+		let dandy = Dandy.insert(Dandy_.self)!
+		let json = [
+			"id": 1,
+			"name": "Lord Byron",
+			"hats": [
+				[
+					"name": "bowler",
+					"style": "billycock",
+					"material": [
+						"name": "felt",
+						"origin": "Rome"
+					]
+				]
+			]
+		]
+		
+		let wrongTypeNilling = [
+			"id": 1,
+			"hats": [
+				"name": "bowler"
+			]
+		]
+		ObjectFactory.build(dandy, from: json)
+		XCTAssert(dandy.hats?.count == 1, "After building from \(json), Lord Byron should have a single hat.")
+		ObjectFactory.build(dandy, from: wrongTypeNilling)
+		XCTAssert(dandy.hats?.count == 0, "After building hats from the wrong type, Lord Byron should have no hats.")
+
+		
+		
+		let nilNilling: [String: AnyObject?] = [
+			"id": 1,
+			"hats": nil
+		]
+		ObjectFactory.build(dandy, from: json)
+		XCTAssert(dandy.hats?.count == 1, "After building from \(json), Lord Byron should have a single hat.")
+		ObjectFactory.build(dandy, from: nilNilling)
+		XCTAssert(dandy.hats?.count == 0, "After building hats from nil, Lord Byron should have no hats.")
+		
+		let nullNilling = [
+			"id": 1,
+			"hats": "NULL"
+		]
+		
+		let nsNullNilling = [
+			"id": 1,
+			"hats": NSNull()
+		]
+		
+		ObjectFactory.build(dandy, from: json)
+		XCTAssert(dandy.hats!.count == 1, "After building from \(json), Lord Byron should have a single hat.")
+		ObjectFactory.build(dandy, from: nullNilling)
+		XCTAssert(dandy.hats?.count == 0, "After building hats from NULL values, Lord Byron should have no hats.")
+		ObjectFactory.build(dandy, from: json)
+		XCTAssert(dandy.hats!.count == 1, "After building from \(json), Lord Byron should have a single hat.")
+		ObjectFactory.build(dandy, from: nsNullNilling)
+		XCTAssert(dandy.hats?.count == 0, "After building hats from NULL values, Lord Byron should have no hats.")
+		
+		XCTAssert((dandy.valueForKey("hats") as! NSSet).count == 0, "Pass")
 	}
 
 	// MARK: -  Object factory via CoreDataDandy -

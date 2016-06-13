@@ -39,15 +39,22 @@ public extension Dictionary {
 }
 
 /// Functions similarly to `NSDictionary's` valueForKeyPath.
-func valueAt(keypath: String, of dictionary: [String: AnyObject]) -> AnyObject? {
+func valueAt(keypath: String, of dictionary: [String: AnyObject?]) -> AnyObject? {
 	let keys = keypath.componentsSeparatedByString(".")
 	var copy = dictionary
 	var possibleValue: AnyObject?
 	for key in keys {
-		possibleValue = copy[key]
+		possibleValue = copy[key] ?? nil
 		if let value = copy[key] as? [String: AnyObject] {
 			copy = value
 		}
 	}
+	
+	if possibleValue == nil
+		&& dictionary.keys.contains(keypath) {
+		// Signify nulling if the dictionary contained the key, but no value was found at that key
+		return NSNull()
+	}
+
 	return possibleValue
 }
