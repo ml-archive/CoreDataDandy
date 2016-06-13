@@ -185,14 +185,14 @@ public struct ObjectFactory {
 	}
 }
 
-// MARK: - NSManagedObject+Null -
+// MARK: - NSManagedObject+Nil -
 private extension NSManagedObject {
-	/// If a relationship is optional, set it to nil.
+	/// If a property is optional, set it to nil.
 	///
-	/// - parameter relationship: The relationship to nil if optional.
-	private func nilIfOptional(relationship: PropertyDescription) {
-		if relationship.optional {
-			setValue(nil, forKey: relationship.name)
+	/// - parameter property: The relationship to nil if optional.
+	private func nilIfOptional(property: PropertyDescription) {
+		if property.optional {
+			setValue(nil, forKey: property.name)
 		}
 	}
 }
