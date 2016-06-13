@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name             = 'CoreDataDandy'
-  s.version          = '0.5.1'
+  s.version          = '0.5.2'
   s.summary          = 'A feature-light wrapper around Core Data that simplifies common database operations.'
   s.description      = 'Initializes your Core Data stack, manages your saves, inserts, and fetches, and maps json to NSManagedObjects.'
   s.homepage         = 'https://github.com/fuzz-productions/CoreDataDandy'

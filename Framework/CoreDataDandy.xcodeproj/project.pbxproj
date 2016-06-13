@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		9829C8BA1D0E79E900B5DFCA /* NSFileManager+Directory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9829C8B91D0E79E900B5DFCA /* NSFileManager+Directory.swift */; };
 		98338A971CBF05AA00AB8FD9 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98338A851CBF05AA00AB8FD9 /* Constants.swift */; };
 		98338A981CBF05AA00AB8FD9 /* CoreDataDandy+Internal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98338A871CBF05AA00AB8FD9 /* CoreDataDandy+Internal.swift */; };
 		98338A991CBF05AA00AB8FD9 /* CoreDataDandy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98338A881CBF05AA00AB8FD9 /* CoreDataDandy.swift */; };
@@ -26,6 +27,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		9829C8B91D0E79E900B5DFCA /* NSFileManager+Directory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSFileManager+Directory.swift"; sourceTree = "<group>"; };
 		98338A851CBF05AA00AB8FD9 /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		98338A871CBF05AA00AB8FD9 /* CoreDataDandy+Internal.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CoreDataDandy+Internal.swift"; sourceTree = "<group>"; };
 		98338A881CBF05AA00AB8FD9 /* CoreDataDandy.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreDataDandy.swift; sourceTree = "<group>"; };
@@ -88,6 +90,7 @@
 		98338A901CBF05AA00AB8FD9 /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
+				9829C8B91D0E79E900B5DFCA /* NSFileManager+Directory.swift */,
 				98338A911CBF05AA00AB8FD9 /* Dictionary+Dandy.swift */,
 				98338A921CBF05AA00AB8FD9 /* NSEntityDescription+Dandy.swift */,
 			);
@@ -212,6 +215,7 @@
 				98338A981CBF05AA00AB8FD9 /* CoreDataDandy+Internal.swift in Sources */,
 				98338A9D1CBF05AA00AB8FD9 /* ObjectFactory.swift in Sources */,
 				98338AA11CBF05AA00AB8FD9 /* Dictionary+Dandy.swift in Sources */,
+				9829C8BA1D0E79E900B5DFCA /* NSFileManager+Directory.swift in Sources */,
 				98338A991CBF05AA00AB8FD9 /* CoreDataDandy.swift in Sources */,
 				98338AA41CBF05AA00AB8FD9 /* CoreDataValueConverter.swift in Sources */,
 				98338A9E1CBF05AA00AB8FD9 /* PersistentStackCoordinator.swift in Sources */,

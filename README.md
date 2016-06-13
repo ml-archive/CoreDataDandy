@@ -29,13 +29,13 @@ dependencies: [
 ### Carthage
 
 ```
-github "fuzz-productions/CoreDataDandy" ~> 0.5.1
+github "fuzz-productions/CoreDataDandy" ~> 0.5.2
 ```
 
 ### CocoaPods
 
 ```
-pod 'CoreDataDandy', '0.5.1'
+pod 'CoreDataDandy', '0.5.2'
 ```
 
 ## Usage
