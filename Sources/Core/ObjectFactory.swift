@@ -105,7 +105,7 @@ public struct ObjectFactory {
 				if let value: AnyObject = valueAt(key, of: json) {
 					if value.isKindOfClass(NSNull.self) {
 						// The key appeared in the json, but its value was nil. Assume the nil is meaningful.
-						(object as NSManagedObject).setValue(nil, forKey: description.name)
+						object.nilIfOptional(description)
 					} else if description.type == .Attribute,
 						let type = description.attributeType {
 						// A valid mapping was found for an attribute of a known type
