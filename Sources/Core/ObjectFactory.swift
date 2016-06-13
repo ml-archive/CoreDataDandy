@@ -45,7 +45,7 @@ public struct ObjectFactory {
 	///
 	/// - returns: A Model of the specified type if one could be inserted or fetched. The values that could be mapped
 	/// from the json to the object will be found on the returned object.
-	public static func make<Model: NSManagedObject>(type: Model.Type, from json: [String: AnyObject]) -> Model? {
+	public static func make<Model: NSManagedObject>(type: Model.Type, from json: [String: AnyObject?]) -> Model? {
 		if let entityDescription = NSEntityDescription.forType(type) {
 			return _make(entityDescription, from: json) as? Model
 		}
@@ -63,7 +63,7 @@ public struct ObjectFactory {
 	///
 	/// - returns: An NSManagedObject if one could be inserted or fetched. The values that could be mapped from the json
 	///		to the object will be found on the returned object.
-	static func _make(entity: NSEntityDescription, from json: [String: AnyObject]) -> NSManagedObject? {
+	static func _make(entity: NSEntityDescription, from json: [String: AnyObject?]) -> NSManagedObject? {
 		guard let name = entity.name else {
 			log(format("An object cannot be made from nameless entities."))
 			return nil
@@ -178,7 +178,7 @@ public struct ObjectFactory {
 	/// - parameter object:	The newly created object and the potential adopter of `MappingFinalizer`.
 	/// - parameter from: The json that was used to create the object. Note that this json will include all nested
 	///		"child" relationships, but no "parent" relationships.
-	private static func finalizeMapping(of object: NSManagedObject, from json: [String: AnyObject]) {
+	private static func finalizeMapping(of object: NSManagedObject, from json: [String: AnyObject?]) {
 		if let object = object as? MappingFinalizer {
 			object.finalizeMapping(of: json)
 		}

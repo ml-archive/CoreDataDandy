@@ -752,7 +752,7 @@ class CoreDataDandyTests: XCTestCase {
 	
 	/// Uniqueness should play no role in whether an object can be made or not.
 	func testNonUniqueObjectMaking() {
-		let json = ["name": "Passerby"]
+		let json: [String: AnyObject?] = ["name": "Passerby"]
 		let plebian = ObjectFactory.make(Plebian.self, from: json)
 		XCTAssert(plebian != nil, "Test failed: a non-unique object could not be made.")
 	}
@@ -908,7 +908,7 @@ class CoreDataDandyTests: XCTestCase {
 	func testMappingFinalization() {
 		let input = "A decisively excellent affair, if a bit tawdry."
 		let expected = "\(input)_FINALIZED"
-		let json = [
+		let json: [String: AnyObject?] = [
 			"id": "1",
 			"content": input
 		]
