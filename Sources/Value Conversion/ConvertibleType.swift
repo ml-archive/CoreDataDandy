@@ -56,7 +56,7 @@ protocol NumericConvertible: DoubleConvertible, DecimalConvertible, FloatConvert
 protocol ConvertibleType: BooleanConvertible, DataConvertible, DateConvertible, NumericConvertible, StringConvertible {}
 
 // MARK: - NSDate -
-extension NSDate : DateConvertible, NumericConvertible, StringConvertible {
+extension NSDate: DateConvertible, NumericConvertible, StringConvertible {
 	func convertToDate() -> NSDate? {
 		return self
 	}
@@ -86,7 +86,7 @@ extension NSData : DataConvertible, StringConvertible {
 	}
 }
 // MARK: - NSNumber -
-extension NSNumber : ConvertibleType {
+extension NSNumber: ConvertibleType {
 	func convertToBoolean() -> NSNumber? {
 		if self.integerValue == 0 {
 			return NSNumber(bool: false)
@@ -118,7 +118,7 @@ extension NSNumber : ConvertibleType {
 	}
 }
 // MARK:  - NSString -
-extension NSString : ConvertibleType {
+extension NSString: ConvertibleType {
 	func convertToBoolean() -> NSNumber? {
 		let lowercaseValue = self.lowercaseString
 		if lowercaseValue == "yes" || lowercaseValue == "true" || lowercaseValue == "1" {
