@@ -104,10 +104,7 @@ public struct ObjectFactory {
 			// Begin mapping values from json to object properties
 			for (key, description) in map {
 				if let value: AnyObject = valueAt(key, of: json) {
-					if value is NSNull {
-						// The key appeared in the json, but its value was nil. Assume the nil is meaningful.
-						object.nilIfOptional(description)
-					} else if description.type == .Attribute,
+					if description.type == .Attribute,
 						let type = description.attributeType {
 						// A valid mapping was found for an attribute of a known type
 						(object as NSManagedObject).setValue(CoreDataValueConverter.convert(value, to: type), forKey: description.name)
@@ -166,6 +163,10 @@ public struct ObjectFactory {
 			                forKey: relationship.name)
 			
 			return object
+		} else if let possibleNull = json as? NilConvertible
+			where possibleNull.convertToNil() == nil {
+			// A nil-convertible value was passed
+			object.nilIfOptional(relationship)
 		} else {
 			// The value provided did not match the expected type. For instance, an array was passed where an object
 			// was expected.
@@ -177,9 +178,7 @@ public struct ObjectFactory {
 						return " An object is expected to create toOne relationships."
 					}
 				}()
-				+ "\n\(relationship.name) will be nilled out if it is an optional relationship."))
-			
-			object.nilIfOptional(relationship)
+				+ "\(relationship.name)"))
 		}
 		
 		return object

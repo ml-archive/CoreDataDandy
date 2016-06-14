@@ -813,18 +813,6 @@ class CoreDataDandyTests: XCTestCase {
 			]
 		]
 		
-		let wrongTypeNilling = [
-			"id": 1,
-			"hats": [
-				"name": "bowler"
-			]
-		]
-		ObjectFactory.build(dandy, from: json)
-		XCTAssert(dandy.hats?.count == 1, "After building from \(json), Lord Byron should have a single hat.")
-		ObjectFactory.build(dandy, from: wrongTypeNilling)
-		XCTAssert(dandy.hats?.count == 0, "After building hats from the wrong type, Lord Byron should have no hats.")
-
-		
 		let nullNilling = [
 			"id": 1,
 			"hats": "NULL"

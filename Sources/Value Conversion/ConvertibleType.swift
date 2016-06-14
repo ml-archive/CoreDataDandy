@@ -52,6 +52,11 @@ protocol IntConvertible {
 protocol StringConvertible {
 	func convertToString() -> NSString?
 }
+
+protocol NilConvertible {
+	func convertToNil() -> Any?
+}
+
 protocol NumericConvertible: DoubleConvertible, DecimalConvertible, FloatConvertible, IntConvertible {}
 protocol ConvertibleType: BooleanConvertible, DataConvertible, DateConvertible, NumericConvertible, StringConvertible {}
 
@@ -118,7 +123,7 @@ extension NSNumber: ConvertibleType {
 	}
 }
 // MARK:  - NSString -
-extension NSString: ConvertibleType {
+extension NSString: ConvertibleType, NilConvertible {
 	func convertToBoolean() -> NSNumber? {
 		let lowercaseValue = self.lowercaseString
 		if lowercaseValue == "yes" || lowercaseValue == "true" || lowercaseValue == "1" {
@@ -153,5 +158,14 @@ extension NSString: ConvertibleType {
 		}
 	
 		return self
+	}
+	func convertToNil() -> Any? {
+		return convertToString()
+	}
+}
+
+extension NSNull: NilConvertible {
+	func convertToNil() -> Any? {
+		return nil
 	}
 }
