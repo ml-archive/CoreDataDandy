@@ -634,7 +634,7 @@ class CoreDataDandyTests: XCTestCase {
 	/// Values should be mapped from json to an object's attributes.
 	func testAttributeBuilding() {
 		let space = Dandy.insert(Space.self)!
-		let json: [String: AnyObject] = ["name": "nebulous", "state": "moderately cool"]
+		let json: JSONObject = ["name": "nebulous", "state": "moderately cool"]
 		ObjectFactory.build(space, from: json)
 		XCTAssert(space.valueForKey("name") as! String == "nebulous" &&
 			space.valueForKey("spaceState") as! String ==  "moderately cool",
@@ -720,7 +720,7 @@ class CoreDataDandyTests: XCTestCase {
 	func testIgnoreUnkeyedAttributesWhenBuilding() {
 		let space = Dandy.insert(Space.self)!
 		space.setValue("exceptionally relaxed", forKey: "spaceState")
-		let json: [String: AnyObject] = ["name": "nebulous"]
+		let json: JSONObject = ["name": "nebulous"]
 		ObjectFactory.build(space, from: json)
 		XCTAssert(space.valueForKey("spaceState") as! String == "exceptionally relaxed", "Pass")
 	}
@@ -729,7 +729,7 @@ class CoreDataDandyTests: XCTestCase {
 	func testOverwritesKeyedAttributesWhenBuilding() {
 		let space = Dandy.insert(Space.self)!
 		space.setValue("exceptionally relaxed", forKey: "spaceState")
-		let json: [String: AnyObject] = ["state": "significant excitement"]
+		let json: JSONObject = ["state": "significant excitement"]
 		ObjectFactory.build(space, from: json)
 		XCTAssert(space.valueForKey("spaceState") as! String == "significant excitement", "Pass")
 	}
@@ -752,7 +752,7 @@ class CoreDataDandyTests: XCTestCase {
 	
 	/// Uniqueness should play no role in whether an object can be made or not.
 	func testNonUniqueObjectMaking() {
-		let json: [String: AnyObject] = ["name": "Passerby"]
+		let json: JSONObject = ["name": "Passerby"]
 		let plebian = ObjectFactory.make(Plebian.self, from: json)
 		XCTAssert(plebian != nil, "Test failed: a non-unique object could not be made.")
 	}
@@ -863,7 +863,7 @@ class CoreDataDandyTests: XCTestCase {
 
 	/// An array of objects should be returned from a json array containing mappable objects.
 	func testObjectArrayConstruction() {
-		var json = [[String: AnyObject]]()
+		var json = [JSONObject]()
 		for i in 0...9 {
 			json.append(["id": String(i), "name": "Morty"])
 		}
@@ -887,7 +887,7 @@ class CoreDataDandyTests: XCTestCase {
 	func testMappingFinalization() {
 		let input = "A decisively excellent affair, if a bit tawdry."
 		let expected = "\(input)_FINALIZED"
-		let json: [String: AnyObject] = [
+		let json: JSONObject = [
 			"id": "1",
 			"content": input
 		]
@@ -1075,7 +1075,7 @@ class CoreDataDandyTests: XCTestCase {
 				"hats": hats
 			]
 		]
-		let value = valueAt("purveyor.hats", of: gossip) as! [[String: AnyObject]]
+		let value = valueAt("purveyor.hats", of: gossip) as! [JSONObject]
 		XCTAssert(value == hats, "Pass")
 	}
 	
@@ -1129,7 +1129,7 @@ class CoreDataDandyTests: XCTestCase {
 		XCTAssert(log == "(CoreDataDandy) warning: " + warning + " Error:\n" + error.description, "Pass")
 	}
 	/// For testing purposes only, a json comparator.
-	func equivalent(lhs: [String: AnyObject], _ rhs: [String: AnyObject]) -> Bool {
+	func equivalent(lhs: JSONObject, _ rhs: JSONObject) -> Bool {
 		// Dictionaries of unequal counts are not equal
 		if lhs.count != rhs.count { return false }
 		// Dictionaries that are equal must share all keys and paired values

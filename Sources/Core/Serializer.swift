@@ -56,8 +56,8 @@ public struct Serializer {
 	/// - parameter relationships: Relationships and keypaths to nested relationships targeted for serialization.
 	///
 	/// - returns: A json representation of this object and its relationships if one could be produced. Otherwise, nil.
-	public static func serialize(object: NSManagedObject, including relationships: [String]? = nil) -> [String: AnyObject]? {
-		var json = [String: AnyObject]()
+	public static func serialize(object: NSManagedObject, including relationships: [String]? = nil) -> JSONObject? {
+		var json = JSONObject()
 		let map = EntityMapper.map(object.entity)
 		if let map = map {
 			for (property, description) in map {
@@ -110,8 +110,8 @@ public struct Serializer {
 	/// - parameter relationships: The relationships targeted for serialization.
 	///
 	/// - returns: A json representation of the objects and their relationships if one could be produced. Otherwise, nil.
-	public static func serialize(objects: [NSManagedObject], including relationships: [String]? = nil) -> [[String: AnyObject]]? {
-		var json = [[String: AnyObject]]()
+	public static func serialize(objects: [NSManagedObject], including relationships: [String]? = nil) -> [JSONObject]? {
+		var json = [JSONObject]()
 		for object in objects {
 			if let relationshipJSON = serialize(object, including: relationships) {
 				json.append(relationshipJSON)

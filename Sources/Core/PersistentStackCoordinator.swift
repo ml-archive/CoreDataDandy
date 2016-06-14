@@ -138,7 +138,7 @@ extension NSPersistentStoreCoordinator {
 				options: options)
 			
 		} catch {
-			var dict = [String: AnyObject]()
+			var dict = JSONObject()
 			dict[NSLocalizedDescriptionKey] = "Failed to initialize the application's saved data"
 			dict[NSLocalizedFailureReasonErrorKey] = "There was an error creating or loading the application's saved data."
 			dict[NSUnderlyingErrorKey] = error as NSError

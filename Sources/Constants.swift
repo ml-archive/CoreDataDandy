@@ -42,3 +42,5 @@ let MAPPING = "@mapping"
 let NO_MAPPING = "@NO"
 
 let CACHED_MAPPING_LOCATION = "EntityMapper_EntityMapper"
+
+public typealias JSONObject = [String: AnyObject]

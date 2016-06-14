@@ -98,7 +98,7 @@ public class CoreDataDandy {
 	/// - parameter json: A json object to map into the returned object's attributes and relationships
 	///
 	/// - returns: A managed object if one could be created.
-	public func upsert<Model: NSManagedObject>(type: Model.Type, from json: [String: AnyObject]) -> Model? {
+	public func upsert<Model: NSManagedObject>(type: Model.Type, from json: JSONObject) -> Model? {
 		guard let entity = NSEntityDescription.forType(type) else {
 			log(format("Could not retrieve NSEntityDescription for type \(type)"))
 			return nil
@@ -127,7 +127,7 @@ public class CoreDataDandy {
 	/// - parameter json: An array to map into the returned objects' attributes and relationships
 	///
 	/// - returns: An array of managed objects if one could be created.
-	public func batchUpsert<Model: NSManagedObject>(type: Model.Type, from json: [[String: AnyObject]]) -> [Model]? {
+	public func batchUpsert<Model: NSManagedObject>(type: Model.Type, from json: [JSONObject]) -> [Model]? {
 		var models = [Model]()
 		for object in json {
 			if let model = upsert(type, from: object) {
@@ -158,7 +158,7 @@ public class CoreDataDandy {
 	/// - parameter json: A json object to map into the returned object's attributes and relationships
 	///
 	/// - returns: A managed object if one could be created.
-	private func upsertUnique<Model: NSManagedObject>(type: Model.Type, identifiedBy primaryKeyValue: AnyObject, from json: [String: AnyObject]) -> Model? {
+	private func upsertUnique<Model: NSManagedObject>(type: Model.Type, identifiedBy primaryKeyValue: AnyObject, from json: JSONObject) -> Model? {
 		if let object = insertUnique(type, identifiedBy: primaryKeyValue) {
 			ObjectFactory.build(object, from: json)
 			return object

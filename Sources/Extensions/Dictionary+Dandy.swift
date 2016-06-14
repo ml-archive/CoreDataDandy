@@ -45,13 +45,13 @@ public extension Dictionary {
 ///
 /// - returns: The value at the given keypath is one exists. 
 ///	If no key exists at the specified keypath, nil is returned.
-func valueAt(keypath: String, of dictionary: [String: AnyObject]) -> AnyObject? {
+func valueAt(keypath: String, of dictionary: JSONObject) -> AnyObject? {
 	let keys = keypath.componentsSeparatedByString(".")
 	var copy = dictionary
 	var possibleValue: AnyObject?
 	for key in keys {
 		possibleValue = copy[key] ?? nil
-		if let value = copy[key] as? [String: AnyObject] {
+		if let value = copy[key] as? JSONObject {
 			copy = value
 		}
 	}

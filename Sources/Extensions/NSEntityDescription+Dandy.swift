@@ -32,7 +32,7 @@ extension NSEntityDescription {
 	/// Recursively collects all userInfo values from potential superentities
 	var allUserInfo: [NSObject: AnyObject]? {
 		get {
-			return collectedEntityValuesFromDictionaryClosure({return $0.userInfo as? [String: AnyObject]})
+			return collectedEntityValuesFromDictionaryClosure({return $0.userInfo as? JSONObject})
 		}
 	}
 
@@ -56,8 +56,8 @@ extension NSEntityDescription {
 	/// - parameter dictionaryClosure: A closure returning userInfo, attributesByName, or relationshipsByName.
 	///
 	/// - returns: The values collected from the entity's hierarchy.
-	private func collectedEntityValuesFromDictionaryClosure(dictionaryClosure: (NSEntityDescription) -> [String: AnyObject]?) -> [String: AnyObject]? {
-		var values = [String: AnyObject]()
+	private func collectedEntityValuesFromDictionaryClosure(dictionaryClosure: (NSEntityDescription) -> JSONObject?) -> JSONObject? {
+		var values = JSONObject()
 		// Collect values down the entity hierarchy, stopping on the current entity.
 		// This approach ensures children override parent values.
 		for entity in entityHierarchy {

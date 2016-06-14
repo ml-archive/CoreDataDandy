@@ -67,7 +67,7 @@ struct EntityMapper {
 	///
 	/// - parameter dictionary: A dictionary containing either NSAttributeDescriptions or NSRelationshipDescriptions
 	/// - parameter map: The map for reading json into an entity
-	private static func add(dictionary: [String: AnyObject], inout to map: [String: PropertyDescription]) {
+	private static func add(dictionary: JSONObject, inout to map: [String: PropertyDescription]) {
 		for (name, description) in dictionary {
 			if let newMapping = mappingForUserInfo(description.userInfo) {
 				// Do not add values specified as non-mapping to the mapping dictionary
