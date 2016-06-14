@@ -147,6 +147,11 @@ extension NSString: ConvertibleType {
 		return NSNumber(integer: self.integerValue)
 	}
 	func convertToString() -> NSString? {
+		if self.lowercaseString == "null"
+			|| self.lowercaseString == "nil" {
+			return nil
+		}
+	
 		return self
 	}
 }
