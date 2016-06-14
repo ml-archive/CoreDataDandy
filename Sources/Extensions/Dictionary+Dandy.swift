@@ -39,7 +39,13 @@ public extension Dictionary {
 }
 
 /// Functions similarly to `NSDictionary's` valueForKeyPath.
-func valueAt(keypath: String, of dictionary: [String: AnyObject?]) -> AnyObject? {
+///
+/// - parameter keypath: The keypath of the value.
+/// - parameter dictionary: The dictionary in which the value may exist.
+///
+/// - returns: The value at the given keypath is one exists. 
+///	If no key exists at the specified keypath, nil is returned.
+func valueAt(keypath: String, of dictionary: [String: AnyObject]) -> AnyObject? {
 	let keys = keypath.componentsSeparatedByString(".")
 	var copy = dictionary
 	var possibleValue: AnyObject?
@@ -48,12 +54,6 @@ func valueAt(keypath: String, of dictionary: [String: AnyObject?]) -> AnyObject?
 		if let value = copy[key] as? [String: AnyObject] {
 			copy = value
 		}
-	}
-	
-	if possibleValue == nil
-		&& dictionary.keys.contains(keypath) {
-		// Signify nulling if the dictionary contained the key, but no value was found at that key
-		return NSNull()
 	}
 
 	return possibleValue

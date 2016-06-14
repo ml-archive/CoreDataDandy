@@ -634,7 +634,7 @@ class CoreDataDandyTests: XCTestCase {
 	/// Values should be mapped from json to an object's attributes.
 	func testAttributeBuilding() {
 		let space = Dandy.insert(Space.self)!
-		let json: [String: AnyObject?] = ["name": "nebulous", "state": "moderately cool"]
+		let json: [String: AnyObject] = ["name": "nebulous", "state": "moderately cool"]
 		ObjectFactory.build(space, from: json)
 		XCTAssert(space.valueForKey("name") as! String == "nebulous" &&
 			space.valueForKey("spaceState") as! String ==  "moderately cool",
@@ -707,7 +707,7 @@ class CoreDataDandyTests: XCTestCase {
 					"name": "Honoré de Balzac"
 				]
 			]
-		] as [String: AnyObject]
+		]
 		ObjectFactory.build(dandy, from: json)
 		let balzac = dandy.valueForKey("predecessor") as! NSManagedObject
 		XCTAssert(balzac.valueForKey("dandyID") as! String == "BALZ" &&
@@ -720,7 +720,7 @@ class CoreDataDandyTests: XCTestCase {
 	func testIgnoreUnkeyedAttributesWhenBuilding() {
 		let space = Dandy.insert(Space.self)!
 		space.setValue("exceptionally relaxed", forKey: "spaceState")
-		let json: [String: AnyObject?] = ["name": "nebulous"]
+		let json: [String: AnyObject] = ["name": "nebulous"]
 		ObjectFactory.build(space, from: json)
 		XCTAssert(space.valueForKey("spaceState") as! String == "exceptionally relaxed", "Pass")
 	}
@@ -729,7 +729,7 @@ class CoreDataDandyTests: XCTestCase {
 	func testOverwritesKeyedAttributesWhenBuilding() {
 		let space = Dandy.insert(Space.self)!
 		space.setValue("exceptionally relaxed", forKey: "spaceState")
-		let json: [String: AnyObject?] = ["state": "significant excitement"]
+		let json: [String: AnyObject] = ["state": "significant excitement"]
 		ObjectFactory.build(space, from: json)
 		XCTAssert(space.valueForKey("spaceState") as! String == "significant excitement", "Pass")
 	}
@@ -752,7 +752,7 @@ class CoreDataDandyTests: XCTestCase {
 	
 	/// Uniqueness should play no role in whether an object can be made or not.
 	func testNonUniqueObjectMaking() {
-		let json: [String: AnyObject?] = ["name": "Passerby"]
+		let json: [String: AnyObject] = ["name": "Passerby"]
 		let plebian = ObjectFactory.make(Plebian.self, from: json)
 		XCTAssert(plebian != nil, "Test failed: a non-unique object could not be made.")
 	}
@@ -825,30 +825,21 @@ class CoreDataDandyTests: XCTestCase {
 		XCTAssert(dandy.hats?.count == 0, "After building hats from the wrong type, Lord Byron should have no hats.")
 
 		
-		
-		let nilNilling: [String: AnyObject?] = [
-			"id": 1,
-			"hats": nil
-		]
-		ObjectFactory.build(dandy, from: json)
-		XCTAssert(dandy.hats?.count == 1, "After building from \(json), Lord Byron should have a single hat.")
-		ObjectFactory.build(dandy, from: nilNilling)
-		XCTAssert(dandy.hats?.count == 0, "After building hats from nil, Lord Byron should have no hats.")
-		
 		let nullNilling = [
 			"id": 1,
 			"hats": "NULL"
-		]
-		
-		let nsNullNilling = [
-			"id": 1,
-			"hats": NSNull()
 		]
 		
 		ObjectFactory.build(dandy, from: json)
 		XCTAssert(dandy.hats!.count == 1, "After building from \(json), Lord Byron should have a single hat.")
 		ObjectFactory.build(dandy, from: nullNilling)
 		XCTAssert(dandy.hats?.count == 0, "After building hats from NULL values, Lord Byron should have no hats.")
+		
+		let nsNullNilling = [
+			"id": 1,
+			"hats": NSNull()
+		]
+		
 		ObjectFactory.build(dandy, from: json)
 		XCTAssert(dandy.hats!.count == 1, "After building from \(json), Lord Byron should have a single hat.")
 		ObjectFactory.build(dandy, from: nsNullNilling)
@@ -908,7 +899,7 @@ class CoreDataDandyTests: XCTestCase {
 	func testMappingFinalization() {
 		let input = "A decisively excellent affair, if a bit tawdry."
 		let expected = "\(input)_FINALIZED"
-		let json: [String: AnyObject?] = [
+		let json: [String: AnyObject] = [
 			"id": "1",
 			"content": input
 		]

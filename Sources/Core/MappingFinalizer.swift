@@ -26,5 +26,5 @@
 //  IN THE SOFTWARE.
 
 public protocol MappingFinalizer {
-	func finalizeMapping(of json: [String: AnyObject?])
+	func finalizeMapping(of json: [String: AnyObject])
 }
