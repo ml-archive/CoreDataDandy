@@ -103,7 +103,7 @@ public struct ObjectFactory {
 		if let map = EntityMapper.map(object.entity) {
 			// Begin mapping values from json to object properties
 			for (key, description) in map {
-				if let value: Any = valueAt(key, of: json) {
+				if let value: AnyObject = valueAt(key, of: json) {
 					if value is NSNull {
 						// The key appeared in the json, but its value was nil. Assume the nil is meaningful.
 						object.nilIfOptional(description)
@@ -132,13 +132,13 @@ public struct ObjectFactory {
 	/// - parameter json: The json with which to build the related objects.
 	///
 	/// - returns: The object passed in with a newly mapped relationship if relationship objects were built.
-	static func make(relationship: PropertyDescription, to object: NSManagedObject, from json: Any) -> NSManagedObject {
+	static func make(relationship: PropertyDescription, to object: NSManagedObject, from json: AnyObject) -> NSManagedObject {
 		guard let relatedEntity = relationship.destinationEntity else {
 			log(format("The entity named \(relationship.name) for entity \(object.entity.name) lacks an NSEntityDescription. No relationthip will be built."))
 			return object
 		}
 		
-		if let json = json as? [String: Any?] where !relationship.toMany {
+		if let json = json as? [String: AnyObject] where !relationship.toMany {
 			// A dictionary was passed for a toOne relationship
 			if let relation = _make(relatedEntity, from: json) {
 				object.setValue(relation, forKey: relationship.name)
@@ -150,7 +150,7 @@ public struct ObjectFactory {
 			}
 			
 			return object
-		} else if let json = json as? [[String: Any?]] where relationship.toMany {
+		} else if let json = json as? [[String: AnyObject]] where relationship.toMany {
 			// An array was passed for a toMany relationship
 			var relations = [NSManagedObject]()
 			for child in json {
@@ -191,7 +191,7 @@ public struct ObjectFactory {
 	/// - parameter object:	The newly created object and the potential adopter of `MappingFinalizer`.
 	/// - parameter from: The json that was used to create the object. Note that this json will include all nested
 	///		"child" relationships, but no "parent" relationships.
-	private static func finalizeMapping(of object: NSManagedObject, from json: [String: Any?]) {
+	private static func finalizeMapping(of object: NSManagedObject, from json: [String: AnyObject]) {
 		if let object = object as? MappingFinalizer {
 			object.finalizeMapping(of: json)
 		}

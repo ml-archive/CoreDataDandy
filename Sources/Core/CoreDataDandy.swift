@@ -158,7 +158,7 @@ public class CoreDataDandy {
 	/// - parameter json: A json object to map into the returned object's attributes and relationships
 	///
 	/// - returns: A managed object if one could be created.
-	private func upsertUnique<Model: NSManagedObject>(type: Model.Type, identifiedBy primaryKeyValue: Any, from json: [String: Any?]) -> Model? {
+	private func upsertUnique<Model: NSManagedObject>(type: Model.Type, identifiedBy primaryKeyValue: AnyObject, from json: [String: AnyObject]) -> Model? {
 		if let object = insertUnique(type, identifiedBy: primaryKeyValue) {
 			ObjectFactory.build(object, from: json)
 			return object
