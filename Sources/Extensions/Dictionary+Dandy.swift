@@ -54,6 +54,9 @@ func _value<T>(at keypath: String,
 		possibleValue = copy[key] ?? nil
 		if let value = copy[key] as? JSONObject {
 			copy = value
+		} else if possibleValue is NSNull {
+			// A null has been encountered in the dictionary. Return it, and ignore further potential nesting.
+			return possibleValue
 		}
 	}
 
