@@ -45,27 +45,10 @@ public struct ObjectFactory {
 	///
 	/// - returns: A Model of the specified type if one could be inserted or fetched. The values that could be mapped
 	/// from the json to the object will be found on the returned object.
-	public static func make<Model: NSManagedObject>(type: Model.Type, from json: JSONObject) -> Model? {
-		if let entityDescription = NSEntityDescription.forType(type) {
-			return _make(entityDescription, from: json) as? Model
-		}
-		log(format("An entityDescription was not found for type \(type) from json \n\(json)."))
-		return nil
-	}
-	
-	/// An internal function that achieves `make(type:_, from:_)` and conceals Core Data's stringiness.
-	///
-	/// Ultimately, this method exists because there's no way of converting strings to fully qualified types. As
-	/// relationships in Core Data are described with strings, this is my current workaround.
-	///
-	/// - parameter entity:	The entity that will be inserted or fetched then read to from the json.
-	/// - parameter from: The json to map into the returned object.
-	///
-	/// - returns: An NSManagedObject if one could be inserted or fetched. The values that could be mapped from the json
-	///		to the object will be found on the returned object.
-	static func _make(entity: NSEntityDescription, from json: JSONObject) -> NSManagedObject? {
-		guard let name = entity.name else {
-			log(format("An object cannot be made from nameless entities."))
+	@discardableResult public static func make<Model: NSManagedObject>(_ type: Model.Type,
+																	   from json: JSONObject) -> Model? {
+		guard let entity = type.entityDescription() else {
+			log(format("An entityDescription was not found for type \(type) from json \n\(json)."))
 			return nil
 		}
 		
@@ -74,18 +57,18 @@ public struct ObjectFactory {
 		if entity.isUnique {
 			// Attempt to fetch or create unique object for primaryKey
 			if let primaryKeyValue = entity.primaryKeyValueFromJSON(json) {
-				object = Dandy._insertUnique(name, identifiedBy: primaryKeyValue)
+				object = Dandy.insertUnique(type, identifiedBy: primaryKeyValue)
 			}
 		} else {
 			// The object is not unique. Simply insert it.
-			object = Dandy._insert(name)
+			object = Dandy.insert(type)
 		}
 		
 		if let object = object {
 			build(object, from: json)
 			finalizeMapping(of: object, from: json)
 			
-			return object
+			return object as? Model
 		}
 		
 		log(format("An object could not be made for entity \(entity.name) from json \n\(json)."))
@@ -99,16 +82,17 @@ public struct ObjectFactory {
 	/// - parameter json: The json to map into the returned object.
 	///
 	/// - returns: The object passed in with newly mapped values where mapping was possible.
-	public static func build<Model: NSManagedObject>(object: Model, from json: JSONObject) -> Model {
+	@discardableResult public static func build<Model: NSManagedObject>(_ object: Model,
+																	    from json: JSONObject) -> Model {
 		if let map = EntityMapper.map(object.entity) {
 			// Begin mapping values from json to object properties
 			for (key, description) in map {
-				if let value: AnyObject = valueAt(key, of: json) {
-					if description.type == .Attribute,
-						let type = description.attributeType {
+				if let value: Any = _value(at: key, of: json) {
+					if description.type == .attribute,
+					let type = description.attributeType {
 						// A valid mapping was found for an attribute of a known type
-						(object as NSManagedObject).setValue(CoreDataValueConverter.convert(value, to: type), forKey: description.name)
-					} else if description.type == .Relationship {
+						object.setValue(CoreDataValueConverter.convert(value, to: type), forKey: description.name)
+					} else if description.type == .relationship {
 						// A valid mapping was found for a relationship of a known type
 						make(description, to: object, from: value)
 					}
@@ -129,15 +113,24 @@ public struct ObjectFactory {
 	/// - parameter json: The json with which to build the related objects.
 	///
 	/// - returns: The object passed in with a newly mapped relationship if relationship objects were built.
-	static func make(relationship: PropertyDescription, to object: NSManagedObject, from json: AnyObject) -> NSManagedObject {
+	@discardableResult static func make(_ relationship: PropertyDescription,
+	                                    to object: NSManagedObject,
+	                                    from json: Any) -> NSManagedObject {
 		guard let relatedEntity = relationship.destinationEntity else {
 			log(format("The entity named \(relationship.name) for entity \(object.entity.name) lacks an NSEntityDescription. No relationthip will be built."))
 			return object
 		}
 		
-		if let json = json as? JSONObject where !relationship.toMany {
+		guard let relatedTypeName = relatedEntity.name,
+		let relatedEntityType = NSManagedObject.type(named: relatedTypeName) else {
+				log(format("No type could be found for \(relationship.name) of type named \(relatedEntity.name). Provide a subclassed type to enable serialization."))
+				return object
+		}
+		
+		if let json = json as? JSONObject,
+		!relationship.toMany {
 			// A dictionary was passed for a toOne relationship
-			if let relation = _make(relatedEntity, from: json) {
+			if let relation = make(relatedEntityType, from: json) {
 				object.setValue(relation, forKey: relationship.name)
 			} else {
 				// No relationship could be made from the json. Nil out the relationship.
@@ -147,11 +140,12 @@ public struct ObjectFactory {
 			}
 			
 			return object
-		} else if let json = json as? [JSONObject] where relationship.toMany {
+		} else if let json = json as? [JSONObject],
+		  relationship.toMany {
 			// An array was passed for a toMany relationship
 			var relations = [NSManagedObject]()
 			for child in json {
-				if let relation = _make(relatedEntity, from: child) {
+				if let relation = make(relatedEntityType, from: child) {
 					relations.append(relation)
 				} else {
 					log(format("A relationship named \(relationship.name) could not be established for object \(object) from json \n\(child)."))
@@ -163,8 +157,8 @@ public struct ObjectFactory {
 			                forKey: relationship.name)
 			
 			return object
-		} else if let possibleNull = json as? NilConvertible
-			where possibleNull.convertToNil() == nil {
+		} else if let possibleNull = json as? NilConvertible,
+		  possibleNull.convertToNil() == nil {
 			// A nil-convertible value was passed
 			object.nilIfOptional(relationship)
 		} else {
@@ -190,7 +184,7 @@ public struct ObjectFactory {
 	/// - parameter object:	The newly created object and the potential adopter of `MappingFinalizer`.
 	/// - parameter from: The json that was used to create the object. Note that this json will include all nested
 	///		"child" relationships, but no "parent" relationships.
-	private static func finalizeMapping(of object: NSManagedObject, from json: JSONObject) {
+	fileprivate static func finalizeMapping(of object: NSManagedObject, from json: JSONObject) {
 		if let object = object as? MappingFinalizer {
 			object.finalizeMapping(of: json)
 		}
@@ -202,7 +196,7 @@ private extension NSManagedObject {
 	/// If a property is optional, set it to nil.
 	///
 	/// - parameter property: The relationship to nil if optional.
-	private func nilIfOptional(property: PropertyDescription) {
+	func nilIfOptional(_ property: PropertyDescription) {
 		if property.optional {
 			setValue(nil, forKey: property.name)
 		}

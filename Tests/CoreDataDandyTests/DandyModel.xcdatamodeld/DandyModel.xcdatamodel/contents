@@ -1,22 +1,20 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="10171" systemVersion="15E65" minimumToolsVersion="Xcode 7.0">
-    <entity name="Conclusion" representedClassName=".Conclusion" syncable="YES">
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="11232" systemVersion="15G31" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+    <entity name="Conclusion" representedClassName="Conclusion" syncable="YES" codeGenerationType="class">
         <attribute name="content" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="id" optional="YES" attributeType="String" syncable="YES"/>
-        <uniquenessConstraints>
-            <uniquenessConstraint>
-                <constraint value="id"/>
-            </uniquenessConstraint>
-        </uniquenessConstraints>
+        <userInfo>
+            <entry key="@primaryKey" value="id"/>
+        </userInfo>
     </entity>
-    <entity name="Dandy_" representedClassName=".Dandy_" syncable="YES">
+    <entity name="Dandy_" representedClassName="Dandy_" syncable="YES" codeGenerationType="class">
         <attribute name="bio" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="dandyID" optional="YES" attributeType="String" syncable="YES">
             <userInfo>
                 <entry key="@mapping" value="id"/>
             </userInfo>
         </attribute>
-        <attribute name="dateOfBirth" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="dateOfBirth" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
         <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
         <relationship name="gossip" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Gossip" inverseName="purveyor" inverseEntity="Gossip" syncable="YES"/>
         <relationship name="hats" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Hat" inverseName="dandies" inverseEntity="Hat" syncable="YES"/>
@@ -30,29 +28,24 @@
             <entry key="@primaryKey" value="dandyID"/>
         </userInfo>
     </entity>
-    <entity name="Flattery" representedClassName=".Flattery" parentEntity="Gossip" syncable="YES">
+    <entity name="Flattery" representedClassName="Flattery" parentEntity="Gossip" syncable="YES" codeGenerationType="class">
         <attribute name="ambition" optional="YES" attributeType="String" syncable="YES"/>
     </entity>
-    <entity name="Gossip" representedClassName=".Gossip" syncable="YES">
+    <entity name="Gossip" representedClassName="Gossip" syncable="YES" codeGenerationType="class">
         <attribute name="details" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="secret" optional="YES" attributeType="String" syncable="YES">
             <userInfo>
-                <entry key="@mapping" value="@NO"/>
+                <entry key="@mapping" value="@false"/>
             </userInfo>
         </attribute>
         <attribute name="topic" optional="YES" attributeType="String" syncable="YES"/>
         <relationship name="purveyor" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Dandy_" inverseName="gossip" inverseEntity="Dandy_" syncable="YES"/>
-        <uniquenessConstraints>
-            <uniquenessConstraint>
-                <constraint value="details"/>
-            </uniquenessConstraint>
-        </uniquenessConstraints>
         <userInfo>
             <entry key="@primaryKey" value="secret"/>
             <entry key="testValue" value="testKey"/>
         </userInfo>
     </entity>
-    <entity name="Hat" representedClassName=".Hat" syncable="YES">
+    <entity name="Hat" representedClassName="Hat" syncable="YES" codeGenerationType="class">
         <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="styleDescription" optional="YES" attributeType="String" syncable="YES">
             <userInfo>
@@ -69,29 +62,24 @@
             <entry key="@primaryKey" value="name"/>
         </userInfo>
     </entity>
-    <entity name="Material" representedClassName=".Material" syncable="YES">
+    <entity name="Material" representedClassName="Material" syncable="YES" codeGenerationType="class">
         <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="origin" optional="YES" attributeType="String" syncable="YES"/>
-        <relationship name="hats" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Hat" inverseName="primaryMaterial" inverseEntity="Hat" syncable="YES"/>
+        <relationship name="hats" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Hat" inverseName="primaryMaterial" inverseEntity="Hat" syncable="YES"/>
         <userInfo>
             <entry key="@primaryKey" value="name"/>
         </userInfo>
     </entity>
-    <entity name="Plebian" representedClassName=".Plebian" syncable="YES">
+    <entity name="Plebian" representedClassName="Plebian" syncable="YES" codeGenerationType="class">
         <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
     </entity>
-    <entity name="Slander" representedClassName=".Slander" parentEntity="Gossip" syncable="YES">
+    <entity name="Slander" representedClassName="Slander" parentEntity="Gossip" syncable="YES" codeGenerationType="class">
         <attribute name="statement" optional="YES" attributeType="String" syncable="YES"/>
-        <uniquenessConstraints>
-            <uniquenessConstraint>
-                <constraint value="statement"/>
-            </uniquenessConstraint>
-        </uniquenessConstraints>
         <userInfo>
             <entry key="@primaryKey" value="statement"/>
         </userInfo>
     </entity>
-    <entity name="Space" representedClassName=".Space" syncable="YES">
+    <entity name="Space" representedClassName="Space" syncable="YES" codeGenerationType="class">
         <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="spaceState" optional="YES" attributeType="String" syncable="YES">
             <userInfo>
@@ -103,14 +91,14 @@
         </userInfo>
     </entity>
     <elements>
-        <element name="Conclusion" positionX="-54" positionY="54" width="128" height="75"/>
-        <element name="Dandy_" positionX="-63" positionY="-18" width="128" height="165"/>
-        <element name="Flattery" positionX="-27" positionY="81" width="128" height="60"/>
-        <element name="Gossip" positionX="-54" positionY="45" width="128" height="30"/>
-        <element name="Hat" positionX="-54" positionY="18" width="128" height="105"/>
-        <element name="Material" positionX="-36" positionY="36" width="128" height="90"/>
-        <element name="Plebian" positionX="-45" positionY="63" width="128" height="60"/>
-        <element name="Slander" positionX="-18" positionY="90" width="128" height="60"/>
-        <element name="Space" positionX="-54" positionY="45" width="128" height="75"/>
+        <element name="Conclusion" positionX="-63" positionY="-18" width="128" height="75"/>
+        <element name="Dandy_" positionX="-54" positionY="-9" width="128" height="165"/>
+        <element name="Flattery" positionX="-36" positionY="9" width="128" height="60"/>
+        <element name="Gossip" positionX="-18" positionY="27" width="128" height="105"/>
+        <element name="Hat" positionX="0" positionY="45" width="128" height="105"/>
+        <element name="Material" positionX="18" positionY="63" width="128" height="90"/>
+        <element name="Plebian" positionX="36" positionY="81" width="128" height="60"/>
+        <element name="Slander" positionX="-9" positionY="36" width="128" height="60"/>
+        <element name="Space" positionX="0" positionY="45" width="128" height="75"/>
     </elements>
 </model>

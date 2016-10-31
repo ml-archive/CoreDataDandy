@@ -37,21 +37,22 @@ import CoreData
 public struct CoreDataValueConverter {
 	/// A shared dateFormatter for regularly converting strings of a known pattern
 	/// to dates and vice-versa.
-	public static let dateFormatter = NSDateFormatter()
+	public static let dateFormatter = DateFormatter()
 
 	/// Maps `NSAttributeTypes` to their corresponding type converters.
-	private static let typeConverters: [NSAttributeType: ValueConverter] = [
-		.Integer16AttributeType: IntConverter(),
-		.Integer32AttributeType: IntConverter(),
-		.Integer64AttributeType: IntConverter(),
-		.DecimalAttributeType: DecimalConverter(),
-		.DoubleAttributeType: DoubleConverter(),
-		.FloatAttributeType: FloatConverter(),
-		.StringAttributeType: StringConverter(),
-		.BooleanAttributeType: BooleanConverter(),
-		.DateAttributeType: DateConverter(),
-		.BinaryDataAttributeType: DataConverter()
+	fileprivate static let typeConverters: [NSAttributeType: ValueConverter] = [
+		.integer16AttributeType: IntConverter(),
+		.integer32AttributeType: IntConverter(),
+		.integer64AttributeType: IntConverter(),
+		.decimalAttributeType: DecimalConverter(),
+		.doubleAttributeType: DoubleConverter(),
+		.floatAttributeType: FloatConverter(),
+		.stringAttributeType: StringConverter(),
+		.booleanAttributeType: BooleanConverter(),
+		.dateAttributeType: DateConverter(),
+		.binaryDataAttributeType: DataConverter()
 	]
+	
 	/// Attempts to convert a given value to a type matching the specified entity property type. For instance,
 	/// if "3" is passed but the specified entity's property is defined as an NSNumber, @3 will be returned.
 	///
@@ -62,12 +63,15 @@ public struct CoreDataValueConverter {
 	/// - parameter property: The property on the entity where this value will be written.
 	///
 	/// - returns: If the conversion was successful, the converted value. Otherwise, nil.
-	public static func convert(value: AnyObject, for entity: NSEntityDescription, property: String) -> AnyObject? {
+	public static func convert(_ value: Any,
+	                           for entity: NSEntityDescription,
+	                           property: String) -> Any? {
 		if	let attributeDescription = entity.propertiesByName[property] as? NSAttributeDescription {
 			return convert(value, to: attributeDescription.attributeType)
 		}
 		return nil
 	}
+	
 	/// The class's central function. Attempts to convert values from one type to another.
 	/// In general, this method is invoked indirectly via convertValue:forEntity:property
 	///
@@ -75,7 +79,8 @@ public struct CoreDataValueConverter {
 	/// - parameter type: The desired end type of the value.
 	///
 	/// - returns: If the conversion was successful, the converted value. Otherwise, nil.
-	public static func convert(value: AnyObject, to type: NSAttributeType) -> AnyObject? {
+	public static func convert(_ value: Any,
+	                           to type: NSAttributeType) -> Any? {
 		if let converter = typeConverters[type] {
 			return converter.convert(value)
 		}

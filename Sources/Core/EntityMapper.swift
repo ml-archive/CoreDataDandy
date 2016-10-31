@@ -35,7 +35,7 @@ struct EntityMapper {
 	/// - parameter entity: The `NSEntityDescription` to map
 	///
 	/// - returns: A mapping used to read json into the specified entity.
-	static func map(entity: NSEntityDescription) -> [String: PropertyDescription]? {
+	@discardableResult static func map(_ entity: NSEntityDescription) -> [String: PropertyDescription]? {
 		// Search for a cached entity map
 		if let entityName = entity.name {
 			// A mapping has already been created for this entity. Return it.
@@ -54,6 +54,7 @@ struct EntityMapper {
 				if let relationships = entity.allRelationships {
 					add(relationships, to: &map)
 				}
+				
 				archive(map, forEntity:entityName)
 				return map
 			}
@@ -67,15 +68,15 @@ struct EntityMapper {
 	///
 	/// - parameter dictionary: A dictionary containing either NSAttributeDescriptions or NSRelationshipDescriptions
 	/// - parameter map: The map for reading json into an entity
-	private static func add(dictionary: JSONObject, inout to map: [String: PropertyDescription]) {
+	fileprivate static func add(_ dictionary: JSONObject, to map: inout [String: PropertyDescription]) {
 		for (name, description) in dictionary {
-			if let newMapping = mappingForUserInfo(description.userInfo) {
+			if let propertyDescription = description as? NSPropertyDescription,
+			   let newMapping = mappingForUserInfo(propertyDescription.userInfo) {
 				// Do not add values specified as non-mapping to the mapping dictionary
 				if newMapping != NO_MAPPING {
 					map[newMapping] = PropertyDescription(description: description)
 				}
-			}
-			else {
+			} else {
 				map[name] = PropertyDescription(description: description)
 			}
 		}
@@ -86,11 +87,12 @@ struct EntityMapper {
 	/// - parameter userInfo: The userInfo of an `NSEntityDescription`, `NSAttributeDescription`, or `NSRelationshipDescription`
 	///
 	/// - returns: A mapping value if one was found. Otherwise, nil.
-	static func mappingForUserInfo(userInfo: [NSObject: AnyObject]?) -> String? {
+	static func mappingForUserInfo(_ userInfo: [AnyHashable: Any]?) -> String? {
 		if	let userInfo = userInfo as? [String: String],
 			let mapping = userInfo[MAPPING] {
 			return mapping
 		}
+		
 		return nil
 	}
 }
@@ -98,12 +100,12 @@ struct EntityMapper {
 // MARK: - EntityMapper+Caching -
 extension EntityMapper {
 	/// A lazy, nillable reference to a cached map.
-	private static var _cachedEntityMap: [String: [String: PropertyDescription]]?
+	fileprivate static var _cachedEntityMap: [String: [String: PropertyDescription]]?
 	/// A dictionary containing mappings in the following structure: ['entityName': 'map'].
 	static var cachedEntityMap: [String: [String: PropertyDescription]] {
 		get {
 			if _cachedEntityMap == nil {
-				if let archivedMap = NSKeyedUnarchiver.unarchiveObjectWithFile(self.entityMapFilePath) as? [String: [String: PropertyDescription]] {
+				if let archivedMap = NSKeyedUnarchiver.unarchiveObject(withFile: self.entityMapFilePath) as? [String: [String: PropertyDescription]] {
 					_cachedEntityMap = archivedMap
 				} else {
 					_cachedEntityMap = [String: [String: PropertyDescription]]()
@@ -118,10 +120,10 @@ extension EntityMapper {
 	}
 
 	/// - returns: The file path where the entityMap is archived.
-	private static var entityMapFilePath: String = {
-		let pathArray = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)
+	fileprivate static var entityMapFilePath: String = {
+		let pathArray = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)
 		let documentPath = pathArray.first!
-		return NSString(string: documentPath).stringByAppendingPathComponent(CACHED_MAPPING_LOCATION)
+		return NSString(string: documentPath).appendingPathComponent(CACHED_MAPPING_LOCATION)
 	}()
 
 	/// Archives an entity's mapping. Note, this mapping, will be saved to the `cachedEntityMap` at the key
@@ -129,7 +131,7 @@ extension EntityMapper {
 	///
 	/// - parameter map: A mapping for reading json into an entity.
 	/// - parameter forEntity: The name of the entity `map` corresponds to.
-	private static func archive(map: [String: PropertyDescription], forEntity entity: String) {
+	fileprivate static func archive(_ map: [String: PropertyDescription], forEntity entity: String) {
 		cachedEntityMap[entity] = map
 		NSKeyedArchiver.archiveRootObject(cachedEntityMap, toFile: entityMapFilePath)
 	}
@@ -140,9 +142,9 @@ extension EntityMapper {
 	/// where the cached entity mappings may be invalidated..
 	static func clearCache() {
 		_cachedEntityMap = nil
-		if NSFileManager.defaultManager().fileExistsAtPath(entityMapFilePath) {
+		if FileManager.default.fileExists(atPath: entityMapFilePath) {
 			do {
-				try NSFileManager.defaultManager().removeItemAtPath(entityMapFilePath)
+				try FileManager.default.removeItem(atPath: entityMapFilePath)
 			} catch {
 				log(format("Failure to remove entity map from cache"))
 			}

@@ -32,12 +32,12 @@ import Foundation
 protocol ValueConverter {
 	/// Attempts to convert a value from one type to another. Note that the value must be castable to a specified type
 	/// for the conversion to succeed.
-	func convert(value: AnyObject) -> AnyObject?
+	func convert(_ value: Any) -> Any?
 	/// A convenience function for checking type conformance before attempting type conversion.
-	func convert<T>(value: AnyObject, to type: T.Type, using converter: (T) -> AnyObject?) -> AnyObject?
+	func convert<T>(_ value: Any, to type: T.Type, using converter: (T) -> Any?) -> Any?
 }
 extension ValueConverter {
-	func convert<T>(value: AnyObject, to type: T.Type, using converter: (T) -> AnyObject?) -> AnyObject? {
+	func convert<T>(_ value: Any, to type: T.Type, using converter: (T) -> Any?) -> Any? {
 		if let value = value as? T {
 			return converter(value)
 		}
@@ -46,42 +46,49 @@ extension ValueConverter {
 }
 
 struct BooleanConverter: ValueConverter {
-	func convert(value: AnyObject) -> AnyObject? {
+	func convert(_ value: Any) -> Any? {
 		return convert(value, to: BooleanConvertible.self) { $0.convertToBoolean() }
 	}
 }
+
 struct DateConverter: ValueConverter {
-	func convert(value: AnyObject) -> AnyObject? {
+	func convert(_ value: Any) -> Any? {
 		return convert(value, to: DateConvertible.self) { $0.convertToDate() }
 	}
 }
+
 struct DataConverter: ValueConverter {
-	func convert(value: AnyObject) -> AnyObject? {
+	func convert(_ value: Any) -> Any? {
 		return convert(value, to: DataConvertible.self) { $0.convertToData() }
 	}
 }
+
 struct DoubleConverter: ValueConverter {
-	func convert(value: AnyObject) -> AnyObject? {
+	func convert(_ value: Any) -> Any? {
 		return convert(value, to: DoubleConvertible.self) { $0.convertToDouble() }
 	}
 }
+
 struct DecimalConverter: ValueConverter {
-	func convert(value: AnyObject) -> AnyObject? {
+	func convert(_ value: Any) -> Any? {
 		return convert(value, to: DecimalConvertible.self) { $0.convertToDecimal() }
 	}
 }
+
 struct FloatConverter: ValueConverter {
-	func convert(value: AnyObject) -> AnyObject? {
+	func convert(_ value: Any) -> Any? {
 		return convert(value, to: FloatConvertible.self) { $0.convertToFloat() }
 	}
 }
+
 struct IntConverter: ValueConverter {
-	func convert(value: AnyObject) -> AnyObject? {
+	func convert(_ value: Any) -> Any? {
 		return convert(value, to: IntConvertible.self) { $0.convertToInt() }
 	}
 }
+
 struct StringConverter: ValueConverter {
-	func convert(value: AnyObject) -> AnyObject? {
+	func convert(_ value: Any) -> Any? {
 		return convert(value, to: StringConvertible.self) { $0.convertToString() }
 	}
 }

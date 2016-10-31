@@ -29,28 +29,35 @@ import Foundation
 
 // MARK: - ConvertibleType -
 protocol BooleanConvertible {
-	func convertToBoolean() -> NSNumber?
+	func convertToBoolean() -> Bool?
 }
+
 protocol DateConvertible {
-	func convertToDate() -> NSDate?
+	func convertToDate() -> Date?
 }
+
 protocol DataConvertible {
-	func convertToData() -> NSData?
+	func convertToData() -> Data?
 }
+
 protocol DoubleConvertible {
-	func convertToDouble() -> NSNumber?
+	func convertToDouble() -> Double?
 }
+
 protocol DecimalConvertible {
 	func convertToDecimal() -> NSDecimalNumber?
 }
+
 protocol FloatConvertible {
-	func convertToFloat() -> NSNumber?
+	func convertToFloat() -> Float?
 }
+
 protocol IntConvertible {
-	func convertToInt() -> NSNumber?
+	func convertToInt() -> Int?
 }
+
 protocol StringConvertible {
-	func convertToString() -> NSString?
+	func convertToString() -> String?
 }
 
 protocol NilConvertible {
@@ -60,107 +67,238 @@ protocol NilConvertible {
 protocol NumericConvertible: DoubleConvertible, DecimalConvertible, FloatConvertible, IntConvertible {}
 protocol ConvertibleType: BooleanConvertible, DataConvertible, DateConvertible, NumericConvertible, StringConvertible {}
 
-// MARK: - NSDate -
-extension NSDate: DateConvertible, NumericConvertible, StringConvertible {
-	func convertToDate() -> NSDate? {
+// MARK: - Date -
+extension Date: DateConvertible, NumericConvertible, StringConvertible {
+	func convertToDate() -> Date? {
 		return self
 	}
+	
 	func convertToDecimal() -> NSDecimalNumber? {
-		return NSDecimalNumber(double: self.timeIntervalSince1970)
+		return NSDecimalNumber(value: self.timeIntervalSince1970 as Double)
 	}
-	func convertToDouble() -> NSNumber? {
-		return NSNumber(double: self.timeIntervalSince1970)
+	
+	func convertToDouble() -> Double? {
+		return timeIntervalSince1970
 	}
-	func convertToFloat() -> NSNumber? {
-		return NSNumber(float: Float(self.timeIntervalSince1970))
+	
+	func convertToFloat() -> Float? {
+		return Float(timeIntervalSince1970)
 	}
-	func convertToInt() -> NSNumber? {
-		return NSNumber(integer: Int(round(self.timeIntervalSince1970)))
+	
+	func convertToInt() -> Int? {
+		return Int(round(self.timeIntervalSince1970))
 	}
-	func convertToString() -> NSString? {
-		return CoreDataValueConverter.dateFormatter.stringFromDate(self)
+	
+	func convertToString() -> String? {
+		return CoreDataValueConverter.dateFormatter.string(from: self)
 	}
 }
-// MARK: - NSData -
-extension NSData : DataConvertible, StringConvertible {
-	func convertToData() -> NSData? {
+// MARK: - Data -
+extension Data : DataConvertible, StringConvertible {
+	func convertToData() -> Data? {
 		return self
 	}
-	func convertToString() -> NSString? {
-		return NSString(data: self, encoding: NSUTF8StringEncoding)
+	
+	func convertToString() -> String? {
+		return String(data: self, encoding: String.Encoding.utf8)
 	}
 }
-// MARK: - NSNumber -
+// MARK: - Numbers -
+protocol NumericConvertibleType: SignedNumber, ConvertibleType { }
+extension NumericConvertibleType {
+	private func asDouble() -> Double? {
+		switch self {
+		case let i as Int: return Double(i)
+		case let f as Float: return Double(f)
+		case let d as Double: return d
+		default: return nil
+		}
+	}
+	
+	func convertToBoolean() -> Bool? {
+		if self == 0 {
+			return false
+		} else if self >= 1 {
+			return true
+		}
+		return nil
+	}
+	
+	func convertToDate() -> Date? {
+		if let double = asDouble() {
+			return Date(timeIntervalSince1970: TimeInterval(double))
+		}
+		return nil
+	}
+	
+	func convertToData() -> Data? {
+		var cpy = self
+		return Data(bytes: &cpy, count: MemoryLayout<Self>.size)
+	}
+	
+	func convertToDecimal() -> NSDecimalNumber? {
+		if let double = asDouble() {
+			return NSDecimalNumber(value: Double(double))
+		}
+		return nil
+	}
+	
+	func convertToDouble() -> Double? {
+		if let double = asDouble() {
+			return double
+		}
+		return nil
+	}
+	
+	func convertToFloat() -> Float? {
+		if let double = asDouble() {
+			return Float(double)
+		}
+		return nil
+	}
+	
+	func convertToInt() -> Int? {
+		if let double = asDouble() {
+			return Int(double)
+		}
+		return nil
+	}
+	
+	func convertToString() -> String? {
+		return "\(self)"
+	}
+}
+extension Int: NumericConvertibleType { }
+extension Double: NumericConvertibleType { }
+extension Float: NumericConvertibleType { }
+
 extension NSNumber: ConvertibleType {
-	func convertToBoolean() -> NSNumber? {
-		if self.integerValue == 0 {
-			return NSNumber(bool: false)
-		} else if self.integerValue >= 1 {
-			return NSNumber(bool: true)
-		}
-		return nil
+	func convertToBoolean() -> Bool? {
+		return doubleValue.convertToBoolean()
 	}
-	func convertToDate() -> NSDate? {
-		return NSDate(timeIntervalSince1970: self.doubleValue)
+	
+	func convertToDate() -> Date? {
+		return doubleValue.convertToDate()
 	}
-	func convertToData() -> NSData? {
-		return self.stringValue.dataUsingEncoding(NSUTF8StringEncoding)
+	
+	func convertToData() -> Data? {
+		return doubleValue.convertToData()
 	}
+	
 	func convertToDecimal() -> NSDecimalNumber? {
-		return NSDecimalNumber(double: self.doubleValue)
+		return doubleValue.convertToDecimal()
 	}
-	func convertToDouble() -> NSNumber? {
-		return NSNumber(double: self.doubleValue)
+	
+	func convertToDouble() -> Double? {
+		return doubleValue.convertToDouble()
 	}
-	func convertToFloat() -> NSNumber? {
-		return NSNumber(float: self.floatValue)
+	
+	func convertToFloat() -> Float? {
+		return doubleValue.convertToFloat()
 	}
-	func convertToInt() -> NSNumber? {
-		return NSNumber(integer: self.integerValue)
+	
+	func convertToInt() -> Int? {
+		return doubleValue.convertToInt()
 	}
-	func convertToString() -> NSString? {
-		return self.stringValue
+	
+	func convertToString() -> String? {
+		return doubleValue.convertToString()
 	}
 }
-// MARK:  - NSString -
-extension NSString: ConvertibleType, NilConvertible {
-	func convertToBoolean() -> NSNumber? {
-		let lowercaseValue = self.lowercaseString
-		if lowercaseValue == "yes" || lowercaseValue == "true" || lowercaseValue == "1" {
-			return NSNumber(bool: true)
-		} else if lowercaseValue == "no" || lowercaseValue == "false" || lowercaseValue == "0" {
-			return NSNumber(bool: false)
+
+// MARK:  - Strings -
+extension String: ConvertibleType, NilConvertible {
+	func convertToBoolean() -> Bool? {
+		let lowercaseValue = lowercased()
+		if lowercaseValue == "yes"
+		|| lowercaseValue == "true"
+		|| lowercaseValue == "1" {
+			return true
+		} else if lowercaseValue == "no"
+		  || lowercaseValue == "false"
+		  || lowercaseValue == "0" {
+			return false
 		}
 		return nil
 	}
-	func convertToDate() -> NSDate? {
-		return CoreDataValueConverter.dateFormatter.dateFromString(self as String)
+	
+	func convertToDate() -> Date? {
+		return CoreDataValueConverter.dateFormatter.date(from: self as String)
 	}
-	func convertToData() -> NSData? {
-		return self.dataUsingEncoding(NSUTF8StringEncoding)
+	
+	func convertToData() -> Data? {
+		return data(using: String.Encoding(rawValue: String.Encoding.utf8.rawValue))
 	}
+	
 	func convertToDecimal() -> NSDecimalNumber? {
-		return NSDecimalNumber(double: self.doubleValue)
+		if let num =  Double(self) {
+			return NSDecimalNumber(value: num)
+		}
+		
+		return nil
 	}
-	func convertToDouble() -> NSNumber? {
-		return NSNumber(double: self.doubleValue)
+	
+	func convertToDouble() -> Double? {
+		return Double(self)
 	}
-	func convertToFloat() -> NSNumber? {
-		return NSNumber(float: self.floatValue)
+	
+	func convertToFloat() -> Float? {
+		return Float(self)
 	}
-	func convertToInt() -> NSNumber? {
-		return NSNumber(integer: self.integerValue)
+	
+	func convertToInt() -> Int? {
+		return Int(self)
 	}
-	func convertToString() -> NSString? {
-		if self.lowercaseString == "null"
-			|| self.lowercaseString == "nil" {
+	
+	func convertToString() -> String? {
+		if lowercased() == "null"
+		|| lowercased() == "nil" {
 			return nil
 		}
 	
 		return self
 	}
+	
 	func convertToNil() -> Any? {
 		return convertToString()
+	}
+}
+
+extension NSString: ConvertibleType, NilConvertible {
+	func convertToBoolean() -> Bool? {
+		return String(self).convertToBoolean()
+	}
+	
+	func convertToDate() -> Date? {
+		return String(self).convertToDate()
+	}
+	
+	func convertToData() -> Data? {
+		return String(self).convertToData()
+	}
+	
+	func convertToDecimal() -> NSDecimalNumber? {
+		return String(self).convertToDecimal()
+	}
+	
+	func convertToDouble() -> Double? {
+		return String(self).convertToDouble()
+	}
+	
+	func convertToFloat() -> Float? {
+		return String(self).convertToFloat()
+	}
+	
+	func convertToInt() -> Int? {
+		return String(self).convertToInt()
+	}
+	
+	func convertToString() -> String? {
+		return String(self).convertToString()
+	}
+	
+	func convertToNil() -> Any? {
+		return String(self).convertToNil()
 	}
 }
 

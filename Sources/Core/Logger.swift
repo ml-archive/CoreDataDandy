@@ -29,13 +29,13 @@
 import Foundation
 
 // MARK: - Warnings -
-func log(@autoclosure message: () -> String, filename: String = #file, function: String = #function, line: Int = #line) {
+func log(_ message: @autoclosure () -> String, filename: String = #file, function: String = #function, line: Int = #line) {
 #if DEBUG
 	NSLog("[\(NSString(string: filename).lastPathComponent):\(line)] \(function) - %@", message())
 #endif
 }
 
-func format(message: String, with error: NSError? = nil) -> String {
+func format(_ message: String, with error: NSError? = nil) -> String {
 #if DEBUG
 	var errorDescription = ""
 	if let error = error {

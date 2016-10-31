@@ -30,7 +30,7 @@ import CoreData
 // MARK: - NSEntityDescription+UserInfo -
 extension NSEntityDescription {
 	/// Recursively collects all userInfo values from potential superentities
-	var allUserInfo: [NSObject: AnyObject]? {
+	var allUserInfo: [AnyHashable: Any]? {
 		get {
 			return collectedEntityValuesFromDictionaryClosure({return $0.userInfo as? JSONObject})
 		}
@@ -56,7 +56,7 @@ extension NSEntityDescription {
 	/// - parameter dictionaryClosure: A closure returning userInfo, attributesByName, or relationshipsByName.
 	///
 	/// - returns: The values collected from the entity's hierarchy.
-	private func collectedEntityValuesFromDictionaryClosure(dictionaryClosure: (NSEntityDescription) -> JSONObject?) -> JSONObject? {
+	fileprivate func collectedEntityValuesFromDictionaryClosure(_ dictionaryClosure: (NSEntityDescription) -> JSONObject?) -> JSONObject? {
 		var values = JSONObject()
 		// Collect values down the entity hierarchy, stopping on the current entity.
 		// This approach ensures children override parent values.
@@ -70,12 +70,12 @@ extension NSEntityDescription {
 
 	/// - returns: The entity's hierarchy, sorted by "superiority". The most super entity will be the first element
 	/// in the array, the current entity will be the last.
-	private var entityHierarchy: [NSEntityDescription] {
+	fileprivate var entityHierarchy: [NSEntityDescription] {
 		get {
 			var entities = [NSEntityDescription]()
 			var entity: NSEntityDescription? = self
 			while let currentEntity = entity {
-				entities.insert(currentEntity, atIndex: 0)
+				entities.insert(currentEntity, at: 0)
 				entity = entity?.superentity
 			}
 			return entities
@@ -86,30 +86,13 @@ extension NSEntityDescription {
 
 // MARK: - NSEntityDescription+Construction -
 extension NSEntityDescription {
-	class func forEntity(name: String) -> NSEntityDescription? {
-		return NSEntityDescription.entityForName(name, inManagedObjectContext: Dandy.coordinator.mainContext)
+	class func forEntity(_ name: String) -> NSEntityDescription? {
+		return NSEntityDescription.entity(forEntityName: name, in: Dandy.coordinator.mainContext)
 	}
 	
-	class func forType<T>(type: T.Type) -> NSEntityDescription? {
-		return forEntity(String(type))
+	class func forType<T>(_ type: T.Type) -> NSEntityDescription? {
+		return forEntity(String(describing: type))
 	}
-}
-
-// MARK: - NSEntityDescription+UniqueConstraint -
-@available(iOS 9.0, *) extension NSEntityDescription {
-	/// Returns a single unique constraint. Core Data Dandy does not support the use of multiple unique constraints.
-	/// The constraint returned is prioritized over any marked by the @primaryKey decorator.
-	var uniqueConstraint: String? {
-		get {
-			if let attribute = uniquenessConstraints.first?.first as? NSAttributeDescription {
-				return attribute.name
-			} else if let superEntity = superentity {
-				return superEntity.uniqueConstraint
-			}
-			return nil
-		}
-	}
-
 }
 
 // MARK: - NSEntityDescription+PrimaryKey -
@@ -121,15 +104,7 @@ extension NSEntityDescription {
 	///	Otherwise, nil.
 	var primaryKey: String? {
 		get {
-			if #available(iOS 9.0, *) {
-				if let uniqueConstraint = uniqueConstraint {
-					return uniqueConstraint
-				}
-			}
-			if let userInfo = allUserInfo {
-				return userInfo[PRIMARY_KEY] as? String
-			}
-			return nil
+			return allUserInfo?[PRIMARY_KEY] as? String
 		}
 	}
 	
@@ -147,7 +122,7 @@ extension NSEntityDescription {
 	/// for the primaryKey into account.
 	///
 	/// - parameter json: JSON form which a primaryKey will be extracted
-	func primaryKeyValueFromJSON(json: JSONObject) -> AnyObject? {
+	func primaryKeyValueFromJSON(_ json: JSONObject) -> Any? {
 		if	let primaryKey = primaryKey,
 			let entityMap = EntityMapper.map(self) {
 				let filteredMap = entityMap.filter({ $1.name == primaryKey }).map({ $0.0 })
@@ -166,9 +141,9 @@ extension NSEntityDescription {
 	///
 	/// - parameter primaryKeyValue: The value of the entity's primary key
 	/// - returns: A predicate that may be used to fetch unique objects
-	func primaryKeyPredicate(for primaryKeyValue: AnyObject) -> NSPredicate? {
+	func primaryKeyPredicate(for primaryKeyValue: Any) -> NSPredicate? {
 		if	let primaryKey = primaryKey,
-			let value: AnyObject = CoreDataValueConverter.convert(primaryKeyValue, for: self, property: primaryKey) {
+			let value: Any = CoreDataValueConverter.convert(primaryKeyValue, for: self, property: primaryKey) {
 				return NSPredicate(format: "%K = %@", argumentArray: [primaryKey, value])
 		}
 		return nil

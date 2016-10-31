@@ -32,8 +32,8 @@ class CoreDataDandyTests: XCTestCase {
 
 	override func setUp() {
 		CoreDataDandy.wake("DandyModel")
-		CoreDataValueConverter.dateFormatter.dateStyle = .LongStyle
-		CoreDataValueConverter.dateFormatter.timeStyle = .ShortStyle
+		CoreDataValueConverter.dateFormatter.dateStyle = .long
+		CoreDataValueConverter.dateFormatter.timeStyle = .short
 		super.setUp()
 	}
 	override func tearDown() {
@@ -56,16 +56,17 @@ class CoreDataDandyTests: XCTestCase {
 	
 	/// After a save, the size of the persistent store should increase
 	func testSave() {
-		let expectation = self.expectationWithDescription("save")
+		let expectation = self.expectation(description: "save")
 		do {
-			let unsavedData = try NSFileManager.defaultManager().attributesOfItemAtPath(PersistentStackCoordinator.persistentStoreURL.path!)["NSFileSize"] as! Int
+			let fileSizeKey = FileAttributeKey("NSFileSize")
+			let unsavedData = try FileManager.default.attributesOfItem(atPath: PersistentStackCoordinator.persistentStoreURL.path)[fileSizeKey] as! Int
 			for i in 0...100000 {
 				let dandy = Dandy.insert(Dandy_.self)
 				dandy?.setValue("\(i)", forKey: "dandyID")
 			}
 			Dandy.save({ (error) in
 				do {
-					let savedData = try NSFileManager.defaultManager().attributesOfItemAtPath(PersistentStackCoordinator.persistentStoreURL.path!)["NSFileSize"] as! Int
+					let savedData = try FileManager.default.attributesOfItem(atPath: PersistentStackCoordinator.persistentStoreURL.path)[fileSizeKey] as! Int
 					XCTAssert(savedData > unsavedData, "Pass")
 					expectation.fulfill()
 				} catch {
@@ -77,7 +78,7 @@ class CoreDataDandyTests: XCTestCase {
 			XCTAssert(false, "Failure to retrieive file attributes.")
 			expectation.fulfill()
 		}
-		self.waitForExpectationsWithTimeout(20, handler: { (let error) -> Void in })
+		self.waitForExpectations(timeout: 20, handler: { (error) -> Void in })
 	}
 
 	// MARK: - Object insertions, deletions, and fetches -
@@ -118,7 +119,7 @@ class CoreDataDandyTests: XCTestCase {
 		dandy?.setValue("An author, let's say", forKey: "bio")
 		let repeatedDandy = Dandy.insertUnique(Dandy_.self, identifiedBy: "WILDE")
 		let dandies = try! Dandy.fetch(Dandy_.self)?.count
-		XCTAssert(dandies == 1 && (repeatedDandy!.valueForKey("bio") as! String == "An author, let's say"), "Pass")
+		XCTAssert(dandies == 1 && (repeatedDandy!.value(forKey: "bio") as! String == "An author, let's say"), "Pass")
 	}
 	
 	/// Objects should be fetchable via typical NSPredicate configured NSFetchRequests.
@@ -139,7 +140,7 @@ class CoreDataDandyTests: XCTestCase {
 		dandy?.setValue("A poet, let's say", forKey: "bio")
 		let repeatedDandy = Dandy.insertUnique(Dandy_.self, identifiedBy: "1")
 		let dandies = try! Dandy.fetch(Dandy_.self)?.count
-		XCTAssert(dandies == 1 && (repeatedDandy!.valueForKey("bio") as! String == "A poet, let's say"), "Pass")
+		XCTAssert(dandies == 1 && (repeatedDandy!.value(forKey: "bio") as! String == "A poet, let's say"), "Pass")
 	}
 	
 	/// Mistaken use of a primaryKey identifying function for singleton objects should not lead to unexpected
@@ -149,7 +150,7 @@ class CoreDataDandyTests: XCTestCase {
 		space?.setValue("The Gogol Empire, let's say", forKey: "name")
 		let repeatedSpace = Dandy.insertUnique(Space.self, identifiedBy: "void")
 		let spaces = try! Dandy.fetch(Space.self)?.count
-		XCTAssert(spaces == 1 && (repeatedSpace!.valueForKey("name") as! String == "The Gogol Empire, let's say"), "Pass")
+		XCTAssert(spaces == 1 && (repeatedSpace!.value(forKey: "name") as! String == "The Gogol Empire, let's say"), "Pass")
 	}
 	
 	/// The convenience function for fetching objects by primary key should return a unique object that has been inserted.
@@ -157,7 +158,7 @@ class CoreDataDandyTests: XCTestCase {
 		let dandy = Dandy.insertUnique(Dandy_.self, identifiedBy: "WILDE")
 		dandy?.setValue("An author, let's say", forKey: "bio")
 		let fetchedDandy = Dandy.fetchUnique(Dandy_.self, identifiedBy: "WILDE")!
-		XCTAssert((fetchedDandy.valueForKey("bio") as! String == "An author, let's say"), "Pass")
+		XCTAssert((fetchedDandy.value(forKey: "bio") as! String == "An author, let's say"), "Pass")
 	}
 	
 	/// If a primary key is not specified for an object, the fetch should fail and emit a warning.
@@ -170,13 +171,13 @@ class CoreDataDandyTests: XCTestCase {
 	func testObjectDeletion() {
 		let space = Dandy.insertUnique(Space.self, identifiedBy: "name")
 		let previousSpaceCount = try! Dandy.fetch(Space.self)?.count
-		let expectation = self.expectationWithDescription("Object deletion")
+		let expectation = self.expectation(description: "Object deletion")
 		Dandy.delete(space!) {
 			let newSpaceCount = try! Dandy.fetch(Space.self)?.count
 			XCTAssert(previousSpaceCount == 1 && newSpaceCount == 0, "Pass")
 			expectation.fulfill()
 		}
-		self.waitForExpectationsWithTimeout(0.5, handler: { (let error) -> Void in })
+		self.waitForExpectations(timeout: 0.5, handler: { (error) -> Void in })
 	}
 
 	// MARK: - Persistent Stack -
@@ -191,7 +192,7 @@ class CoreDataDandyTests: XCTestCase {
 	/// Dandy's persistent stack will be revealed with this test.
 	func testPersistentStackManagerObjectContextConstruction() {
 		let persistentStackCoordinator = PersistentStackCoordinator(managedObjectModelName: "DandyModel")
-		XCTAssert(persistentStackCoordinator.mainContext.parentContext === persistentStackCoordinator.privateContext, "Pass")
+		XCTAssert(persistentStackCoordinator.mainContext.parent === persistentStackCoordinator.privateContext, "Pass")
 	}
 	
 	/// The privateContext should share a reference to the `DandyStackCoordinator's` persistentStoreCoordinator.
@@ -211,97 +212,126 @@ class CoreDataDandyTests: XCTestCase {
 	
 	/// When initialization completes, the completion closure should execute.
 	func testPersistentStackManagerConnectionClosureExecution() {
-		let expectation = self.expectationWithDescription("initialization")
+		let expectation = self.expectation(description: "initialization")
 		let persistentStackCoordinator = PersistentStackCoordinator(managedObjectModelName: "DandyModel", persistentStoreConnectionCompletion: {
 			XCTAssert(true, "Pass.")
 			expectation.fulfill()
 		})
 		persistentStackCoordinator.connectPrivateContextToPersistentStoreCoordinator()
-		self.waitForExpectationsWithTimeout(5, handler: { (let error) -> Void in })
+		self.waitForExpectations(timeout: 5, handler: { (error) -> Void in })
 	}
 
 	// MARK: - Value conversions -
 	
 	/// Conversions to undefined types should not occur
 	func testUndefinedTypeConversion() {
-		let result: AnyObject? = CoreDataValueConverter.convert("For us, life is five minutes of introspection", to: .UndefinedAttributeType)
+		let result: Any? = CoreDataValueConverter.convert("For us, life is five minutes of introspection", to: .undefinedAttributeType)
 		XCTAssert(result == nil, "Pass")
 	}
 	
 	/// Test non-conforming protocol type conversion
 	func testNonConformingProtocolTypeConversion() {
-		let result: AnyObject? = CoreDataValueConverter.convert(["life", "is", "five", "minutes", "of", "introspection"], to: .StringAttributeType)
+		let result: Any? = CoreDataValueConverter.convert(["life", "is", "five", "minutes", "of", "introspection"], to: .stringAttributeType)
 		XCTAssert(result == nil, "Pass")
 	}
 	
-	/// A type convertes to the same type should undergo no changes
+	/// A type converts to the same type should undergo no changes
 	func testSameTypeConversion() {
-		let string: AnyObject? = CoreDataValueConverter.convert("For us, life is five minutes of introspection", to: .StringAttributeType)
+		let string: Any? = CoreDataValueConverter.convert("For us, life is five minutes of introspection", to: .stringAttributeType)
 		XCTAssert(string is String, "Pass")
 
-		let number: AnyObject? = CoreDataValueConverter.convert(1, to: .Integer64AttributeType)
-		XCTAssert(number is NSNumber, "Pass")
+		let integer: Any? = CoreDataValueConverter.convert(Int(1), to: .integer64AttributeType)
+		XCTAssert(integer is Int, "Pass")
+		
+		let float: Any? = CoreDataValueConverter.convert(Float(1), to: .floatAttributeType)
+		XCTAssert(float is Float, "Pass")
+		
+		let double: Any? = CoreDataValueConverter.convert(Double(1), to: .doubleAttributeType)
+		XCTAssert(double is Double, "Pass")
 
-		let decimal: AnyObject? = CoreDataValueConverter.convert(NSDecimalNumber(integer: 1), to: .DecimalAttributeType)
-		XCTAssert(decimal is NSDecimalNumber, "Pass")
+		let date: Any? = CoreDataValueConverter.convert(Date(), to: .dateAttributeType)
+		XCTAssert(date is Date, "Pass")
 
-		let date: AnyObject? = CoreDataValueConverter.convert(NSDate(), to: .DateAttributeType)
-		XCTAssert(date is NSDate, "Pass")
-
-		let encodedString = "suave".dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: true)
-		let data: AnyObject? = CoreDataValueConverter.convert(encodedString!, to: .BinaryDataAttributeType)
-		XCTAssert(data is NSData, "Pass")
+		let encodedString = "suave".data(using: String.Encoding.utf8, allowLossyConversion: true)
+		let data: Any? = CoreDataValueConverter.convert(encodedString!, to: .binaryDataAttributeType)
+		XCTAssert(data is Data, "Pass")
 	}
 	
 	/// NSData objects should be convertible to Strings.
 	func testDataToStringConversion() {
 		let expectation: NSString = "testing string"
-		let input: NSData? = expectation.dataUsingEncoding(NSUTF8StringEncoding)
-		let result = CoreDataValueConverter.convert(input!, to: .StringAttributeType) as? NSString
+		let input: Data? = expectation.data(using: String.Encoding.utf8.rawValue)
+		let result = CoreDataValueConverter.convert(input!, to: .stringAttributeType) as? NSString
 		XCTAssert(result == expectation, "")
 	}
 	
 	/// Numbers should be convertible to Strings.
 	func testNumberToStringConversion() {
 		let input = 123455
-		let result = CoreDataValueConverter.convert(input, to: .StringAttributeType) as? String
+		let result = CoreDataValueConverter.convert(input, to: .stringAttributeType) as? String
 		XCTAssert(result == "123455", "")
 	}
 	
 	/// Numbers should be convertible to NSDecimalNumbers
 	func testNumberToDecimalConversion() {
-		let expectation = Double(7.070000171661375488)
-		let result = CoreDataValueConverter.convert(NSNumber(double: expectation), to: .DecimalAttributeType) as? NSDecimalNumber
-		XCTAssert(result == NSDecimalNumber(double: expectation), "Pass")
+		let integer = Int(7)
+		var result = CoreDataValueConverter.convert(integer, to: .decimalAttributeType) as? NSDecimalNumber
+		XCTAssert(result == NSDecimalNumber(value: integer), "Pass")
+		
+		let float = Float(7.070000171661375488)
+		result = CoreDataValueConverter.convert(float, to: .decimalAttributeType) as? NSDecimalNumber
+		XCTAssert(result == NSDecimalNumber(value: float), "Pass")
+		
+		let double = Double(7.070000171661375488)
+		result = CoreDataValueConverter.convert(double, to: .decimalAttributeType) as? NSDecimalNumber
+		XCTAssert(result == NSDecimalNumber(value: double), "Pass")
 	}
 	
 	/// Numbers should be convertible to Doubles
 	func testNumberToDoubleConversion() {
-		let expectation = Double(7.07)
-		let result = CoreDataValueConverter.convert(NSNumber(double: expectation), to: .DoubleAttributeType) as? Double
-		XCTAssert(result == expectation, "Pass")
+		let integer = Int(7)
+		var result = CoreDataValueConverter.convert(integer, to: .doubleAttributeType) as? Double
+		XCTAssert(result == Double(integer), "Pass")
+		
+		let float = Float(7)
+		result = CoreDataValueConverter.convert(float, to: .doubleAttributeType) as? Double
+		XCTAssert(result == Double(float), "Pass")
 	}
 	
 	/// Numbers should be convertible to Floats
 	func testNumberToFloatConversion() {
-		let expectation = Float(7.07)
-		let result = CoreDataValueConverter.convert(NSNumber(float: expectation), to: .FloatAttributeType) as? Float
-		XCTAssert(result == expectation, "Pass")
+		let integer = Int(7)
+		var result = CoreDataValueConverter.convert(integer, to: .floatAttributeType) as? Float
+		XCTAssert(result == Float(integer), "Pass")
+		
+		let double = Double(7.07)
+		result = CoreDataValueConverter.convert(double, to: .floatAttributeType) as? Float
+		XCTAssert(result == Float(double), "Pass")
 	}
 	
 	/// Numbers should be convertible to NSData
 	func testNumberToDataConversion() {
-		let input = NSNumber(float: 7.07)
-		let expectation = NSNumber(float: 7.07).stringValue.dataUsingEncoding(NSUTF8StringEncoding)
-		let result = CoreDataValueConverter.convert(input, to: .BinaryDataAttributeType) as? NSData
-		XCTAssert(result == expectation, "Pass")
+		let input = 7
+		
+		var integer = Int(input)
+		var result = CoreDataValueConverter.convert(integer, to: .binaryDataAttributeType) as? Data
+		XCTAssert(result == Data(bytes: &integer, count: MemoryLayout<Int>.size), "Pass")
+		
+		var float = Float(input)
+		result = CoreDataValueConverter.convert(float, to: .binaryDataAttributeType) as? Data
+		XCTAssert(result == Data(bytes: &float, count: MemoryLayout<Float>.size), "Pass")
+		
+		var double = Double(input)
+		result = CoreDataValueConverter.convert(double, to: .binaryDataAttributeType) as? Data
+		XCTAssert(result == Data(bytes: &double, count: MemoryLayout<Double>.size), "Pass")
+		
 	}
 	
 	/// Numbers should be convertible to NSDates.
 	func testNumberToDateConversion() {
-		let now = NSDate()
+		let now = Date()
 		let expectation = Double(now.timeIntervalSince1970)
-		let result = CoreDataValueConverter.convert(expectation, to: .DateAttributeType) as? NSDate
+		let result = CoreDataValueConverter.convert(expectation, to: .dateAttributeType) as? Date
 		let resultAsDouble = Double(result!.timeIntervalSince1970)
 		XCTAssert(resultAsDouble == expectation, "")
 	}
@@ -309,59 +339,59 @@ class CoreDataDandyTests: XCTestCase {
 	/// Numbers should be convertible to Booleans.
 	func testNumberToBooleanConversion() {
 		var input = -1
-		var result = CoreDataValueConverter.convert(input, to: .BooleanAttributeType) as? NSNumber
+		var result = CoreDataValueConverter.convert(input, to: .booleanAttributeType) as? NSNumber
 		XCTAssert(result?.boolValue == nil, "")
 
 		input = 1
-		result = CoreDataValueConverter.convert(input, to: .BooleanAttributeType) as? NSNumber
+		result = CoreDataValueConverter.convert(input, to: .booleanAttributeType) as? NSNumber
 		XCTAssert(result?.boolValue == true, "")
 
 		input = 0
-		result = CoreDataValueConverter.convert(input, to: .BooleanAttributeType) as? NSNumber
+		result = CoreDataValueConverter.convert(input, to: .booleanAttributeType) as? NSNumber
 		XCTAssert(result?.boolValue == false, "")
 
 		input = 99
-		result = CoreDataValueConverter.convert(input, to: .BooleanAttributeType) as? NSNumber
+		result = CoreDataValueConverter.convert(input, to: .booleanAttributeType) as? NSNumber
 		XCTAssert(result == true, "Pass")
 	}
 	
 	/// NSDates should be convertible to Strings.
 	func testDateToStringConversion() {
-		let now = NSDate()
-		let expectation = CoreDataValueConverter.dateFormatter.stringFromDate(now)
-		let result = CoreDataValueConverter.convert(now, to: .StringAttributeType) as? String
+		let now = Date()
+		let expectation = CoreDataValueConverter.dateFormatter.string(from: now)
+		let result = CoreDataValueConverter.convert(now, to: .stringAttributeType) as? String
 		XCTAssert(result == expectation, "")
 	}
 	
 	/// NSDates should be convertible to Decimals.
 	func testDateToDecimalConversion() {
-		let now = NSDate()
-		let expectation = NSDecimalNumber(double: now.timeIntervalSinceDate(NSDate(timeIntervalSince1970: 0)))
-		let result = CoreDataValueConverter.convert(now, to: .DecimalAttributeType) as! NSDecimalNumber
+		let now = Date()
+		let expectation = NSDecimalNumber(value: now.timeIntervalSince(Date(timeIntervalSince1970: 0)) as Double)
+		let result = CoreDataValueConverter.convert(now, to: .decimalAttributeType) as! NSDecimalNumber
 		XCTAssert(result.floatValue - expectation.floatValue < 5, "")
 	}
 	
 	/// NSDates should be convertible to Doubles.
 	func testDateToDoubleConversion() {
-		let now = NSDate()
-		let expectation = NSNumber(double: now.timeIntervalSinceDate(NSDate(timeIntervalSince1970: 0)))
-		let result = CoreDataValueConverter.convert(now, to: .DoubleAttributeType) as! NSNumber
+		let now = Date()
+		let expectation = NSNumber(value: now.timeIntervalSince(Date(timeIntervalSince1970: 0)) as Double)
+		let result = CoreDataValueConverter.convert(now, to: .doubleAttributeType) as! NSNumber
 		XCTAssert(result.floatValue - expectation.floatValue < 5, "")
 	}
 	
 	/// NSDates should be convertible to Floats.
 	func testDateToFloatConversion() {
-		let now = NSDate()
-		let expectation = NSNumber(float: Float(now.timeIntervalSinceDate(NSDate(timeIntervalSince1970: 0))))
-		let result = CoreDataValueConverter.convert(now, to: .FloatAttributeType) as! NSNumber
+		let now = Date()
+		let expectation = NSNumber(value: Float(now.timeIntervalSince(Date(timeIntervalSince1970: 0))) as Float)
+		let result = CoreDataValueConverter.convert(now, to: .floatAttributeType) as! NSNumber
 		XCTAssert(result.floatValue - expectation.floatValue < 5, "")
 	}
 	
 	/// NSDates should be convertible to Ints.
 	func testDateToIntConversion() {
-		let now = NSDate()
-		let expectation = NSNumber(integer: Int(now.timeIntervalSinceDate(NSDate(timeIntervalSince1970: 0))))
-		let result = CoreDataValueConverter.convert(now, to: .Integer32AttributeType) as! NSNumber
+		let now = Date()
+		let expectation = NSNumber(value: Int(now.timeIntervalSince(Date(timeIntervalSince1970: 0))) as Int)
+		let result = CoreDataValueConverter.convert(now, to: .integer32AttributeType) as! NSNumber
 		XCTAssert(result.floatValue - expectation.floatValue < 5, "")
 	}
 	
@@ -370,85 +400,81 @@ class CoreDataDandyTests: XCTestCase {
 		var testString = "Yes"
 		var result: NSNumber?
 
-		result = CoreDataValueConverter.convert(testString, to: .BooleanAttributeType) as? NSNumber
+		result = CoreDataValueConverter.convert(testString, to: .booleanAttributeType) as? NSNumber
 		XCTAssert(result?.boolValue == true, "")
 
 		testString = "trUe"
-		result = CoreDataValueConverter.convert(testString, to: .BooleanAttributeType) as? NSNumber
+		result = CoreDataValueConverter.convert(testString, to: .booleanAttributeType) as? NSNumber
 		XCTAssert(result?.boolValue == true, "")
 
 		testString = "1"
-		result = CoreDataValueConverter.convert(testString, to: .BooleanAttributeType) as? NSNumber
+		result = CoreDataValueConverter.convert(testString, to: .booleanAttributeType) as? NSNumber
 		XCTAssert(result?.boolValue == true, "")
 
 		testString = "NO"
-		result = CoreDataValueConverter.convert(testString, to: .BooleanAttributeType) as? NSNumber
+		result = CoreDataValueConverter.convert(testString, to: .booleanAttributeType) as? NSNumber
 		XCTAssert(result?.boolValue == false, "")
 
 		testString = "false"
-		result = CoreDataValueConverter.convert(testString, to: .BooleanAttributeType) as? NSNumber
+		result = CoreDataValueConverter.convert(testString, to: .booleanAttributeType) as? NSNumber
 		XCTAssert(result?.boolValue == false, "")
 
 		testString = "0"
-		result = CoreDataValueConverter.convert(testString, to: .BooleanAttributeType) as? NSNumber
+		result = CoreDataValueConverter.convert(testString, to: .booleanAttributeType) as? NSNumber
 		XCTAssert(result?.boolValue == false, "")
 
 
 		testString = "undefined"
-		result = CoreDataValueConverter.convert(testString, to: .BooleanAttributeType) as? NSNumber
+		result = CoreDataValueConverter.convert(testString, to: .booleanAttributeType) as? NSNumber
 		XCTAssert(result == nil, "")
 	}
 	
-	/// Strings should be convertible to Booleans.
+	/// Strings should be convertible to Integers.
 	func testStringToIntConversion() {
 		var input = "123"
-		var result = CoreDataValueConverter.convert(input, to: .Integer64AttributeType) as? NSNumber
-		XCTAssert(result?.integerValue == 123, "")
+		var result = CoreDataValueConverter.convert(input, to: .integer64AttributeType) as? Int
+		XCTAssert(result == 123, "")
 
-		input = "456wordsdontmatter123"
-		result = CoreDataValueConverter.convert(input, to: .Integer64AttributeType) as? NSNumber
-		XCTAssert(result?.integerValue == 456, "")
-
-		input = "nothingHereMatters"
-		result = CoreDataValueConverter.convert(input, to: .Integer64AttributeType) as? NSNumber
-		XCTAssert(result?.integerValue == 0, "")
+		input = "not an int"
+		result = CoreDataValueConverter.convert(input, to: .integer64AttributeType) as? Int
+		XCTAssert(result == nil, "")
 	}
 	
 	/// NSStrings should be convertible to NSDecimalNumbers
 	func testStringToDecimalConversion() {
-		let expectation = NSDecimalNumber(float: 7.070000171661375488)
-		let result = CoreDataValueConverter.convert("7.070000171661375488", to: .DecimalAttributeType) as? NSDecimalNumber
+		let expectation = NSDecimalNumber(value: 7.070000171661375488 as Float)
+		let result = CoreDataValueConverter.convert("7.070000171661375488", to: .decimalAttributeType) as? NSDecimalNumber
 		XCTAssert(result == expectation, "Pass")
 	}
 	
 	/// NSStrings should be convertible to Doubles
 	func testStringToDoubleConversion() {
 		let expectation = Double(7.07)
-		let result = CoreDataValueConverter.convert("7.07", to: .DoubleAttributeType) as? Double
+		let result = CoreDataValueConverter.convert("7.07", to: .doubleAttributeType) as? Double
 		XCTAssert(result == expectation, "Pass")
 	}
 	
 	/// NSStrings should be convertible to Floats
 	func testStringToFloatConversion() {
 		let expectation = Float(7.07)
-		let result = CoreDataValueConverter.convert("7.07", to: .FloatAttributeType) as? Float
+		let result = CoreDataValueConverter.convert("7.07", to: .floatAttributeType) as? Float
 		XCTAssert(result == expectation, "Pass")
 	}
 	
 	/// Strings should be convertible to Data objects.
 	func testStringToDataConversion() {
 		let input = "Long long Time ago"
-		let expectedResult = input.dataUsingEncoding(NSUTF8StringEncoding)!
-		let result = CoreDataValueConverter.convert(input, to: .BinaryDataAttributeType) as? NSData
-		XCTAssert(result!.isEqualToData(expectedResult) == true, "")
+		let expectedResult = input.data(using: String.Encoding.utf8)!
+		let result = CoreDataValueConverter.convert(input, to: .binaryDataAttributeType) as? Data
+		XCTAssert((result! == expectedResult) == true, "")
 	}
 	
 	/// Strings should be convertible to NSDates.
 	func testStringToDateConversion() {
-		let now = NSDate()
-		let nowAsString = CoreDataValueConverter.dateFormatter.stringFromDate(now)
-		let result = CoreDataValueConverter.convert(nowAsString, to: .DateAttributeType) as? NSDate
-		let resultAsString = CoreDataValueConverter.dateFormatter.stringFromDate(result!)
+		let now = Date()
+		let nowAsString = CoreDataValueConverter.dateFormatter.string(from: now)
+		let result = CoreDataValueConverter.convert(nowAsString, to: .dateAttributeType) as? Date
+		let resultAsString = CoreDataValueConverter.dateFormatter.string(from: result!)
 		XCTAssert(resultAsString == nowAsString, "")
 	}
 
@@ -456,14 +482,14 @@ class CoreDataDandyTests: XCTestCase {
 	
 	/// NSEntityDescriptions should be retrievable by name.
 	func testEntityDescriptionFromString() {
-		let expected = NSEntityDescription.entityForName("Dandy_", inManagedObjectContext: Dandy.coordinator.mainContext)
+		let expected = NSEntityDescription.entity(forEntityName: "Dandy_", in: Dandy.coordinator.mainContext)
 		let result = NSEntityDescription.forEntity("Dandy_")!
 		XCTAssert(expected == result, "Pass")
 	}
 	
 	/// NSEntityDescriptions should be retrievable their model's underlying type.
 	func testEntityDescriptionFromType() {
-		let expected = NSEntityDescription.entityForName("Dandy_", inManagedObjectContext: Dandy.coordinator.mainContext)
+		let expected = NSEntityDescription.entity(forEntityName: "Dandy_", in: Dandy.coordinator.mainContext)
 		let result = NSEntityDescription.forType(Dandy_.self)!
 		XCTAssert(expected == result, "Pass")
 	}
@@ -483,24 +509,12 @@ class CoreDataDandyTests: XCTestCase {
 		let result = dandy.primaryKey!
 		XCTAssert(expected == result, "Pass")
 	}
-
-	/// The primary key should return the uniquenessConstraint of the entity if one is present.
-	func testUniqueConstraintRetrieval() {
-		let conclusion = Dandy.insert(Conclusion.self)!
-		XCTAssert(conclusion.entity.primaryKey == "id", "Pass")
-	}
 	
-	/// The primary key should return the uniquenessConstraint over of the primaryKey decoration if both are present.
-	func testUniqueConstraintPriority() {
-		let gossip = Dandy.insert(Gossip.self)!
-		XCTAssert(gossip.entity.primaryKey == "details", "Pass")
-	}
-	
-	/// Primary keys should be inheritable. In this case, Flattery's uniqueConstraint should be inherited from
+	/// Primary keys should be inheritable. In this case, Flattery's primaryKey should be inherited from
 	/// its parent, Gossip.
 	func testPrimaryKeyInheritance() {
 		let flattery = Dandy.insert(Flattery.self)!
-		XCTAssert(flattery.entity.primaryKey == "details", "Pass")
+		XCTAssert(flattery.entity.primaryKey == "secret", "Pass")
 	}
 
 	/// Children should override the primaryKey of their parents. In this case, Slander's uniqueConstraint should
@@ -538,7 +552,7 @@ class CoreDataDandyTests: XCTestCase {
 		XCTAssert(result! == expectedMap, "Pass")
 	}
 	
-	/// @mapping: @NO should result in an exclusion from the map. Gossip's "secret" attribute has been specified
+	/// @mapping: @false should result in an exclusion from the map. Gossip's "secret" attribute has been specified
 	/// as such.
 	func testNOMappingKeywordResponse() {
 		let entity = NSEntityDescription.forType(Gossip.self)!
@@ -574,7 +588,6 @@ class CoreDataDandyTests: XCTestCase {
 		let state = PropertyDescription(description: entity.allAttributes!["spaceState"]!)
 		XCTAssert(name == secondName, "Pass")
 		XCTAssert(name != state, "Pass")
-		XCTAssert(name != "STRING", "Pass")
 	}
 	
 	/// Simple initializations and initializations from NSCoding should yield valid objects.
@@ -583,11 +596,11 @@ class CoreDataDandyTests: XCTestCase {
 
 		let entity = NSEntityDescription.forType(Space.self)!
 		let propertyDescription = PropertyDescription(description: entity.allAttributes!["name"]!)
-		let pathArray = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)
+		let pathArray = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)
 		let documentPath = pathArray.first!
-		let archivePath = NSString(string: documentPath).stringByAppendingPathComponent("SPACE_NAME")
+		let archivePath = NSString(string: documentPath).appendingPathComponent("SPACE_NAME")
 		NSKeyedArchiver.archiveRootObject(propertyDescription, toFile: archivePath)
-		let unarchivedPropertyDescription = NSKeyedUnarchiver.unarchiveObjectWithFile(archivePath) as! PropertyDescription
+		let unarchivedPropertyDescription = NSKeyedUnarchiver.unarchiveObject(withFile: archivePath) as! PropertyDescription
 		XCTAssert(unarchivedPropertyDescription == propertyDescription, "Pass")
 	}
 
@@ -597,8 +610,8 @@ class CoreDataDandyTests: XCTestCase {
 	func testMapCaching() {
 		if let entityDescription = NSEntityDescription.forType(Material.self) {
 			EntityMapper.map(entityDescription)
-			//let entityCacheMap = EntityMapper.cachedEntityMap[Material.self]!
-			//XCTAssert(entityCacheMap.count > 0, "")
+			let entityCacheMap = EntityMapper.cachedEntityMap[String(describing: Material.self)]!
+			XCTAssert(entityCacheMap.count > 0, "")
 		}
 	}
 	
@@ -615,7 +628,7 @@ class CoreDataDandyTests: XCTestCase {
 	
 	/// The creation of a new map should be performant
 	func testPerformanceOfNewMapCreation() {
-		self.measureBlock {
+		self.measure {
 			let entityDescription = NSEntityDescription.forType(Material.self)
 			EntityMapper.map(entityDescription!)
 		}
@@ -625,7 +638,7 @@ class CoreDataDandyTests: XCTestCase {
 	func testPerformanceOfCachedMapRetrieval() {
 		let entityDescription = NSEntityDescription.forType(Material.self)!
 		EntityMapper.map(entityDescription)
-		self.measureBlock {
+		self.measure {
 			EntityMapper.map(entityDescription)
 		}
 	}
@@ -636,8 +649,8 @@ class CoreDataDandyTests: XCTestCase {
 		let space = Dandy.insert(Space.self)!
 		let json: JSONObject = ["name": "nebulous", "state": "moderately cool"]
 		ObjectFactory.build(space, from: json)
-		XCTAssert(space.valueForKey("name") as! String == "nebulous" &&
-			space.valueForKey("spaceState") as! String ==  "moderately cool",
+		XCTAssert(space.name == "nebulous"
+			&& space.spaceState ==  "moderately cool",
 			"Pass")
 	}
 	
@@ -651,14 +664,14 @@ class CoreDataDandyTests: XCTestCase {
 				"id": 1,
 				"name": "Lord Byron",
 			]
-		]
+		] as JSONObject
 		ObjectFactory.build(gossip, from: json)
 
-		let byron = gossip.valueForKey("purveyor") as! NSManagedObject
-		XCTAssert(gossip.valueForKey("details") as! String == "At Bo Peep, unusually cool towards Isabella Brown." &&
-			gossip.valueForKey("topic") as! String ==  "John Keats" &&
-			byron.valueForKey("dandyID") as! String ==  "1" &&
-			byron.valueForKey("name") as! String ==  "Lord Byron",
+		let byron = gossip.purveyor!
+		XCTAssert(gossip.details == "At Bo Peep, unusually cool towards Isabella Brown."
+			&& gossip.topic ==  "John Keats"
+			&& byron.dandyID ==  "1"
+			&& byron.name == "Lord Byron",
 			"Pass")
 	}
 	
@@ -680,19 +693,19 @@ class CoreDataDandyTests: XCTestCase {
 					]
 				]]
 			]
-		]
+		] as JSONObject
 		ObjectFactory.build(gossip, from: json)
-		let byron = gossip.valueForKey("purveyor") as! NSManagedObject
-		let bowler = byron.valueForKey("hats")!.anyObject() as! NSManagedObject
-		let felt = bowler.valueForKey("primaryMaterial") as! NSManagedObject
-		XCTAssert(gossip.valueForKey("details") as! String == "At Bo Peep, unusually cool towards Isabella Brown." &&
-			gossip.valueForKey("topic") as! String ==  "John Keats" &&
-			byron.valueForKey("dandyID") as! String ==  "1" &&
-			byron.valueForKey("name") as! String ==  "Lord Byron" &&
-			bowler.valueForKey("name") as! String ==  "bowler" &&
-			bowler.valueForKey("styleDescription") as! String ==  "billycock" &&
-			felt.valueForKey("name") as! String ==  "felt" &&
-			felt.valueForKey("origin") as! String ==  "Rome",
+		let byron = gossip.purveyor!
+		let bowler = byron.hats!.anyObject() as! Hat
+		let felt = bowler.primaryMaterial!
+		XCTAssert(gossip.details == "At Bo Peep, unusually cool towards Isabella Brown."
+			&& gossip.topic == "John Keats"
+			&& byron.dandyID ==  "1"
+			&& byron.name == "Lord Byron"
+			&& bowler.name == "bowler"
+			&& bowler.styleDescription == "billycock"
+			&& felt.name == "felt"
+			&& felt.origin == "Rome",
 			"Pass")
 	}
 	
@@ -707,12 +720,12 @@ class CoreDataDandyTests: XCTestCase {
 					"name": "Honoré de Balzac"
 				]
 			]
-		]
+		] as JSONObject
 		ObjectFactory.build(dandy, from: json)
-		let balzac = dandy.valueForKey("predecessor") as! NSManagedObject
-		XCTAssert(balzac.valueForKey("dandyID") as! String == "BALZ" &&
-			balzac.valueForKey("name") as! String ==  "Honoré de Balzac" &&
-			(balzac.valueForKey("successor") as! NSManagedObject).valueForKey("dandyID") as! String ==  dandy.valueForKey("dandyID") as! String,
+		let balzac = dandy.predecessor!
+		XCTAssert(balzac.dandyID == "BALZ"
+			&& balzac.name == "Honoré de Balzac"
+			&& balzac.successor!.dandyID ==  dandy.dandyID,
 			"Pass")
 	}
 	
@@ -720,9 +733,9 @@ class CoreDataDandyTests: XCTestCase {
 	func testIgnoreUnkeyedAttributesWhenBuilding() {
 		let space = Dandy.insert(Space.self)!
 		space.setValue("exceptionally relaxed", forKey: "spaceState")
-		let json: JSONObject = ["name": "nebulous"]
+		let json: JSONObject = ["name": "nebulous" as AnyObject]
 		ObjectFactory.build(space, from: json)
-		XCTAssert(space.valueForKey("spaceState") as! String == "exceptionally relaxed", "Pass")
+		XCTAssert(space.value(forKey: "spaceState") as! String == "exceptionally relaxed", "Pass")
 	}
 	
 	/// Property values on an object should be overwritten if new values are specified.
@@ -731,7 +744,7 @@ class CoreDataDandyTests: XCTestCase {
 		space.setValue("exceptionally relaxed", forKey: "spaceState")
 		let json: JSONObject = ["state": "significant excitement"]
 		ObjectFactory.build(space, from: json)
-		XCTAssert(space.valueForKey("spaceState") as! String == "significant excitement", "Pass")
+		XCTAssert(space.value(forKey: "spaceState") as! String == "significant excitement", "Pass")
 	}
 	
 	/// If a single json object is passed when attempting to build a toMany relationship, it should be
@@ -745,14 +758,14 @@ class CoreDataDandyTests: XCTestCase {
 				"name": "felt",
 				"origin": "Rome"
 			]
-		]
+		] as JSONObject
 		ObjectFactory.make(PropertyDescription(description: dandy.entity.allRelationships!["hats"]!), to: dandy, from: json)
-		XCTAssert((dandy.valueForKey("hats") as! NSSet).count == 0, "Pass")
+		XCTAssert((dandy.value(forKey: "hats") as! NSSet).count == 0, "Pass")
 	}
 	
 	/// Uniqueness should play no role in whether an object can be made or not.
 	func testNonUniqueObjectMaking() {
-		let json: JSONObject = ["name": "Passerby"]
+		let json: JSONObject = ["name": "Passerby" as AnyObject]
 		let plebian = ObjectFactory.make(Plebian.self, from: json)
 		XCTAssert(plebian != nil, "Test failed: a non-unique object could not be made.")
 	}
@@ -773,7 +786,7 @@ class CoreDataDandyTests: XCTestCase {
 				"name": "Andre 3000"]
 		]
 		ObjectFactory.make(PropertyDescription(description: gossip.entity.allRelationships!["purveyor"]!), to: gossip, from: json)
-		XCTAssert(gossip.valueForKey("purveyor") == nil, "Pass")
+		XCTAssert(gossip.value(forKey: "purveyor") == nil, "Pass")
 	}
 	
 	/// NSOrderedSets should be created for ordered relationships. NSSets should be created for
@@ -792,7 +805,7 @@ class CoreDataDandyTests: XCTestCase {
 				"name": "Andre 3000"]
 		]
 		ObjectFactory.make(PropertyDescription(description: hat.entity.allRelationships!["dandies"]!), to: hat, from: json)
-		XCTAssert(hat.valueForKey("dandies") is NSOrderedSet && (hat.valueForKey("dandies") as! NSOrderedSet).count == 3, "Pass")
+		XCTAssert(hat.value(forKey: "dandies") is NSOrderedSet && hat.dandies!.count == 3, "Pass")
 	}
 	
 	/// Nil or inconvertible json values should lead to nilled out relationships.
@@ -811,12 +824,12 @@ class CoreDataDandyTests: XCTestCase {
 					]
 				]
 			]
-		]
+		] as JSONObject
 		
 		let nullNilling = [
 			"id": 1,
 			"hats": "NULL"
-		]
+		] as JSONObject
 		
 		ObjectFactory.build(dandy, from: json)
 		XCTAssert(dandy.hats!.count == 1, "After building from \(json), Lord Byron should have a single hat.")
@@ -826,14 +839,14 @@ class CoreDataDandyTests: XCTestCase {
 		let nsNullNilling = [
 			"id": 1,
 			"hats": NSNull()
-		]
+		] as JSONObject
 		
 		ObjectFactory.build(dandy, from: json)
 		XCTAssert(dandy.hats!.count == 1, "After building from \(json), Lord Byron should have a single hat.")
 		ObjectFactory.build(dandy, from: nsNullNilling)
 		XCTAssert(dandy.hats?.count == 0, "After building hats from NULL values, Lord Byron should have no hats.")
 		
-		XCTAssert((dandy.valueForKey("hats") as! NSSet).count == 0, "Pass")
+		XCTAssert((dandy.value(forKey: "hats") as! NSSet).count == 0, "Pass")
 	}
 
 	// MARK: -  Object factory via CoreDataDandy -
@@ -842,7 +855,7 @@ class CoreDataDandyTests: XCTestCase {
 	func testSimpleObjectConstructionFromJSON() {
 		let json = ["name": "Passerby"]
 		let plebian = Dandy.upsert(Plebian.self, from: json)!
-		XCTAssert(plebian.valueForKey("name") as! String == "Passerby")
+		XCTAssert(plebian.value(forKey: "name") as! String == "Passerby")
 	}
 	
 	/// json lacking a primary key should be rejected. A nil value should be returned and a warning
@@ -871,7 +884,7 @@ class CoreDataDandyTests: XCTestCase {
 		let countIsCorrect = dandies.count == 10
 		var dandiesAreCorrect = true
 		for i in 0...9 {
-			let matchingDandies = (dandies.filter {$0.valueForKey("dandyID")! as! String == String(i)})
+			let matchingDandies = (dandies.filter {$0.value(forKey: "dandyID")! as! String == String(i)})
 			if matchingDandies.count != 1 {
 				dandiesAreCorrect = false
 				break
@@ -888,8 +901,8 @@ class CoreDataDandyTests: XCTestCase {
 		let input = "A decisively excellent affair, if a bit tawdry."
 		let expected = "\(input)_FINALIZED"
 		let json: JSONObject = [
-			"id": "1",
-			"content": input
+			"id": "1" as AnyObject,
+			"content": input as AnyObject
 		]
 		let conclusion = ObjectFactory.make(Conclusion.self, from: json)!
 		XCTAssert(conclusion.content == expected, "Pass")
@@ -958,32 +971,31 @@ class CoreDataDandyTests: XCTestCase {
 					"name": "felt",
 					"origin": "Rome"
 				]
-		]
+		] as JSONObject
 		let result = Serializer.serialize(hat, including:["primaryMaterial"])!
-		XCTAssert(equivalent(result, expected), "Pass")
+		XCTAssert(result == expected, "Pass")
 	}
 	
 	/// An array of NSManagedObject should be serializable into json.
 	func testObjectArraySerialization() {
 		let byron = Dandy.insert(Dandy_.self)!
-		byron.setValue("Lord Byron", forKey: "name")
-		byron.setValue("1", forKey: "dandyID")
+		byron.name = "Lord Byron"
+		byron.dandyID = "1"
 		let wilde = Dandy.insert(Dandy_.self)!
-		wilde.setValue("Oscar Wilde", forKey: "name")
-		wilde.setValue("2", forKey: "dandyID")
+		wilde.name = "Oscar Wilde"
+		wilde.dandyID = "2"
 		let andre = Dandy.insert(Dandy_.self)!
-		andre.setValue("Andre 3000", forKey: "name")
-		andre.setValue("3", forKey: "dandyID")
-		let expected = [
-			[
+		andre.name = "Andre 3000"
+		andre.dandyID = "3"
+		let expected: [JSONObject] = [[
 				"id": "1",
-				"name": "Lord Byron"],
-			[
+				"name": "Lord Byron"
+			], [
 				"id": "2",
-				"name": "Oscar Wilde"],
-			[
+				"name": "Oscar Wilde"], [
 				"id": "3",
-				"name": "Andre 3000"]
+				"name": "Andre 3000"
+			]
 		]
 		let result = Serializer.serialize([byron, wilde, andre])!
 		XCTAssert(result == expected, "Pass")
@@ -992,55 +1004,60 @@ class CoreDataDandyTests: XCTestCase {
 	/// An object's attributes and to-many relationships should be serializaable into json.
 	func testToManyRelationshipSerialization() {
 		let byron = Dandy.insert(Dandy_.self)!
-		byron.setValue("Lord Byron", forKey: "name")
-		byron.setValue("1", forKey: "dandyID")
+		byron.name = "Lord Byron"
+		byron.dandyID = "1"
 		let bowler = Dandy.insert(Hat.self)!
-		bowler.setValue("bowler", forKey: "name")
-		bowler.setValue("billycock", forKey: "styleDescription")
+		bowler.name = "bowler"
+		bowler.styleDescription = "billycock"
 		let tyrolean = Dandy.insert(Hat.self)!
-		tyrolean.setValue("tyrolean", forKey: "name")
-		tyrolean.setValue("alpine", forKey: "styleDescription")
-		byron.setValue(NSSet(objects: bowler, tyrolean), forKey: "hats")
+		tyrolean.name = "tyrolean"
+		tyrolean.styleDescription = "alpine"
+		byron.hats = Set([bowler, tyrolean]) as NSSet
 		let expected = [
-				"id": "1",
-				"name": "Lord Byron",
-				"hats": [
-					["name": "bowler",
-					"style": "billycock"],
-					["name": "tyrolean",
-					"style": "alpine"]
+			"id": "1",
+			"name": "Lord Byron",
+			"hats": [
+				[
+					"name": "bowler",
+					"style": "billycock"
+				], [
+					"name": "tyrolean",
+					"style": "alpine"
 				]
-		]
+			]
+		] as JSONObject
 		var result = Serializer.serialize(byron, including:["hats"])!
-		result["hats"] = (result["hats"] as! NSArray).sortedArrayUsingDescriptors([NSSortDescriptor(key: "name", ascending: true)])
-		XCTAssert(equivalent(result, expected), "Pass")
+		result["hats"] = (result["hats"] as! NSArray).sortedArray(using: [NSSortDescriptor(key: "name", ascending: true)])
+		XCTAssert(result == expected, "Pass")
 	}
 	
 	/// An object's attributes and relationship tree should be serializaable into json.
 	func testNestedRelationshipSerialization() {
 		let gossip = Dandy.insert(Gossip.self)!
-		gossip.setValue("At Bo Peep, unusually cool towards Isabella Brown.", forKey: "details")
-		gossip.setValue("John Keats", forKey: "topic")
+		gossip.details = "At Bo Peep, unusually cool towards Isabella Brown."
+		gossip.topic = "John Keats"
 		let byron = Dandy.insert(Dandy_.self)!
-		byron.setValue("Lord Byron", forKey: "name")
-		byron.setValue("1", forKey: "dandyID")
+		byron.name = "Lord Byron"
+		byron.dandyID = "1"
 		let bowler = Dandy.insert(Hat.self)!
-		bowler.setValue("bowler", forKey: "name")
-			bowler.setValue("billycock", forKey: "styleDescription")
-		byron.setValue(NSSet(object: bowler), forKey: "hats")
-		gossip.setValue(byron, forKey: "purveyor")
+		bowler.name = "bowler"
+		bowler.styleDescription = "billycock"
+		byron.hats = Set([bowler]) as NSSet
+		gossip.purveyor = byron
 		let expected = [
-				"details": "At Bo Peep, unusually cool towards Isabella Brown.",
-				"topic": "John Keats",
-				"purveyor": [
-					"id": "1",
-					"name": "Lord Byron",
-					"hats": [[
+			"details": "At Bo Peep, unusually cool towards Isabella Brown.",
+			"topic": "John Keats",
+			"purveyor": [
+				"id": "1",
+				"name": "Lord Byron",
+				"hats": [
+					[
 						"name": "bowler",
 						"style": "billycock",
-					]]
+					]
 				]
-		]
+			]
+		] as JSONObject
 		let result = Serializer.serialize(gossip, including: ["purveyor.hats"]) as! [String: NSObject]
 		XCTAssert(result == expected, "Pass")
 	}
@@ -1074,42 +1091,43 @@ class CoreDataDandyTests: XCTestCase {
 				"name": "Lord Byron",
 				"hats": hats
 			]
-		]
-		let value = valueAt("purveyor.hats", of: gossip) as! [JSONObject]
-		XCTAssert(value == hats, "Pass")
+		] as JSONObject
+		
+		let value: [JSONObject]? = _value(at: "purveyor.hats", of: gossip)
+		XCTAssert(value! == hats, "Pass")
 	}
 	
 	/// Directories that exist should be reported as existing.
 	func testDirectoryExistenceEvaluation() {
-		let applications = NSFileManager.defaultManager().URLsForDirectory(.ApplicationDirectory, inDomains: .UserDomainMask).last!
-		var components = applications.pathComponents!
+		let applications = FileManager.default.urls(for: .applicationDirectory, in: .userDomainMask).last!
+		var components = applications.pathComponents
 		components.removeLast()
-		let root = NSURL(string: NSString.pathWithComponents(components))!
-		XCTAssert(NSFileManager.directoryExists(at: root) == true, "Incorrectly evaluated existence of Application directory")
+		let root = URL(string: NSString.path(withComponents: components))!
+		XCTAssert(FileManager.directoryExists(at: root) == true, "Incorrectly evaluated existence of Application directory")
 	}
 	
 	/// Directories that do not exists should be reported as non-existent.
 	func testDirectoryInexistenceEvaluation() {
-		let url = NSURL(string: "file://lord-byron/diary/screeds/creditors")!
-		XCTAssert(NSFileManager.directoryExists(at: url) == false, "Incorrectly evaluated existence of nonsense directory")
+		let url = URL(string: "file://lord-byron/diary/screeds/creditors")!
+		XCTAssert(FileManager.directoryExists(at: url) == false, "Incorrectly evaluated existence of nonsense directory")
 	}
 	
 	/// One should be able to create directories.
 	func testDirectoryCreation() {
-		let applications = NSFileManager.defaultManager().URLsForDirectory(.ApplicationDirectory, inDomains: .UserDomainMask).last!
-		var components = applications.pathComponents!
+		let applications = FileManager.default.urls(for: .applicationDirectory, in: .userDomainMask).last!
+		var components = applications.pathComponents
 		components.removeLast()
-		let root = NSURL(string: "file://" + NSString.pathWithComponents(components))!
+		let root = URL(string: "file://" + NSString.path(withComponents: components))!
 		
-		let directory = root.URLByAppendingPathComponent("lord-byron", isDirectory: true)
+		let directory = root.appendingPathComponent("lord-byron", isDirectory: true)
 		
-		if NSFileManager.directoryExists(at: directory) {
+		if FileManager.directoryExists(at: directory) {
 			// Clean up previous executions of the test if trace of them remains.
-			try! NSFileManager.defaultManager().removeItemAtURL(directory)
+			try! FileManager.default.removeItem(at: directory)
 		}
 
-		try! NSFileManager.createDirectory(at: directory)
-		XCTAssert(NSFileManager.directoryExists(at: directory) == true, "Failed to create directory")
+		try! FileManager.createDirectory(at: directory)
+		XCTAssert(FileManager.directoryExists(at: directory) == true, "Failed to create directory")
 	}
 	
 	// MARK: - Warning emission tests -
@@ -1128,27 +1146,53 @@ class CoreDataDandyTests: XCTestCase {
 		let log = format(warning, with: error)
 		XCTAssert(log == "(CoreDataDandy) warning: " + warning + " Error:\n" + error.description, "Pass")
 	}
-	/// For testing purposes only, a json comparator.
-	func equivalent(lhs: JSONObject, _ rhs: JSONObject) -> Bool {
-		// Dictionaries of unequal counts are not equal
-		if lhs.count != rhs.count { return false }
-		// Dictionaries that are equal must share all keys and paired values
-		for (key, lhValue) in lhs {
-			if let rhValue = rhs[key] {
-				switch (lhValue, rhValue) {
-				case let (l, r) where lhValue is String && rhValue is String:
-					if (l as! String) != (r as! String) { return false }
-				case let (l, r) where lhValue is [String: String] && rhValue is [String: String]:
-					if (l as! [String: String]) != (r as! [String: String]) { return false }
-				case let (l, r) where lhValue is [[String: String]] && rhValue is [[String: String]]:
-					if (l as! [[String: String]]) != (r as! [[String: String]]) { return false }
-				default:
-					return false
-				}
-			} else {
+}
+
+//
+/// For testing purposes only, json comparators.
+func ==(lhs: JSONObject, rhs: JSONObject) -> Bool {
+	// Dictionaries of unequal counts are not equal
+	if lhs.count != rhs.count { return false }
+	// Dictionaries that are equal must share all keys and paired values
+	for (key, lhValue) in lhs {
+		if let rhValue = rhs[key] {
+			switch (lhValue, rhValue) {
+			case let (l, r) where l is String && r is String:
+				return (l as! String) == (r as! String)
+			case let (l, r) where l is Bool && r is Bool:
+				return (l as! Bool) == (r as! Bool)
+			case let (l, r) where l is Double && r is Double:
+				return (l as! Double) == (r as! Double)
+			case let (l, r) where l is JSONObject && r is JSONObject:
+				return (l as! JSONObject) == (r as! JSONObject)
+			case let (l, r) where l is NSObject && r is NSObject:
+				return (l as! NSObject) == (r as! NSObject)
+			default:
 				return false
 			}
+		} else {
+			return false
 		}
-		return true
 	}
+	return true
+}
+
+fileprivate func !=(lhs: JSONObject, rhs: JSONObject) -> Bool {
+	return !(lhs == rhs)
+}
+
+
+fileprivate func ==(lhs: [JSONObject], rhs: [JSONObject]) -> Bool {
+	if lhs.count != rhs.count {
+		return false
+	}
+	
+	let paired = zip(lhs, rhs)
+	for (l, r) in paired {
+		if l != r {
+			return false
+		}
+	}
+	
+	return true
 }

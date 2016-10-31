@@ -9,10 +9,10 @@
 import Foundation
 
 
-extension NSFileManager {
+extension FileManager {
 	/// The url of the NSFileManager's `.DocumentDirectory`
-	static var documentDirectoryURL: NSURL {
-		let urls = defaultManager().URLsForDirectory(.DocumentDirectory, inDomains: .UserDomainMask)
+	static var documentDirectoryURL: URL {
+		let urls = `default`.urls(for: .documentDirectory, in: .userDomainMask)
 		
 		if let url = urls.last {
 			return url
@@ -27,13 +27,9 @@ extension NSFileManager {
 	///
 	/// - returns: Whether a directory exists at the given url. Note that false may indicate either that
 	/// a file exists at this url or that nothing exists at this directory.
-	static func directoryExists(at url: NSURL) -> Bool {
-		let path = url.pathComponents?.joinWithSeparator("/") ?? ""
-		
-		var isDirectory = ObjCBool(false)
-		defaultManager().fileExistsAtPath(path, isDirectory:&isDirectory)
-		
-		return Bool(isDirectory)
+	static func directoryExists(at url: URL) -> Bool {
+		let path = url.pathComponents.joined(separator: "/")
+		return `default`.fileExists(atPath: path)
 	}
 	
 	/// Creates a directory at a given URL.
@@ -42,7 +38,7 @@ extension NSFileManager {
 	///
 	/// - throws: A number of errors may lead to an exception here. The two most common exceptions are raised
 	/// when a directory already exists at this url or in response to insufficient user permissions.
-	static func createDirectory(at url: NSURL) throws {
-		try defaultManager().createDirectoryAtURL(url, withIntermediateDirectories: false, attributes: nil)
+	static func createDirectory(at url: URL) throws {
+		try `default`.createDirectory(at: url, withIntermediateDirectories: false, attributes: nil)
 	}
 }

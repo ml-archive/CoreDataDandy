@@ -31,7 +31,7 @@ import Foundation
 public extension Dictionary {
 	/// Convenience function for adding values from one dictionary to another, like
 	/// `NSMutableDictionary`'s `-addEntriesFromDictionary`
-	public mutating func addEntriesFrom(dictionary: Dictionary) {
+	public mutating func addEntriesFrom(_ dictionary: Dictionary) {
 		for (key, value) in dictionary {
 			self[key] = value
 		}
@@ -45,10 +45,11 @@ public extension Dictionary {
 ///
 /// - returns: The value at the given keypath is one exists. 
 ///	If no key exists at the specified keypath, nil is returned.
-func valueAt(keypath: String, of dictionary: JSONObject) -> AnyObject? {
-	let keys = keypath.componentsSeparatedByString(".")
+func _value<T>(at keypath: String,
+               of dictionary: JSONObject) -> T? {
+	let keys = keypath.components(separatedBy: ".")
 	var copy = dictionary
-	var possibleValue: AnyObject?
+	var possibleValue: Any?
 	for key in keys {
 		possibleValue = copy[key] ?? nil
 		if let value = copy[key] as? JSONObject {
@@ -56,5 +57,5 @@ func valueAt(keypath: String, of dictionary: JSONObject) -> AnyObject? {
 		}
 	}
 
-	return possibleValue
+	return possibleValue as? T
 }

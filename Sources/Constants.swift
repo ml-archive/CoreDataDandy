@@ -39,8 +39,8 @@ let SINGLETON = "@singleton"
 // to be keyed as "id" for a property named "dandyID," specify "@mapping":"id" in dandyID's userInfo.
 let MAPPING = "@mapping"
 // An @mapping keyword used to turn off Dandy mapping for a given property.
-let NO_MAPPING = "@NO"
+let NO_MAPPING = "@false"
 
 let CACHED_MAPPING_LOCATION = "EntityMapper_EntityMapper"
 
-public typealias JSONObject = [String: AnyObject]
+public typealias JSONObject = [String: Any]
