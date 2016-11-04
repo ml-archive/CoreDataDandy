@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="11232" systemVersion="15G31" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
-    <entity name="Conclusion" representedClassName="Conclusion" syncable="YES" codeGenerationType="class">
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="11542" systemVersion="15G31" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+    <entity name="Conclusion" representedClassName="Conclusion" syncable="YES">
         <attribute name="content" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="id" optional="YES" attributeType="String" syncable="YES"/>
         <userInfo>
             <entry key="@primaryKey" value="id"/>
         </userInfo>
     </entity>
-    <entity name="Dandy_" representedClassName="Dandy_" syncable="YES" codeGenerationType="class">
+    <entity name="Dandy_" representedClassName="Dandy_" syncable="YES">
         <attribute name="bio" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="dandyID" optional="YES" attributeType="String" syncable="YES">
             <userInfo>
@@ -28,10 +28,10 @@
             <entry key="@primaryKey" value="dandyID"/>
         </userInfo>
     </entity>
-    <entity name="Flattery" representedClassName="Flattery" parentEntity="Gossip" syncable="YES" codeGenerationType="class">
+    <entity name="Flattery" representedClassName="Flattery" parentEntity="Gossip" syncable="YES">
         <attribute name="ambition" optional="YES" attributeType="String" syncable="YES"/>
     </entity>
-    <entity name="Gossip" representedClassName="Gossip" syncable="YES" codeGenerationType="class">
+    <entity name="Gossip" representedClassName="Gossip" syncable="YES">
         <attribute name="details" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="secret" optional="YES" attributeType="String" syncable="YES">
             <userInfo>
@@ -45,7 +45,7 @@
             <entry key="testValue" value="testKey"/>
         </userInfo>
     </entity>
-    <entity name="Hat" representedClassName="Hat" syncable="YES" codeGenerationType="class">
+    <entity name="Hat" representedClassName="Hat" syncable="YES">
         <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="styleDescription" optional="YES" attributeType="String" syncable="YES">
             <userInfo>
@@ -62,7 +62,7 @@
             <entry key="@primaryKey" value="name"/>
         </userInfo>
     </entity>
-    <entity name="Material" representedClassName="Material" syncable="YES" codeGenerationType="class">
+    <entity name="Material" representedClassName="Material" syncable="YES">
         <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="origin" optional="YES" attributeType="String" syncable="YES"/>
         <relationship name="hats" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Hat" inverseName="primaryMaterial" inverseEntity="Hat" syncable="YES"/>
@@ -70,16 +70,16 @@
             <entry key="@primaryKey" value="name"/>
         </userInfo>
     </entity>
-    <entity name="Plebian" representedClassName="Plebian" syncable="YES" codeGenerationType="class">
+    <entity name="Plebian" representedClassName="Plebian" syncable="YES">
         <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
     </entity>
-    <entity name="Slander" representedClassName="Slander" parentEntity="Gossip" syncable="YES" codeGenerationType="class">
+    <entity name="Slander" representedClassName="Slander" parentEntity="Gossip" syncable="YES">
         <attribute name="statement" optional="YES" attributeType="String" syncable="YES"/>
         <userInfo>
             <entry key="@primaryKey" value="statement"/>
         </userInfo>
     </entity>
-    <entity name="Space" representedClassName="Space" syncable="YES" codeGenerationType="class">
+    <entity name="Space" representedClassName="Space" syncable="YES">
         <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="spaceState" optional="YES" attributeType="String" syncable="YES">
             <userInfo>

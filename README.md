@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/fuzz-productions/CoreDataDandy.svg?branch=master)](https://travis-ci.org/fuzz-productions/CoreDataDandy)
 [![Carthage Compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/fuzz-productions/CoreDataDandy)
-[![CocoaPods Compatible](https://img.shields.io/badge/pod-0.5.1-blue.svg)](https://cocoapods.org/pods/CoreDataDandy)
+[![CocoaPods Compatible](https://img.shields.io/badge/pod-0.6.0-blue.svg)](https://cocoapods.org/pods/CoreDataDandy)
 [![GitHub license](https://img.shields.io/badge/license-MIT-lightgrey.svg)](https://github.com/fuzz-productions/CoreDataDandy/blob/master/LICENSE) 
 
 ## Introduction
@@ -17,25 +17,16 @@ Core Data Dandy is a feature-light wrapper around Core Data that simplifies comm
 
 ## Installation
 
-### SPM
-
-```
-dependencies: [
- .Package(url: "https://github.com/fuzz-productions/CoreDataDandy.git", 
- 		  versions: Version(0,5,1)..<Version(0,5,2))
-]
-```
-
 ### Carthage
 
 ```
-github "fuzz-productions/CoreDataDandy" ~> 0.5.2
+github "fuzz-productions/CoreDataDandy" ~> 0.6.0
 ```
 
 ### CocoaPods
 
 ```
-pod 'CoreDataDandy', '0.5.2'
+pod 'CoreDataDandy', '0.6.0'
 ```
 
 ## Usage
@@ -53,7 +44,7 @@ Save with or without a closure.
 
 ```swift
 Dandy.save()
-Dandy.save { (error: NSError) in
+Dandy.save { error in
 	// Respond to save completion.
 }
 ```
@@ -166,15 +157,15 @@ CoreDataDandy supports four xcdatamodel attributes. All decorations are declared
 
 **@primaryKey**
 
-Add this decoration to the entity's userInfo to specify which property on the entity functions as its primaryKey. For iOS 9 and later, use uniqueConstraints instead.
+Add this decoration to the entity's userInfo to specify which property on the entity functions as its primaryKey.
 
 **@mapping**
 
 Add this decoration to a property to specify an alternate mapping for this property. For instance, if a property is named "abbreviatedState," but the json value for this property is found at the key "state," add @mapping : state to the abbreviatedState's userInfo.
 
-**@NO**
+**@false**
 
-Use this decoration in conjunction with the @mapping keyword to disable mapping to the property. For instance, if your entity has an attribute named "secret" that you'd prefer to map yourself, add @mapping : @NO to secret's userInfo.
+Use this decoration in conjunction with the @mapping keyword to disable mapping to the property. For instance, if your entity has an attribute named "secret" that you'd prefer to map yourself, add @mapping : @false to secret's userInfo.
 
 **@singleton**
 

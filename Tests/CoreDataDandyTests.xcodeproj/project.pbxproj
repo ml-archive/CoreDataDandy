@@ -25,6 +25,24 @@
 		9868D5541DC7A2FA000C2E49 /* NSManagedObject+Dandy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9868D5531DC7A2FA000C2E49 /* NSManagedObject+Dandy.swift */; };
 		986BAF9F1CD2C3BB00F309C0 /* NSFileManager+Directory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 986BAF9E1CD2C3BB00F309C0 /* NSFileManager+Directory.swift */; };
 		986F4AC31DCA7F71009AC3C3 /* Conclusion+Finalization.swift in Sources */ = {isa = PBXBuildFile; fileRef = 986F4AC21DCA7F71009AC3C3 /* Conclusion+Finalization.swift */; };
+		98713E351DD4E87900986E52 /* Gossip+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98713E231DD4E87900986E52 /* Gossip+CoreDataClass.swift */; };
+		98713E361DD4E87900986E52 /* Gossip+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98713E241DD4E87900986E52 /* Gossip+CoreDataProperties.swift */; };
+		98713E371DD4E87900986E52 /* Slander+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98713E251DD4E87900986E52 /* Slander+CoreDataClass.swift */; };
+		98713E381DD4E87900986E52 /* Slander+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98713E261DD4E87900986E52 /* Slander+CoreDataProperties.swift */; };
+		98713E391DD4E87900986E52 /* Space+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98713E271DD4E87900986E52 /* Space+CoreDataClass.swift */; };
+		98713E3A1DD4E87900986E52 /* Space+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98713E281DD4E87900986E52 /* Space+CoreDataProperties.swift */; };
+		98713E3B1DD4E87900986E52 /* Hat+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98713E291DD4E87900986E52 /* Hat+CoreDataClass.swift */; };
+		98713E3C1DD4E87900986E52 /* Hat+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98713E2A1DD4E87900986E52 /* Hat+CoreDataProperties.swift */; };
+		98713E3D1DD4E87900986E52 /* Flattery+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98713E2B1DD4E87900986E52 /* Flattery+CoreDataClass.swift */; };
+		98713E3E1DD4E87900986E52 /* Flattery+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98713E2C1DD4E87900986E52 /* Flattery+CoreDataProperties.swift */; };
+		98713E3F1DD4E87900986E52 /* Conclusion+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98713E2D1DD4E87900986E52 /* Conclusion+CoreDataClass.swift */; };
+		98713E401DD4E87900986E52 /* Conclusion+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98713E2E1DD4E87900986E52 /* Conclusion+CoreDataProperties.swift */; };
+		98713E411DD4E87900986E52 /* Material+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98713E2F1DD4E87900986E52 /* Material+CoreDataClass.swift */; };
+		98713E421DD4E87900986E52 /* Material+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98713E301DD4E87900986E52 /* Material+CoreDataProperties.swift */; };
+		98713E431DD4E87900986E52 /* Plebian+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98713E311DD4E87900986E52 /* Plebian+CoreDataClass.swift */; };
+		98713E441DD4E87900986E52 /* Plebian+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98713E321DD4E87900986E52 /* Plebian+CoreDataProperties.swift */; };
+		98713E451DD4E87900986E52 /* Dandy_+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98713E331DD4E87900986E52 /* Dandy_+CoreDataClass.swift */; };
+		98713E461DD4E87900986E52 /* Dandy_+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98713E341DD4E87900986E52 /* Dandy_+CoreDataProperties.swift */; };
 		988F4A6A1B3632EE00E71046 /* CoreDataDandyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 988F4A691B3632EE00E71046 /* CoreDataDandyTests.swift */; };
 /* End PBXBuildFile section */
 
@@ -47,6 +65,24 @@
 		9868D5531DC7A2FA000C2E49 /* NSManagedObject+Dandy.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSManagedObject+Dandy.swift"; sourceTree = "<group>"; };
 		986BAF9E1CD2C3BB00F309C0 /* NSFileManager+Directory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSFileManager+Directory.swift"; sourceTree = "<group>"; };
 		986F4AC21DCA7F71009AC3C3 /* Conclusion+Finalization.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Conclusion+Finalization.swift"; sourceTree = "<group>"; };
+		98713E231DD4E87900986E52 /* Gossip+CoreDataClass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Gossip+CoreDataClass.swift"; sourceTree = "<group>"; };
+		98713E241DD4E87900986E52 /* Gossip+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Gossip+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		98713E251DD4E87900986E52 /* Slander+CoreDataClass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Slander+CoreDataClass.swift"; sourceTree = "<group>"; };
+		98713E261DD4E87900986E52 /* Slander+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Slander+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		98713E271DD4E87900986E52 /* Space+CoreDataClass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Space+CoreDataClass.swift"; sourceTree = "<group>"; };
+		98713E281DD4E87900986E52 /* Space+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Space+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		98713E291DD4E87900986E52 /* Hat+CoreDataClass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Hat+CoreDataClass.swift"; sourceTree = "<group>"; };
+		98713E2A1DD4E87900986E52 /* Hat+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Hat+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		98713E2B1DD4E87900986E52 /* Flattery+CoreDataClass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Flattery+CoreDataClass.swift"; sourceTree = "<group>"; };
+		98713E2C1DD4E87900986E52 /* Flattery+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Flattery+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		98713E2D1DD4E87900986E52 /* Conclusion+CoreDataClass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Conclusion+CoreDataClass.swift"; sourceTree = "<group>"; };
+		98713E2E1DD4E87900986E52 /* Conclusion+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Conclusion+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		98713E2F1DD4E87900986E52 /* Material+CoreDataClass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Material+CoreDataClass.swift"; sourceTree = "<group>"; };
+		98713E301DD4E87900986E52 /* Material+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Material+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		98713E311DD4E87900986E52 /* Plebian+CoreDataClass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Plebian+CoreDataClass.swift"; sourceTree = "<group>"; };
+		98713E321DD4E87900986E52 /* Plebian+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Plebian+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		98713E331DD4E87900986E52 /* Dandy_+CoreDataClass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Dandy_+CoreDataClass.swift"; sourceTree = "<group>"; };
+		98713E341DD4E87900986E52 /* Dandy_+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Dandy_+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		988F4A641B3632EE00E71046 /* CoreDataDandyTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CoreDataDandyTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		988F4A681B3632EE00E71046 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		988F4A691B3632EE00E71046 /* CoreDataDandyTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataDandyTests.swift; sourceTree = "<group>"; };
@@ -114,6 +150,24 @@
 		9867478B1CBBFD6400559E35 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				98713E231DD4E87900986E52 /* Gossip+CoreDataClass.swift */,
+				98713E241DD4E87900986E52 /* Gossip+CoreDataProperties.swift */,
+				98713E251DD4E87900986E52 /* Slander+CoreDataClass.swift */,
+				98713E261DD4E87900986E52 /* Slander+CoreDataProperties.swift */,
+				98713E271DD4E87900986E52 /* Space+CoreDataClass.swift */,
+				98713E281DD4E87900986E52 /* Space+CoreDataProperties.swift */,
+				98713E291DD4E87900986E52 /* Hat+CoreDataClass.swift */,
+				98713E2A1DD4E87900986E52 /* Hat+CoreDataProperties.swift */,
+				98713E2B1DD4E87900986E52 /* Flattery+CoreDataClass.swift */,
+				98713E2C1DD4E87900986E52 /* Flattery+CoreDataProperties.swift */,
+				98713E2D1DD4E87900986E52 /* Conclusion+CoreDataClass.swift */,
+				98713E2E1DD4E87900986E52 /* Conclusion+CoreDataProperties.swift */,
+				98713E2F1DD4E87900986E52 /* Material+CoreDataClass.swift */,
+				98713E301DD4E87900986E52 /* Material+CoreDataProperties.swift */,
+				98713E311DD4E87900986E52 /* Plebian+CoreDataClass.swift */,
+				98713E321DD4E87900986E52 /* Plebian+CoreDataProperties.swift */,
+				98713E331DD4E87900986E52 /* Dandy_+CoreDataClass.swift */,
+				98713E341DD4E87900986E52 /* Dandy_+CoreDataProperties.swift */,
 				986F4AC21DCA7F71009AC3C3 /* Conclusion+Finalization.swift */,
 			);
 			path = Models;
@@ -225,22 +279,40 @@
 				9836F90F1CBEFE2300AD92DF /* CoreDataValueConverter.swift in Sources */,
 				9868D5541DC7A2FA000C2E49 /* NSManagedObject+Dandy.swift in Sources */,
 				9836F90A1CBEFE2300AD92DF /* PropertyDescription.swift in Sources */,
+				98713E371DD4E87900986E52 /* Slander+CoreDataClass.swift in Sources */,
 				9836F90C1CBEFE2300AD92DF /* Dictionary+Dandy.swift in Sources */,
 				9836F9081CBEFE2300AD92DF /* ObjectFactory.swift in Sources */,
 				986F4AC31DCA7F71009AC3C3 /* Conclusion+Finalization.swift in Sources */,
 				988F4A6A1B3632EE00E71046 /* CoreDataDandyTests.swift in Sources */,
+				98713E451DD4E87900986E52 /* Dandy_+CoreDataClass.swift in Sources */,
 				9836F9051CBEFE2300AD92DF /* EntityMapper.swift in Sources */,
 				9836F9071CBEFE2300AD92DF /* MappingFinalizer.swift in Sources */,
+				98713E411DD4E87900986E52 /* Material+CoreDataClass.swift in Sources */,
 				986BAF9F1CD2C3BB00F309C0 /* NSFileManager+Directory.swift in Sources */,
 				9836F9021CBEFE2300AD92DF /* Constants.swift in Sources */,
+				98713E431DD4E87900986E52 /* Plebian+CoreDataClass.swift in Sources */,
+				98713E3F1DD4E87900986E52 /* Conclusion+CoreDataClass.swift in Sources */,
 				9836F9041CBEFE2300AD92DF /* CoreDataDandy.swift in Sources */,
+				98713E3C1DD4E87900986E52 /* Hat+CoreDataProperties.swift in Sources */,
+				98713E3D1DD4E87900986E52 /* Flattery+CoreDataClass.swift in Sources */,
+				98713E461DD4E87900986E52 /* Dandy_+CoreDataProperties.swift in Sources */,
 				9836F90B1CBEFE2300AD92DF /* Serializer.swift in Sources */,
+				98713E441DD4E87900986E52 /* Plebian+CoreDataProperties.swift in Sources */,
+				98713E381DD4E87900986E52 /* Slander+CoreDataProperties.swift in Sources */,
 				9836F9101CBEFE2300AD92DF /* ValueConverter.swift in Sources */,
+				98713E3A1DD4E87900986E52 /* Space+CoreDataProperties.swift in Sources */,
+				98713E361DD4E87900986E52 /* Gossip+CoreDataProperties.swift in Sources */,
+				98713E3E1DD4E87900986E52 /* Flattery+CoreDataProperties.swift in Sources */,
 				9836F90D1CBEFE2300AD92DF /* NSEntityDescription+Dandy.swift in Sources */,
 				9836F9091CBEFE2300AD92DF /* PersistentStackCoordinator.swift in Sources */,
+				98713E401DD4E87900986E52 /* Conclusion+CoreDataProperties.swift in Sources */,
 				981C80231DC919BF003EFB04 /* DandyModel.xcdatamodeld in Sources */,
+				98713E391DD4E87900986E52 /* Space+CoreDataClass.swift in Sources */,
 				9836F9061CBEFE2300AD92DF /* Logger.swift in Sources */,
+				98713E421DD4E87900986E52 /* Material+CoreDataProperties.swift in Sources */,
+				98713E351DD4E87900986E52 /* Gossip+CoreDataClass.swift in Sources */,
 				9836F90E1CBEFE2300AD92DF /* ConvertibleType.swift in Sources */,
+				98713E3B1DD4E87900986E52 /* Hat+CoreDataClass.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
