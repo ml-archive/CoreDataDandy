@@ -2,8 +2,8 @@
 
 [![Build Status](https://travis-ci.org/fuzz-productions/CoreDataDandy.svg?branch=master)](https://travis-ci.org/fuzz-productions/CoreDataDandy)
 [![Carthage Compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/fuzz-productions/CoreDataDandy)
-[![CocoaPods Compatible](https://img.shields.io/badge/pod-0.6.0-blue.svg)](https://cocoapods.org/pods/CoreDataDandy)
-[![GitHub license](https://img.shields.io/badge/license-MIT-lightgrey.svg)](https://github.com/fuzz-productions/CoreDataDandy/blob/master/LICENSE) 
+[![CocoaPods Compatible](https://img.shields.io/badge/pod-0.6.1-blue.svg)](https://cocoapods.org/pods/CoreDataDandy)
+[![GitHub license](https://img.shields.io/badge/license-MIT-lightgrey.svg)](https://github.com/fuzz-productions/CoreDataDandy/blob/master/LICENSE)
 
 ## Introduction
 Core Data Dandy is a feature-light wrapper around Core Data that simplifies common database operations.
@@ -20,20 +20,20 @@ Core Data Dandy is a feature-light wrapper around Core Data that simplifies comm
 ### Carthage
 
 ```
-github "fuzz-productions/CoreDataDandy" ~> 0.6.0
+github "fuzz-productions/CoreDataDandy" ~> 0.6.1
 ```
 
 ### CocoaPods
 
 ```
-pod 'CoreDataDandy', '0.6.0'
+pod 'CoreDataDandy', '0.6.1'
 ```
 
 ## Usage
 
 All standard usage of Core Data Dandy should flow through CoreDataDandy's sharedDandy. More advanced users, however, may find its various components useful in isolation.
 
-### Bootstrapping 
+### Bootstrapping
 ```swift
 CoreDataDandy.wake("ModelName")
 ```
@@ -174,4 +174,3 @@ Add this decoration to an entity's userInfo if there should never be more than o
 ## Warnings
 
 To receive console warnings in Swift projects, add the entry -D DEBUG in your project's build settings under Swift Compiler - Custom Flags.
-
