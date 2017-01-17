@@ -121,9 +121,9 @@ public struct ObjectFactory {
 			return object
 		}
 		
-		guard let relatedTypeName = relatedEntity.name,
+		guard let relatedTypeName = relatedEntity.managedObjectClassName,
 		let relatedEntityType = NSManagedObject.type(named: relatedTypeName) else {
-				log(format("No type could be found for \(relationship.name) of type named \(relatedEntity.name). Provide a subclassed type to enable serialization."))
+				log(format("No type could be found for \(relatedEntity.managedObjectClassName) of type named \(relatedEntity.name). Provide a subclassed type to enable serialization."))
 				return object
 		}
 		
