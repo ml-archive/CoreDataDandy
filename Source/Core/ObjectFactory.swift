@@ -49,7 +49,7 @@ public struct ObjectFactory {
 		if	let name = entity.name,
 			let primaryKeyValue = entity.primaryKeyValueFromJSON(json: json) {
 			// Attempt to fetch or create unique object for primaryKey
-			let object = Dandy.insertUnique(entityName: name, primaryKeyValue: primaryKeyValue)
+			let object = Dandy.insertUnique(name, primaryKeyValue: primaryKeyValue)
 			if var object = object {
 				object = build(object: object, from: json)
 				finalizeMapping(of: object, from: json)
