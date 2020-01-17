@@ -47,41 +47,41 @@ extension ValueConverter {
 
 struct BooleanConverter: ValueConverter {
 	func convert(value: AnyObject) -> AnyObject? {
-		return convert(value, to: BooleanConvertible.self) { $0.convertToBoolean() }
+		return convert(value: value, to: BooleanConvertible.self) { $0.convertToBoolean() }
 	}
 }
 struct DateConverter: ValueConverter {
 	func convert(value: AnyObject) -> AnyObject? {
-		return convert(value, to: DateConvertible.self) { $0.convertToDate() }
+		return convert(value: value, to: DateConvertible.self) { $0.convertToDate() }
 	}
 }
 struct DataConverter: ValueConverter {
 	func convert(value: AnyObject) -> AnyObject? {
-		return convert(value, to: DataConvertible.self) { $0.convertToData() }
+		return convert(value: value, to: DataConvertible.self) { $0.convertToData() }
 	}
 }
 struct DoubleConverter: ValueConverter {
 	func convert(value: AnyObject) -> AnyObject? {
-		return convert(value, to: DoubleConvertible.self) { $0.convertToDouble() }
+		return convert(value: value, to: DoubleConvertible.self) { $0.convertToDouble() }
 	}
 }
 struct DecimalConverter: ValueConverter {
 	func convert(value: AnyObject) -> AnyObject? {
-		return convert(value, to: DecimalConvertible.self) { $0.convertToDecimal() }
+		return convert(value: value, to: DecimalConvertible.self) { $0.convertToDecimal() }
 	}
 }
 struct FloatConverter: ValueConverter {
 	func convert(value: AnyObject) -> AnyObject? {
-		return convert(value, to: FloatConvertible.self) { $0.convertToFloat() }
+		return convert(value: value, to: FloatConvertible.self) { $0.convertToFloat() }
 	}
 }
 struct IntConverter: ValueConverter {
 	func convert(value: AnyObject) -> AnyObject? {
-		return convert(value, to: IntConvertible.self) { $0.convertToInt() }
+		return convert(value: value, to: IntConvertible.self) { $0.convertToInt() }
 	}
 }
 struct StringConverter: ValueConverter {
 	func convert(value: AnyObject) -> AnyObject? {
-		return convert(value, to: StringConvertible.self) { $0.convertToString() }
+		return convert(value: value, to: StringConvertible.self) { $0.convertToString() }
 	}
 }

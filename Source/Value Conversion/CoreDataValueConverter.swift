@@ -37,20 +37,20 @@ import CoreData
 public struct CoreDataValueConverter {
 	/// A shared dateFormatter for regularly converting strings of a known pattern
 	/// to dates and vice-versa.
-	public static let dateFormatter = NSDateFormatter()
+	public static let dateFormatter = DateFormatter()
 	
 	/// Maps `NSAttributeTypes` to their corresponding type converters.
 	private static let typeConverters: [NSAttributeType: ValueConverter] = [
-		.Integer16AttributeType: IntConverter(),
-		.Integer32AttributeType: IntConverter(),
-		.Integer64AttributeType: IntConverter(),
-		.DecimalAttributeType: DecimalConverter(),
-		.DoubleAttributeType: DoubleConverter(),
-		.FloatAttributeType: FloatConverter(),
-		.StringAttributeType: StringConverter(),
-		.BooleanAttributeType: BooleanConverter(),
-		.DateAttributeType: DateConverter(),
-		.BinaryDataAttributeType: DataConverter()
+		.integer16AttributeType: IntConverter(),
+		.integer32AttributeType: IntConverter(),
+		.integer64AttributeType: IntConverter(),
+		.decimalAttributeType: DecimalConverter(),
+		.doubleAttributeType: DoubleConverter(),
+		.floatAttributeType: FloatConverter(),
+		.stringAttributeType: StringConverter(),
+		.booleanAttributeType: BooleanConverter(),
+		.dateAttributeType: DateConverter(),
+		.binaryDataAttributeType: DataConverter()
 	]
 	/// Attempts to convert a given value to a type matching the specified entity property type. For instance,
 	/// if "3" is passed but the specified entity's property is defined as an NSNumber, @3 will be returned.
@@ -65,7 +65,7 @@ public struct CoreDataValueConverter {
 	public static func convert(value: AnyObject, forEntity entity: NSEntityDescription, property: String) -> AnyObject? {
 		let attributeDescription = entity.propertiesByName[property] as? NSAttributeDescription
 		if	let attributeDescription = attributeDescription {
-			return convert(value, toType: attributeDescription.attributeType)
+			return convert(value: value, toType: attributeDescription.attributeType)
 		}
 		return nil
 	}
@@ -78,7 +78,7 @@ public struct CoreDataValueConverter {
 	/// - returns: If the conversion was successful, the converted value. Otherwise, nil.
 	public static func convert(value: AnyObject, toType type: NSAttributeType) -> AnyObject? {
 		if let converter = typeConverters[type] {
-			return converter.convert(value)
+			return converter.convert(value: value)
 		}
 		return nil
 	}

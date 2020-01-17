@@ -61,37 +61,37 @@ extension NSDate : DateConvertible, NumericConvertible, StringConvertible {
 		return self
 	}
 	func convertToDecimal() -> NSDecimalNumber? {
-		return NSDecimalNumber(double: self.timeIntervalSince1970)
+		return NSDecimalNumber(value: self.timeIntervalSince1970)
 	}
 	func convertToDouble() -> NSNumber? {
-		return NSNumber(double: self.timeIntervalSince1970)
+		return NSNumber(value: self.timeIntervalSince1970)
 	}
 	func convertToFloat() -> NSNumber? {
-		return NSNumber(float: Float(self.timeIntervalSince1970))
+		return NSNumber(value: Float(self.timeIntervalSince1970))
 	}
 	func convertToInt() -> NSNumber? {
-		return NSNumber(integer: Int(round(self.timeIntervalSince1970)))
+		return NSNumber(value: Int(round(self.timeIntervalSince1970)))
 	}
 	func convertToString() -> NSString? {
-		return CoreDataValueConverter.dateFormatter.stringFromDate(self)
+		return CoreDataValueConverter.dateFormatter.string(from: self as Date) as? NSString
 	}
 }
-// MARK: - NSData -
+// MARK: - Data -
 extension NSData : DataConvertible, StringConvertible {
 	func convertToData() -> NSData? {
 		return self
 	}
 	func convertToString() -> NSString? {
-		return NSString(data: self, encoding: NSUTF8StringEncoding)
+		return String(data: self as Data, encoding: String.Encoding(rawValue: String.Encoding.utf8.rawValue)) as NSString?
 	}
 }
 // MARK: - NSNumber -
-extension NSNumber : ConvertibleType {
+extension NSNumber: ConvertibleType {
 	func convertToBoolean() -> NSNumber? {
-		if self.integerValue == 0 {
-			return NSNumber(bool: false)
-		} else if self.integerValue >= 1 {
-			return NSNumber(bool: true)
+		if self.intValue == 0 {
+			return NSNumber(value: false)
+		} else if self.intValue >= 1 {
+			return NSNumber(value: true)
 		}
 		return nil
 	}
@@ -99,52 +99,52 @@ extension NSNumber : ConvertibleType {
 		return NSDate(timeIntervalSince1970: self.doubleValue)
 	}
 	func convertToData() -> NSData? {
-		return self.stringValue.dataUsingEncoding(NSUTF8StringEncoding)
+		return self.stringValue.data(using: String.Encoding.utf8) as NSData?
 	}
 	func convertToDecimal() -> NSDecimalNumber? {
-		return NSDecimalNumber(double: self.doubleValue)
+		return NSDecimalNumber(value: self.doubleValue)
 	}
 	func convertToDouble() -> NSNumber? {
-		return NSNumber(double: self.doubleValue)
+		return NSNumber(value: self.doubleValue)
 	}
 	func convertToFloat() -> NSNumber? {
-		return NSNumber(float: self.floatValue)
+		return NSNumber(value: self.floatValue)
 	}
 	func convertToInt() -> NSNumber? {
-		return NSNumber(integer: self.integerValue)
+		return NSNumber(value: self.intValue)
 	}
 	func convertToString() -> NSString? {
-		return self.stringValue
+		return self.stringValue as NSString
 	}
 }
 // MARK:  - NSString -
 extension NSString : ConvertibleType {
 	func convertToBoolean() -> NSNumber? {
-		let lowercaseValue = self.lowercaseString
+		let lowercaseValue = self.lowercased
 		if lowercaseValue == "yes" || lowercaseValue == "true" || lowercaseValue == "1" {
-			return NSNumber(bool: true)
+			return NSNumber(value: true)
 		} else if lowercaseValue == "no" || lowercaseValue == "false" || lowercaseValue == "0" {
-			return NSNumber(bool: false)
+			return NSNumber(value: false)
 		}
 		return nil
 	}
 	func convertToDate() -> NSDate? {
-		return CoreDataValueConverter.dateFormatter.dateFromString(self as String)
+		return CoreDataValueConverter.dateFormatter.date(from: self as String) as NSDate?
 	}
 	func convertToData() -> NSData? {
-		return self.dataUsingEncoding(NSUTF8StringEncoding)
+		return self.data(using: String.Encoding.utf8.rawValue) as NSData?
 	}
 	func convertToDecimal() -> NSDecimalNumber? {
-		return NSDecimalNumber(double: self.doubleValue)
+		return NSDecimalNumber(value: self.doubleValue)
 	}
 	func convertToDouble() -> NSNumber? {
-		return NSNumber(double: self.doubleValue)
+		return NSNumber(value: self.doubleValue)
 	}
 	func convertToFloat() -> NSNumber? {
-		return NSNumber(float: self.floatValue)
+		return NSNumber(value: self.floatValue)
 	}
 	func convertToInt() -> NSNumber? {
-		return NSNumber(integer: self.integerValue)
+		return NSNumber(value: self.integerValue)
 	}
 	func convertToString() -> NSString? {
 		return self

@@ -57,24 +57,24 @@ public struct Serializer {
 	///
 	/// - returns: A json representation of this object and its relationships if one could be produced. Otherwise, nil.
 	public static func serialize(object: NSManagedObject, including relationships: [String]? = nil) -> [String: AnyObject]? {
-		var json = [String: AnyObject]()
-		let map = EntityMapper.map(object.entity)
+		var json = [String: Any]()
+		let map = EntityMapper.map(entity: object.entity)
 		if let map = map {
 			for (property, description) in map {
 				// Map attributes, ensuring mapping conversion
 				if description.type == .Attribute {
-					json[property] = object.valueForKey(description.name)
+					json[property] = object.value(forKey: description.name) as AnyObject?
 				}
-				else if let relationships = relationships
-					where (relationships.contains(description.name)
-						|| nestedSerializationTargets(for: description.name, including: relationships)?.count > 0) {
+				else if let relationships = relationships,
+					let targets = nestedSerializationTargets(for: description.name, including: relationships), (relationships.contains(description.name) || targets.count > 0) {
 					let nestedRelationships = nestedSerializationTargets(for: description.name, including: relationships)
 					// Map relationships and recurse into nested relationships
 					if description.toMany {
-						let relatedObjects = description.ordered ? object.valueForKey(description.name)?.array: object.valueForKey(description.name)?.allObjects
+						let objects = (object.value(forKey: description.name) as? AnyObject)
+						let relatedObjects = description.ordered ? objects?.array: objects?.allObjects
 						if let relatedObjects = relatedObjects as? [NSManagedObject] {
 							if relatedObjects.count > 0 {
-								json[property] = serialize(relatedObjects, including: nestedRelationships)
+								json[property] = serialize(objects: relatedObjects, including: nestedRelationships)
 							}
 							else {
 								json[property] = [[:]]
@@ -86,8 +86,8 @@ public struct Serializer {
 						}
 					}
 					else {
-						if let relationship = object.valueForKey(description.name) as? NSManagedObject {
-							json[property] = serialize(relationship, including: nestedRelationships) as? AnyObject
+						if let relationship = object.value(forKey: description.name) as? NSManagedObject {
+							json[property] = serialize(object: relationship, including: nestedRelationships) as? AnyObject
 						}
 						// Assume nils to intend empty objects
 						else {
@@ -98,10 +98,10 @@ public struct Serializer {
 			}
 		}
 		if json.count == 0 {
-			log(message("Failed to serialize object \(object) including relationships \(relationships)"))
+			debugPrint("Failed to serialize object \(object) including relationships \(relationships)")
 			return nil
 		}
-		return json
+		return json as [String : AnyObject]
 	}
 	
 	/// Recursively invokes other class methods to produce a json array, including relationships.
@@ -113,7 +113,7 @@ public struct Serializer {
 	public static func serialize(objects: [NSManagedObject], including relationships: [String]? = nil) -> [[String: AnyObject]]? {
 		var json = [[String: AnyObject]]()
 		for object in objects {
-			if let relationshipJSON = serialize(object, including: relationships) {
+			if let relationshipJSON = serialize(object: object, including: relationships) {
 				json.append(relationshipJSON)
 			}
 		}
@@ -130,9 +130,9 @@ public struct Serializer {
 	/// - returns: An array of nested relationships targeted for serialization.
 	static func nestedSerializationTargets(for relationship: String, including nestedRelationships: [String]?) -> [String]? {
 		if let nestedRelationships = nestedRelationships {
-			let keypaths = nestedRelationships.filter({$0.rangeOfString(relationship) != nil && $0.rangeOfString(".") != nil})
+			let keypaths = nestedRelationships.filter({$0.range(of: relationship) != nil && $0.range(of: ".") != nil})
 			// Eliminate the relationship name and the period, recursing one level deeper.
-			let nestedTargets = keypaths.map({$0.stringByReplacingOccurrencesOfString(relationship + ".", withString: "")})
+			let nestedTargets = keypaths.map({$0.replacingOccurrences(of: relationship + ".", with: "")})
 			return nestedTargets.count > 0 ? nestedTargets: nil
 		}
 		return nil

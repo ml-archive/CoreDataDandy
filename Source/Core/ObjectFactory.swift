@@ -47,18 +47,18 @@ public struct ObjectFactory {
 	public static func make(entity: NSEntityDescription, from json: [String: AnyObject]) -> NSManagedObject? {
 		// Find primary key
 		if	let name = entity.name,
-			let primaryKeyValue = entity.primaryKeyValueFromJSON(json) {
+			let primaryKeyValue = entity.primaryKeyValueFromJSON(json: json) {
 			// Attempt to fetch or create unique object for primaryKey
-			let object = Dandy.insertUnique(name, primaryKeyValue: primaryKeyValue)
+			let object = Dandy.insertUnique(entityName: name, primaryKeyValue: primaryKeyValue)
 			if var object = object {
-				object = build(object, from: json)
+				object = build(object: object, from: json)
 				finalizeMapping(of: object, from: json)
 			} else {
-				log(message("A unique object could not be generated for entity \(entity.name) from json \n\(json)."))
+				debugPrint("A unique object could not be generated for entity \(entity.name) from json \n\(json).")
 			}
 			return object
 		}
-		log(message("A unique object could not be generated for entity \(entity.name) from json \n\(json)."))
+		debugPrint("A unique object could not be generated for entity \(entity.name) from json \n\(json).")
 		return nil
 	}
 	
@@ -70,18 +70,18 @@ public struct ObjectFactory {
 	///
 	/// - returns: The object passed in with newly mapped values where mapping was possible.
 	public static func build(object: NSManagedObject, from json: [String: AnyObject]) -> NSManagedObject {
-		if let map = EntityMapper.map(object.entity) {
+		if let map = EntityMapper.map(entity: object.entity) {
 			// Begin mapping values from json to object properties
 			for (key, description) in map {
-				if let value: AnyObject = valueAt(key, of: json) {
+				if let value: AnyObject = valueAt(keypath: key, of: json) {
 					// A valid mapping was found for an attribute of a known type
 					if description.type == .Attribute,
 						let type = description.attributeType {
-							object.setValue(CoreDataValueConverter.convert(value, toType: type), forKey: description.name)
+						object.setValue(CoreDataValueConverter.convert(value: value, toType: type), forKey: description.name)
 					}
 						// A valid mapping was found for a relationship of a known type
 					else if description.type == .Relationship {
-						make(description, to: object, from: value)
+						make(relationship: description, to: object, from: value)
 					}
 				}
 			}
@@ -103,29 +103,29 @@ public struct ObjectFactory {
 	static func make(relationship: PropertyDescription, to object: NSManagedObject, from json: AnyObject) -> NSManagedObject {
 		if let relatedEntity = relationship.destinationEntity {
 			// A dictionary was passed for a toOne relationship
-			if let json = json as? [String: AnyObject] where !relationship.toMany  {
-				if let relation = make(relatedEntity, from: json) {
+			if let json = json as? [String: AnyObject], !relationship.toMany  {
+				if let relation = make(entity: relatedEntity, from: json) {
 					object.setValue(relation, forKey: relationship.name)
 				} else {
-					log(message("A relationship named \(relationship.name) could not be established for object \(object) from json \n\(json)."))
+					debugPrint("A relationship named \(relationship.name) could not be established for object \(object) from json \n\(json).")
 				}
 				return object
 			}
 			// An array was passed for a toMany relationship
-			else if let json = json as? [[String: AnyObject]] where relationship.toMany  {
+			else if let json = json as? [[String: AnyObject]], relationship.toMany  {
 				var relations = [NSManagedObject]()
 				for child in json {
-					if let relation = make(relatedEntity, from: child) {
+					if let relation = make(entity: relatedEntity, from: child) {
 						relations.append(relation)
 					} else {
-						log(message("A relationship named \(relationship.name) could not be established for object \(object) from json \n\(child)."))
+						debugPrint("A relationship named \(relationship.name) could not be established for object \(object) from json \n\(child).")
 					}
 				}
 				object.setValue(relationship.ordered ? NSOrderedSet(array: relations): NSSet(array: relations), forKey: relationship.name)
 				return object
 			}
 		}
-		log(message("A relationship named \(relationship.name) could not be established for object \(object) from json \n\(json)."))
+		debugPrint("A relationship named \(relationship.name) could not be established for object \(object) from json \n\(json).")
 		return object
 	}
 	

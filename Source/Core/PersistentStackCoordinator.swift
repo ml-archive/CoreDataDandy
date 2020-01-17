@@ -42,8 +42,8 @@ public class PersistentStackCoordinator {
 	// MARK: - Lazy stack initialization -
 	/// The .xcdatamodel to read from.
 	lazy var managedObjectModel: NSManagedObjectModel = {
-		let modelURL = NSBundle(forClass: self.dynamicType).URLForResource(self.managedObjectModelName, withExtension: "momd")!
-		return NSManagedObjectModel(contentsOfURL: modelURL)!
+		let modelURL = Bundle(for: type(of: self)).url(forResource: self.managedObjectModelName, withExtension: "momd")!
+		return NSManagedObjectModel(contentsOf: modelURL)!
 	}()
 	
 	/// The persistent store coordinator, which manages disk operations.
@@ -56,52 +56,52 @@ public class PersistentStackCoordinator {
 	/// The primary managed object context. Note the inclusion of the parent context, which takes disk operations off
 	/// the main thread.
 	public lazy var mainContext: NSManagedObjectContext = { [unowned self] in
-		var mainContext = NSManagedObjectContext(concurrencyType: .MainQueueConcurrencyType)
-		mainContext.mergePolicy = NSMergePolicy(mergeType: NSMergePolicyType.MergeByPropertyObjectTrumpMergePolicyType)
+		var mainContext = NSManagedObjectContext(concurrencyType: .mainQueueConcurrencyType)
+		mainContext.mergePolicy = NSMergePolicy(merge: NSMergePolicyType.mergeByPropertyObjectTrumpMergePolicyType)
 		self.connectPrivateContextToPersistentStoreCoordinator()
-		mainContext.parentContext = self.privateContext
+		mainContext.parent = self.privateContext
 		return mainContext
 	}()
 	
 	/// Connects the private context with its PSC on the correct thread, waits for the connection to take place,
 	/// then announces its completion via the initializationCompletion closure.
 	func connectPrivateContextToPersistentStoreCoordinator() {
-		self.privateContext.performBlockAndWait({ [unowned self] in
+		self.privateContext.performAndWait({ [unowned self] in
 			self.privateContext.persistentStoreCoordinator = self.persistentStoreCoordinator
 			if let completion = self.persistentStoreConnectionCompletion {
-				dispatch_async(dispatch_get_main_queue(), {
+				DispatchQueue.main.async {
 					completion()
-				})
+				}
 			}
 		})
 	}
 	
 	/// A context that escorts disk operations off the main thread.
 	lazy var privateContext: NSManagedObjectContext = { [unowned self] in
-		var privateContext = NSManagedObjectContext(concurrencyType: .PrivateQueueConcurrencyType)
-		privateContext.mergePolicy = NSMergePolicy(mergeType: NSMergePolicyType.MergeByPropertyObjectTrumpMergePolicyType)
+		var privateContext = NSManagedObjectContext(concurrencyType: .privateQueueConcurrencyType)
+		privateContext.mergePolicy = NSMergePolicy(merge: NSMergePolicyType.mergeByPropertyObjectTrumpMergePolicyType)
 		return privateContext
 	}()
 	
 	// MARK: - Convenience accessors -
 	/// - returns: The path to the Documents directory of a given device. This is where the sqlite file will be saved, and is a
 	/// useful value for debugging purposes.
-	static var applicationDocumentsDirectory: NSURL = {
-		let urls = NSFileManager.defaultManager().URLsForDirectory(.DocumentDirectory, inDomains: .UserDomainMask)
+	static var applicationDocumentsDirectory: URL = {
+		let urls = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
 		return urls[urls.count - 1]
 		}()
 	
 	/// - returns: The path to the sqlite file that stores the application's data.
-	static var persistentStoreURL: NSURL = {
-		return applicationDocumentsDirectory.URLByAppendingPathComponent("Model.sqlite")
+	static var persistentStoreURL: URL = {
+		return applicationDocumentsDirectory.appendingPathComponent("Model.sqlite")
 		}()
 	
 	// MARK: - Stack clearing -
 	/// Clear the managed object contexts.
 	func resetManageObjectContext() {
-		mainContext.performBlockAndWait({[unowned self] in
+		mainContext.performAndWait({[unowned self] in
 			self.mainContext.reset()
-			self.privateContext.performBlockAndWait({
+			self.privateContext.performAndWait({
 				self.privateContext.reset()
 			})
 		})
@@ -121,27 +121,29 @@ extension NSPersistentStoreCoordinator {
 	func resetPersistentStore() {
 		for store in persistentStores {
 			do {
-				try removePersistentStore(store)
+				try remove(store)
 			} catch {
-				log(message("Failure to remove persistent store"))
+				debugPrint("Failure to remove persistent store")
 			}
 		}
 		do {
-			let options = [NSMigratePersistentStoresAutomaticallyOption: NSNumber(bool: true), NSInferMappingModelAutomaticallyOption: NSNumber(bool: true)]
-			try addPersistentStoreWithType(NSSQLiteStoreType, configuration: nil,
-				URL: PersistentStackCoordinator.persistentStoreURL,
+			let options = [NSMigratePersistentStoresAutomaticallyOption: NSNumber(value: true), NSInferMappingModelAutomaticallyOption: NSNumber(value: true)]
+			try addPersistentStore(
+				ofType: NSSQLiteStoreType,
+				configurationName: nil,
+				at: PersistentStackCoordinator.persistentStoreURL as URL,
 				options: options)
 		} catch {
-			var dict = [String: AnyObject]()
+			var dict = [String: Any]()
 			dict[NSLocalizedDescriptionKey] = "Failed to initialize the application's saved data"
 			dict[NSLocalizedFailureReasonErrorKey] = "There was an error creating or loading the application's saved data."
 			dict[NSUnderlyingErrorKey] = error as NSError
 			let error = NSError(domain: DandyErrorDomain, code: 9999, userInfo: dict)
-			log(message("Failure to add persistent store", with: error))
+			debugPrint("Failure to add persistent store  ‼️ ERROR: \(error.description)")
 			do {
-				try NSFileManager.defaultManager().removeItemAtURL(PersistentStackCoordinator.persistentStoreURL)
+				try FileManager.default.removeItem(at: PersistentStackCoordinator.persistentStoreURL)
 			} catch {
-				log(message("Failure to remove cached sqlite file"))
+				debugPrint("Failure to remove cached sqlite file")
 			}
 			EntityMapper.clearCache()
 			#if !TEST

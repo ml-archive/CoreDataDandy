@@ -30,23 +30,25 @@ import CoreData
 // MARK: - NSEntityDescription+UserInfo -
 extension NSEntityDescription {
 	/// Recursively collects all userInfo values from potential superentities
-	var allUserInfo: [NSObject: AnyObject]? {
+	var allUserInfo: [String: AnyObject]? {
 		get {
-			return collectedEntityValuesFromDictionaryClosure({return $0.userInfo as? [String: AnyObject]})
+			return collectedEntityValuesFromDictionaryClosure(dictionaryClosure: {
+				return $0.userInfo as? [String: AnyObject]})
 		}
 	}
 	
 	/// Recursively collects all attribute values from potential superentities
 	var allAttributes: [String: NSAttributeDescription]? {
 		get {
-			return collectedEntityValuesFromDictionaryClosure({return $0.attributesByName}) as? [String: NSAttributeDescription]
+			return collectedEntityValuesFromDictionaryClosure(dictionaryClosure: {
+				return $0.attributesByName}) as? [String: NSAttributeDescription]
 		}
 	}
 	
 	/// Recursively collects all relationship values from potential superentities
 	var allRelationships: [String: NSRelationshipDescription]? {
 		get {
-			return collectedEntityValuesFromDictionaryClosure({return $0.relationshipsByName}) as? [String: NSRelationshipDescription]
+			return collectedEntityValuesFromDictionaryClosure(dictionaryClosure: {return $0.relationshipsByName}) as? [String: NSRelationshipDescription]
 		}
 	}
 	
@@ -55,7 +57,8 @@ extension NSEntityDescription {
 	var uniqueConstraint: String? {
 		get {
 			if #available(iOS 9.0, *) {
-				if let constraint = uniquenessConstraints.first?.first?.name {
+				// TODO: Check this
+				if let constraint = uniquenessConstraints.first?.first.debugDescription {
 					return constraint
 				}
 				else if let superEntity = superentity {
@@ -78,7 +81,7 @@ extension NSEntityDescription {
 		// This approach ensures children override parent values.
 		for entity in entityHierarchy {
 			if let newValues = dictionaryClosure(entity) {
-				values.addEntriesFrom(newValues)
+				values.addEntriesFrom(dictionary: newValues)
 			}
 		}
 		return values
@@ -91,7 +94,7 @@ extension NSEntityDescription {
 			var entities = [NSEntityDescription]()
 			var entity: NSEntityDescription? = self
 			while let currentEntity = entity {
-				entities.insert(currentEntity, atIndex: 0)
+				entities.insert(currentEntity, at: 0)
 				entity = entity?.superentity
 			}
 			return entities
@@ -102,7 +105,7 @@ extension NSEntityDescription {
 // MARK: - NSEntityDescription+Construction -
 extension NSEntityDescription {
 	class func forEntity(name: String) -> NSEntityDescription? {
-		return NSEntityDescription.entityForName(name, inManagedObjectContext: Dandy.coordinator.mainContext)
+		return NSEntityDescription.entity(forEntityName: name, in: Dandy.coordinator.mainContext)
 	}
 }
 
@@ -131,7 +134,7 @@ extension NSEntityDescription {
 	/// - parameter json: JSON form which a primaryKey will be extracted
 	func primaryKeyValueFromJSON(json: [String: AnyObject]) -> AnyObject? {
 		if	let primaryKey = primaryKey,
-			let entityMap = EntityMapper.map(self) {
+			let entityMap = EntityMapper.map(entity: self) {
 				let filteredMap = entityMap.filter({ $1.name == primaryKey }).map({ $0.0 })
 				// If the primary key has an alternate mapping, return the value from the alternate mapping.
 				// Otherwise, return the json value matching the name of the primary key.
@@ -149,7 +152,9 @@ extension NSEntityDescription {
 	/// - returns: A predicate that may be used to fetch unique objects
 	func primaryKeyPredicate(for primaryKeyValue: AnyObject) -> NSPredicate? {
 		if	let primaryKey = primaryKey,
-			let value: AnyObject = CoreDataValueConverter.convert(primaryKeyValue, forEntity: self, property: primaryKey) {
+			let value: AnyObject = CoreDataValueConverter.convert(value: primaryKeyValue,
+																  forEntity: self,
+																  property: primaryKey) {
 				return NSPredicate(format: "%K = %@", argumentArray: [primaryKey, value])
 		}
 		return nil
