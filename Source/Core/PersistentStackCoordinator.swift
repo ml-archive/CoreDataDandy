@@ -42,7 +42,7 @@ public class PersistentStackCoordinator {
 	// MARK: - Lazy stack initialization -
 	/// The .xcdatamodel to read from.
 	lazy var managedObjectModel: NSManagedObjectModel = {
-		let modelURL = Bundle(for: type(of: self)).url(forResource: self.managedObjectModelName, withExtension: "momd")!
+		let modelURL = Bundle.main.url(forResource: self.managedObjectModelName, withExtension: "momd")!
 		return NSManagedObjectModel(contentsOf: modelURL)!
 	}()
 	
