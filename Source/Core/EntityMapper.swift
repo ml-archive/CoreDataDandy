@@ -121,9 +121,8 @@ extension EntityMapper {
 	
 	/// - returns: The file path where the entityMap is archived.
 	private static var entityMapFilePath: String = {
-		let pathArray = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)
-		let documentPath = pathArray.first!
-		return NSString(string: documentPath).appendingPathComponent(CACHED_MAPPING_LOCATION)
+		let path = NSString(string:PersistentStackCoordinator.applicationDocumentsDirectory.relativePath)
+		return path.appendingPathComponent(CACHED_MAPPING_LOCATION)
 	}()
 	
 	/// Archives an entity's mapping. Note, this mapping, will be saved to the `cachedEntityMap` at the key

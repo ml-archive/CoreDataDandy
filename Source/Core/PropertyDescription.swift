@@ -33,11 +33,24 @@ import CoreData
 /// - Attribute: Marks a property description corresponding to an attribute.
 /// - Relationship: Marks a property description corresponding to an relationship.
 enum PropertyType: Int {
-	case Unknown = 0
-	case Attribute
-	case Relationship
+	case unknown = 0
+	case attribute
+	case relationship
 }
-
+class MyObj: NSObject, NSCoding {
+	func encode(with coder: NSCoder) {
+		print("encode")
+	}
+	
+	override init(){
+		print("my init")
+	}
+	required init?(coder: NSCoder) {
+		print("init")
+	}
+	
+	
+}
 /// `PropertyDescription` provides a convenient means of accessing information necessary to map json into an
 /// NSManagedObject. It encapsulates values found in `NSAttributeDescriptions` and `NSRelationshipDescriptions`, such as
 /// an attribute's type or if a relationship is ordered or not.
@@ -46,7 +59,7 @@ final class PropertyDescription : NSObject {
 	var name = String()
 	
 	/// The property type: .Unknown, .Attribute, or .Relationship.
-	var type = PropertyType.Unknown
+	var type = PropertyType.unknown
 	
 	/// The type of an attribute.
 	var attributeType: NSAttributeType?
@@ -80,7 +93,7 @@ final class PropertyDescription : NSObject {
 	/// An initializer that builds a `PropertyDescription` by extracting relevant values from an `NSAttributeDescription`.
 	private init(attributeDescription: NSAttributeDescription) {
 		name = attributeDescription.name
-		type = PropertyType.Attribute
+		type = PropertyType.attribute
 		attributeType = attributeDescription.attributeType
 		super.init()
 	}
@@ -88,7 +101,7 @@ final class PropertyDescription : NSObject {
 	/// An initializer that builds a `PropertyDescription` by extracting relevant values from an `NSRelationshipDescription`.
 	private init(relationshipDescription: NSRelationshipDescription) {
 		name = relationshipDescription.name
-		type = PropertyType.Relationship
+		type = PropertyType.relationship
 		destinationEntity = relationshipDescription.destinationEntity
 		ordered = relationshipDescription.isOrdered
 		toMany = relationshipDescription.isToMany
@@ -97,19 +110,19 @@ final class PropertyDescription : NSObject {
 }
 
 // MARK: - <NSCoding> -
-extension PropertyDescription : NSCoding {
-	convenience init?(coder aDecoder: NSCoder) {
+extension PropertyDescription: NSCoding {
+	convenience init?(coder: NSCoder) {
 		self.init()
-		if let n = aDecoder.decodeObject(forKey: "name") as? String {
+		if let n = coder.decodeObject(forKey: "name") as? String {
 			name = n
 		}
-		type = PropertyType(rawValue: aDecoder.decodeInteger(forKey: "type"))!
-		attributeType = NSAttributeType(rawValue: UInt(aDecoder.decodeInteger(forKey: "attributeType")))!
-		ordered = aDecoder.decodeBool(forKey: "ordered")
-		toMany = aDecoder.decodeBool(forKey: "toMany")
+		type = PropertyType(rawValue: coder.decodeInteger(forKey: "type"))!
+		attributeType = NSAttributeType(rawValue: UInt(coder.decodeInteger(forKey: "attributeType")))!
+		ordered = coder.decodeBool(forKey: "ordered")
+		toMany = coder.decodeBool(forKey: "toMany")
 	}
-	
-	func encode(with coder: NSCoder) {
+
+	@objc func encode(with coder: NSCoder) {
 		coder.encode(name, forKey:"name")
 		coder.encode(type.rawValue, forKey:"type")
 		if let attributeType = attributeType {
@@ -140,4 +153,23 @@ extension PropertyDescription {
 			return false
 		}
 	}
+	
+	class func == (lhs: PropertyDescription, rhs: PropertyDescription) -> Bool {
+		return lhs.name == rhs.name
+	}
+
+}
+
+extension Dictionary where Key == String, Value == PropertyDescription {
+	static func == (lhs: [String: PropertyDescription], rhs: [String: PropertyDescription]) -> Bool {
+		guard lhs.keys.count == rhs.keys.count else { return false }
+		return lhs.keys.filter({ lhs[$0]?.name != rhs[$0]?.name }).isEmpty
+	}
+}
+
+// TODO: SL check 
+
+func == <Key, Value>(lhs: [Key: Value?], rhs: [Key: Value?]) -> Bool {
+    guard let lhs = lhs as? [Key: Value], let rhs = rhs as? [Key: Value] else { return false }
+    return NSDictionary(dictionary: lhs).isEqual(to: rhs)
 }

@@ -41,8 +41,13 @@ public class PersistentStackCoordinator {
 	
 	// MARK: - Lazy stack initialization -
 	/// The .xcdatamodel to read from.
+//	lazy var managedObjectModel: NSManagedObjectModel = {
+//		let modelURL = Bundle.main.url(forResource: self.managedObjectModelName, withExtension: "momd")!
+//		return NSManagedObjectModel(contentsOf: modelURL)!
+//	}()
+	
 	lazy var managedObjectModel: NSManagedObjectModel = {
-		let modelURL = Bundle.main.url(forResource: self.managedObjectModelName, withExtension: "momd")!
+		let modelURL = Bundle(for: type(of: self)).url(forResource: self.managedObjectModelName, withExtension: "momd")!
 		return NSManagedObjectModel(contentsOf: modelURL)!
 	}()
 	
@@ -66,7 +71,9 @@ public class PersistentStackCoordinator {
 	/// Connects the private context with its PSC on the correct thread, waits for the connection to take place,
 	/// then announces its completion via the initializationCompletion closure.
 	func connectPrivateContextToPersistentStoreCoordinator() {
+		print(self.privateContext)
 		self.privateContext.performAndWait({ [unowned self] in
+			print(self.persistentStoreCoordinator)
 			self.privateContext.persistentStoreCoordinator = self.persistentStoreCoordinator
 			if let completion = self.persistentStoreConnectionCompletion {
 				DispatchQueue.main.async {
@@ -86,10 +93,24 @@ public class PersistentStackCoordinator {
 	// MARK: - Convenience accessors -
 	/// - returns: The path to the Documents directory of a given device. This is where the sqlite file will be saved, and is a
 	/// useful value for debugging purposes.
+//	static var applicationDocumentsDirectory: URL = {
+//		let urls = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
+//		return urls[urls.count - 1]
+//		}()
+	
+	
 	static var applicationDocumentsDirectory: URL = {
-		let urls = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
-		return urls[urls.count - 1]
-		}()
+		let docURL = FileManager.default.urls(for: .documentDirectory, in:.userDomainMask).first!
+		let path = docURL.relativePath
+		if !FileManager.default.fileExists(atPath: path) {
+			do {
+				try FileManager.default.createDirectory(atPath: path, withIntermediateDirectories: true, attributes: nil)
+			} catch {
+				print(error.localizedDescription);
+			}
+		}
+		return docURL
+	}()
 	
 	/// - returns: The path to the sqlite file that stores the application's data.
 	static var persistentStoreURL: URL = {
@@ -127,6 +148,7 @@ extension NSPersistentStoreCoordinator {
 			}
 		}
 		do {
+			// this prints out a directory that doesn't exist
 			let options = [NSMigratePersistentStoresAutomaticallyOption: NSNumber(value: true), NSInferMappingModelAutomaticallyOption: NSNumber(value: true)]
 			try addPersistentStore(
 				ofType: NSSQLiteStoreType,
@@ -146,9 +168,9 @@ extension NSPersistentStoreCoordinator {
 				debugPrint("Failure to remove cached sqlite file")
 			}
 			EntityMapper.clearCache()
-			#if !TEST
-				abort()
-			#endif
+//			#if !TEST
+//				abort()
+//			#endif
 		}
 	}
 }

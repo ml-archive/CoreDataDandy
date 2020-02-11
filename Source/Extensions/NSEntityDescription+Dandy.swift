@@ -58,7 +58,8 @@ extension NSEntityDescription {
 		get {
 			if #available(iOS 9.0, *) {
 				// TODO: Check this
-				if let constraint = uniquenessConstraints.first?.first.debugDescription {
+//				if let constraint = uniquenessConstraints.first?.first.debugDescription {
+				if let constraint = uniquenessConstraints.last?.first as? String {
 					return constraint
 				}
 				else if let superEntity = superentity {

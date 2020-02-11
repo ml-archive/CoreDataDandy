@@ -75,12 +75,12 @@ public struct ObjectFactory {
 			for (key, description) in map {
 				if let value: AnyObject = valueAt(keypath: key, of: json) {
 					// A valid mapping was found for an attribute of a known type
-					if description.type == .Attribute,
+					if description.type == .attribute,
 						let type = description.attributeType {
 						object.setValue(CoreDataValueConverter.convert(value: value, toType: type), forKey: description.name)
 					}
 						// A valid mapping was found for a relationship of a known type
-					else if description.type == .Relationship {
+					else if description.type == .relationship {
 						make(relationship: description, to: object, from: value)
 					}
 				}
